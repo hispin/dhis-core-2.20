@@ -28,32 +28,35 @@
 package org.hisp.dhis.light.dataentry.action;
 
 import com.opensymphony.xwork2.Action;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementOperand;
+import org.hisp.dhis.dataset.CompleteDataSetRegistration;
+import org.hisp.dhis.dataset.CompleteDataSetRegistrationService;
 import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.DataSetService;
-import org.hisp.dhis.dataset.Section;
-import org.hisp.dhis.datavalue.DeflatedDataValue;
 import org.hisp.dhis.light.dataentry.utils.FormUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
+import org.hisp.dhis.user.CurrentUserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
 /**
  * @author mortenoh
  */
-public class GetSectionFormAction
+public class GetDataSetOverviewAction
     implements Action
 {
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
+
+    private CurrentUserService currentUserService;
+
+    public void setCurrentUserService( CurrentUserService currentUserService )
+    {
+        this.currentUserService = currentUserService;
+    }
 
     private OrganisationUnitService organisationUnitService;
 
@@ -67,6 +70,13 @@ public class GetSectionFormAction
     public void setDataSetService( DataSetService dataSetService )
     {
         this.dataSetService = dataSetService;
+    }
+
+    private CompleteDataSetRegistrationService registrationService;
+
+    public void setRegistrationService( CompleteDataSetRegistrationService registrationService )
+    {
+        this.registrationService = registrationService;
     }
 
     private PeriodService periodService;
@@ -128,13 +138,6 @@ public class GetSectionFormAction
         return dataSetId;
     }
 
-    private Integer sectionId;
-
-    public void setSectionId( Integer sectionId )
-    {
-        this.sectionId = sectionId;
-    }
-
     private DataSet dataSet;
 
     public DataSet getDataSet()
@@ -142,54 +145,28 @@ public class GetSectionFormAction
         return dataSet;
     }
 
-    private Map<String, String> dataValues = new HashMap<String, String>();
+    private Boolean complete;
 
-    public Map<String, String> getDataValues()
+    public void setComplete( Boolean complete )
     {
-        return dataValues;
+        this.complete = complete;
     }
 
-    private Map<String, DeflatedDataValue> validationViolations = new HashMap<String, DeflatedDataValue>();
-
-    public Map<String, DeflatedDataValue> getValidationViolations()
+    public Boolean getComplete()
     {
-        return validationViolations;
+        return complete;
     }
 
-    private List<String> validationRuleViolations = new ArrayList<String>();
+    private Boolean markComplete;
 
-    public List<String> getValidationRuleViolations()
+    public Boolean getMarkComplete()
     {
-        return validationRuleViolations;
+        return markComplete;
     }
 
-    private Map<String, Boolean> greyedFields = new HashMap<String, Boolean>();
-
-    public Map<String, Boolean> getGreyedFields()
+    public void setMarkComplete( Boolean markComplete )
     {
-        return greyedFields;
-    }
-
-    // FIXME: Not in use, but seems to be referenced in html.
-    private Map<String, String> typeViolations = new HashMap<String, String>();
-
-    public Map<String, String> getTypeViolations()
-    {
-        return typeViolations;
-    }
-
-    private String name;
-
-    public String getName()
-    {
-        return name;
-    }
-
-    private List<DataElement> dataElements = new ArrayList<DataElement>();
-
-    public List<DataElement> getDataElements()
-    {
-        return dataElements;
+        this.markComplete = markComplete;
     }
 
     // -------------------------------------------------------------------------
@@ -205,48 +182,34 @@ public class GetSectionFormAction
 
         dataSet = dataSetService.getDataSet( dataSetId );
 
-        dataValues = formUtils.getDataValueMap( organisationUnit, dataSet, period );
+        CompleteDataSetRegistration registration = registrationService.getCompleteDataSetRegistration( dataSet, period,
+            organisationUnit );
 
-        validationViolations = formUtils.getValidationViolations( organisationUnit, dataSet, period );
+        complete = registration != null ? true : false;
 
-        validationRuleViolations = formUtils.getValidationRuleViolations( organisationUnit, dataSet, period );
-
-        if ( dataSet.getDataSetType().equals( DataSet.TYPE_SECTION ) )
+        if ( markComplete != null )
         {
-            setGreyedFields();
-        }
-
-        if ( sectionId != null )
-        {
-            for ( Section section : dataSet.getSections() )
+            if ( markComplete && !complete )
             {
-                if ( section.getId() == sectionId )
-                {
-                    name = section.getName();
-                    dataElements = section.getDataElements();
+                registration = new CompleteDataSetRegistration();
+                registration.setDataSet( dataSet );
+                registration.setPeriod( period );
+                registration.setSource( organisationUnit );
+                registration.setDate( new Date() );
+                registration.setStoredBy( currentUserService.getCurrentUsername() );
 
-                    break;
-                }
+                registrationService.saveCompleteDataSetRegistration( registration );
+
+                complete = true;
             }
-        }
-        else
-        {
-            name = "Default";
-            dataElements = new ArrayList<DataElement>( dataSet.getDataElements() );
+            else if ( !markComplete && complete )
+            {
+                registrationService.deleteCompleteDataSetRegistration( registration );
+
+                complete = false;
+            }
         }
 
         return SUCCESS;
-    }
-
-    private void setGreyedFields()
-    {
-        for ( Section section : dataSet.getSections() )
-        {
-            for ( DataElementOperand operand : section.getGreyedFields() )
-            {
-                greyedFields.put( operand.getDataElement().getId() + ":" + operand.getCategoryOptionCombo().getId(),
-                    true );
-            }
-        }
     }
 }
