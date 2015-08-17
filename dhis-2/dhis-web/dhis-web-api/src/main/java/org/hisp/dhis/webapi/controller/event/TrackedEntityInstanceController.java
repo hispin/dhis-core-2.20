@@ -382,7 +382,7 @@ public class TrackedEntityInstanceController
                 importSummary.setImportCount( null );
             }
 
-            webMessageService.send( WebMessageUtils.importSummaries( importSummaries ), response, request );
+            webMessageService.send( WebMessageUtils.importSummary( importSummary ), response, request );
         }
     }
 
