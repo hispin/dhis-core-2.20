@@ -28,22 +28,13 @@ package org.hisp.dhis.organisationunit;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.hisp.dhis.common.NameableObjectUtils.getDisplayProperty;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.attribute.AttributeValue;
 import org.hisp.dhis.common.BaseIdentifiableObject;
@@ -65,13 +56,21 @@ import org.hisp.dhis.schema.annotation.Property;
 import org.hisp.dhis.schema.annotation.PropertyRange;
 import org.hisp.dhis.user.User;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.google.common.base.Joiner;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.hisp.dhis.common.NameableObjectUtils.getDisplayProperty;
 
 /**
  * @author Kristian Nordal
@@ -166,11 +165,12 @@ public class OrganisationUnit
 
     public OrganisationUnit()
     {
-
+        setAutoFields(); // to have getPath working properly, we need to set auto fields (for uid etc)
     }
 
     public OrganisationUnit( String name )
     {
+        this();
         this.name = name;
     }
 
@@ -321,24 +321,24 @@ public class OrganisationUnit
     public static List<OrganisationUnit> getSortedChildren( Collection<OrganisationUnit> units )
     {
         List<OrganisationUnit> children = new ArrayList<OrganisationUnit>();
-        
+
         for ( OrganisationUnit unit : units )
         {
             children.addAll( unit.getSortedChildren() );
         }
-        
+
         return children;
     }
 
     public static List<OrganisationUnit> getSortedGrandChildren( Collection<OrganisationUnit> units )
     {
         List<OrganisationUnit> children = new ArrayList<OrganisationUnit>();
-        
+
         for ( OrganisationUnit unit : units )
         {
             children.addAll( unit.getSortedGrandChildren() );
         }
-        
+
         return children;
     }
 
@@ -810,7 +810,7 @@ public class OrganisationUnit
 
         return map;
     }
-    
+
     public boolean hasLevel()
     {
         return level > 0;
