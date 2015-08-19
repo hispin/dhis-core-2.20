@@ -2713,19 +2713,6 @@ Ext.onReady( function() {
 
                         view.hidden = !layer.visibility;
 
-						// operand
-						if (Ext.isArray(view.columns) && view.columns.length) {
-							for (var j = 0; j < view.columns.length; j++) {
-								for (var k = 0, item; k < view.columns[j].items.length; k++) {
-									item = view.columns[j].items[k];
-
-									if (item.id.indexOf('#') !== -1) {
-										item.id = item.id.replace('#', '.');
-									}
-								}
-							}
-						}
-
 						// add
 						view.layer = layer.id;
 
@@ -7230,10 +7217,6 @@ Ext.onReady( function() {
 						this.load({
 							scope: this,
 							callback: function() {
-								this.each(function(r) {
-                                    r.set('id', r.data.id.split('#').join('.'));
-								});
-
 								this.sortStore();
 
 								if (Ext.isFunction(callbackFn)) {
