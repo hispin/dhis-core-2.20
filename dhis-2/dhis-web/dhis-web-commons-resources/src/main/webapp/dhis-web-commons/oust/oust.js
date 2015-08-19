@@ -143,7 +143,7 @@ function SelectionTree()
 			}
     	} );
     }
-
+    
     this.toggle = function( unitId )
     {
         var parentTag = document.getElementById( getTagId( unitId ));
