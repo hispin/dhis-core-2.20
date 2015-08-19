@@ -3955,7 +3955,7 @@ Ext.onReady(function() {
                         'de': 'dataElements',
                         'ds': 'dataSets'
                     },
-                    elementUrl = elementMap[view.columns[0].objectName],
+                    elementUrl = elementMap[view.columns[0].objectName || 'in'],
                     id = view.columns[0].items[0].id;
 
                 Ext.Ajax.request({
