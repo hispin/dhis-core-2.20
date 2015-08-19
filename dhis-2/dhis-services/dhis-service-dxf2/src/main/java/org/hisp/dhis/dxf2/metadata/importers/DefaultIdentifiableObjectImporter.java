@@ -1127,7 +1127,7 @@ public class DefaultIdentifiableObjectImporter<T extends BaseIdentifiableObject>
             {
                 attributeValues = ReflectionUtils.invokeGetterMethod( "attributeValues", object );
 
-                if ( attributeValues.size() > 0 )
+                if ( attributeValues != null && attributeValues.size() > 0 )
                 {
                     ReflectionUtils.invokeSetterMethod( "attributeValues", object, Sets.newHashSet() );
                 }
@@ -1188,7 +1188,7 @@ public class DefaultIdentifiableObjectImporter<T extends BaseIdentifiableObject>
 
         private void saveAttributeValues( T object, Collection<AttributeValue> attributeValues )
         {
-            if ( attributeValues.size() > 0 )
+            if ( attributeValues != null && attributeValues.size() > 0 )
             {
                 for ( AttributeValue attributeValue : attributeValues )
                 {
