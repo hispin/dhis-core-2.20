@@ -1088,22 +1088,22 @@ Ext.onReady( function() {
                             }
                         }
 
-                        if (view) {
-                            if (Ext.isArray(view.columns) && view.columns.length) {
-                                for (var j = 0, dim; j < view.columns.length; j++) {
-                                    dim = view.columns[j];
-                                    dim.objectName = objectName;
+                        //if (view) {
+                            //if (Ext.isArray(view.columns) && view.columns.length) {
+                                //for (var j = 0, dim; j < view.columns.length; j++) {
+                                    //dim = view.columns[j];
+                                    //dim.objectName = objectName;
 
-                                    if (Ext.isArray(dim.items) && dim.items.length) {
-                                        for (var k = 0, item; k < dim.items.length; k++) {
-                                            item = dim.items[k];
+                                    //if (Ext.isArray(dim.items) && dim.items.length) {
+                                        //for (var k = 0, item; k < dim.items.length; k++) {
+                                            //item = dim.items[k];
 
-                                            item.id = item.id.replace('#', '.');
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                                            //item.id = item.id.replace('#', '.');
+                                        //}
+                                    //}
+                                //}
+                            //}
+                        //}
                     }
                 }
 
@@ -3393,7 +3393,9 @@ Ext.onReady( function() {
 						return;
 					}
 
-					record.id = config.id.replace('#', '.');
+					if (Ext.isString(config.id)) {
+						record.id = config.id;
+					}
 
 					if (Ext.isString(config.name)) {
 						record.name = config.name;
