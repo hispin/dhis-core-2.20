@@ -36,6 +36,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.hisp.dhis.common.BaseIdentifiableObject;
 import org.hisp.dhis.common.BaseNameableObject;
+import org.hisp.dhis.common.DataDimensionType;
 import org.hisp.dhis.common.DxfNamespaces;
 import org.hisp.dhis.common.IdentifiableObject;
 import org.hisp.dhis.common.MergeStrategy;
@@ -57,6 +58,8 @@ public class CategoryOptionGroup
     private Set<DataElementCategoryOption> members = new HashSet<>();
 
     private CategoryOptionGroupSet groupSet;
+
+    private DataDimensionType dataDimensionType;
 
     // -------------------------------------------------------------------------
     // Constructors
@@ -122,6 +125,19 @@ public class CategoryOptionGroup
         this.groupSet = groupSet;
     }
 
+    @JsonProperty
+    @JsonView( { DetailedView.class, ExportView.class } )
+    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
+    public DataDimensionType getDataDimensionType()
+    {
+        return dataDimensionType;
+    }
+
+    public void setDataDimensionType( DataDimensionType dataDimensionType )
+    {
+        this.dataDimensionType = dataDimensionType;
+    }
+
     @Override
     public void mergeWith( IdentifiableObject other, MergeStrategy strategy )
     {
@@ -134,10 +150,12 @@ public class CategoryOptionGroup
             if ( strategy.isReplace() )
             {
                 groupSet = categoryOptionGroup.getGroupSet();
+                dataDimensionType = categoryOptionGroup.getDataDimensionType();
             }
             else if ( strategy.isMerge() )
             {
                 groupSet = categoryOptionGroup.getGroupSet() == null ? groupSet : categoryOptionGroup.getGroupSet();
+                dataDimensionType = categoryOptionGroup.getDataDimensionType() == null ? dataDimensionType : categoryOptionGroup.getDataDimensionType();
             }
 
             members.clear();
