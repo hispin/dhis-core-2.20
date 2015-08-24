@@ -57,4 +57,15 @@ public class EthiopianCalendar extends ChronologyBasedCalendar
     {
         return "ethiopian";
     }
+
+    @Override
+    public int daysInMonth( int year, int month )
+    {
+        if ( month < 12 )
+        {
+            return 30;
+        }
+
+        return 30 + super.daysInMonth( year, 13 );
+    }
 }
