@@ -42,7 +42,7 @@ import org.hisp.dhis.importexport.ImportStrategy;
 public class ImportOptions
 {
     private static final ImportOptions DEFAULT_OPTIONS = new ImportOptions(
-        IdentifiableProperty.UID, IdentifiableProperty.UID, false, true, ImportStrategy.NEW_AND_UPDATES, false );
+        IdentifiableProperty.UID, IdentifiableProperty.UID, false, false, ImportStrategy.NEW_AND_UPDATES, false );
 
     private IdentifiableProperty idScheme;
 
@@ -52,7 +52,7 @@ public class ImportOptions
 
     private boolean dryRun;
 
-    private boolean preheatCache = true;
+    private boolean preheatCache;
 
     private boolean async;
 
