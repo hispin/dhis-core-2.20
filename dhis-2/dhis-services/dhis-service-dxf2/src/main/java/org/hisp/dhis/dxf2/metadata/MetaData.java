@@ -37,6 +37,7 @@ import org.hisp.dhis.chart.Chart;
 import org.hisp.dhis.common.DimensionalObject;
 import org.hisp.dhis.common.DxfNamespaces;
 import org.hisp.dhis.common.NameableObject;
+import org.hisp.dhis.common.filter.MetaDataFilter;
 import org.hisp.dhis.constant.Constant;
 import org.hisp.dhis.dashboard.Dashboard;
 import org.hisp.dhis.dashboard.DashboardItem;
@@ -55,9 +56,13 @@ import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.Section;
 import org.hisp.dhis.document.Document;
 import org.hisp.dhis.dxf2.events.event.Event;
+import org.hisp.dhis.dxf2.sm.api.DataElementSynchStatus;
+import org.hisp.dhis.dxf2.sm.api.IndicatorSynchStatus;
+import org.hisp.dhis.dxf2.sm.api.MetaDataSynchLog;
+import org.hisp.dhis.dxf2.sm.api.OrganisationUnitSynchStatus;
+import org.hisp.dhis.dxf2.sm.api.ValidationRuleSynchStatus;
 import org.hisp.dhis.eventchart.EventChart;
 import org.hisp.dhis.eventreport.EventReport;
-import org.hisp.dhis.common.filter.MetaDataFilter;
 import org.hisp.dhis.indicator.Indicator;
 import org.hisp.dhis.indicator.IndicatorGroup;
 import org.hisp.dhis.indicator.IndicatorGroupSet;
@@ -236,7 +241,15 @@ public class MetaData
     private List<TrackedEntityAttributeGroup> trackedEntityAttributeGroups = new ArrayList<>();
 
     private List<Translation> translations = new ArrayList<>();
-
+    
+    // for Meta Data Synch property start
+    private List<MetaDataSynchLog> metaDataSynchLogs = new ArrayList<MetaDataSynchLog>();
+    private List<DataElementSynchStatus> dataElementSynchStatus = new ArrayList<DataElementSynchStatus>();
+    private List<IndicatorSynchStatus> indicatorSynchStatus = new ArrayList<IndicatorSynchStatus>();
+    private List<OrganisationUnitSynchStatus> organisationUnitSynchStatus = new ArrayList<OrganisationUnitSynchStatus>();
+    private List<ValidationRuleSynchStatus> validationRuleSynchStatus = new ArrayList<ValidationRuleSynchStatus>();
+    // for Meta Data Synch property end
+    
     public MetaData()
     {
     }
@@ -278,7 +291,77 @@ public class MetaData
     {
         this.attributes = attributes;
     }
+    
+    // For meta data synch  getter and setter start
+    
+    @JsonProperty
+    @JacksonXmlElementWrapper( localName = "metaDataSynchSummarys", namespace = DxfNamespaces.DXF_2_0 )
+    @JacksonXmlProperty( localName = "metaDataSynchSummary", namespace = DxfNamespaces.DXF_2_0 )
+    public List<MetaDataSynchLog> getMetaDataSynchLogs()
+    {
+        return metaDataSynchLogs;
+    }
 
+    public void setMetaDataSynchLogs( List<MetaDataSynchLog> metaDataSynchLogs )
+    {
+        this.metaDataSynchLogs = metaDataSynchLogs;
+    }    
+    
+    @JsonProperty
+    @JacksonXmlElementWrapper( localName = "dataElementSynchStatuss", namespace = DxfNamespaces.DXF_2_0 )
+    @JacksonXmlProperty( localName = "dataElementSynchStatus", namespace = DxfNamespaces.DXF_2_0 )
+    public List<DataElementSynchStatus> getDataElementSynchStatus()
+    {
+        return dataElementSynchStatus;
+    }
+
+    public void setDataElementSynchStatus( List<DataElementSynchStatus> dataElementSynchStatus )
+    {
+        this.dataElementSynchStatus = dataElementSynchStatus;
+    }
+
+    @JsonProperty
+    @JacksonXmlElementWrapper( localName = "indicatorSynchStatuss", namespace = DxfNamespaces.DXF_2_0 )
+    @JacksonXmlProperty( localName = "indicatorSynchStatus", namespace = DxfNamespaces.DXF_2_0 )
+    public List<IndicatorSynchStatus> getIndicatorSynchStatus()
+    {
+        return indicatorSynchStatus;
+    }
+
+    public void setIndicatorSynchStatus( List<IndicatorSynchStatus> indicatorSynchStatus )
+    {
+        this.indicatorSynchStatus = indicatorSynchStatus;
+    }
+
+    @JsonProperty
+    @JacksonXmlElementWrapper( localName = "organisationUnitSynchStatuss", namespace = DxfNamespaces.DXF_2_0 )
+    @JacksonXmlProperty( localName = "organisationUnitSynchStatus", namespace = DxfNamespaces.DXF_2_0 )
+    public List<OrganisationUnitSynchStatus> getOrganisationUnitSynchStatus()
+    {
+        return organisationUnitSynchStatus;
+    }
+
+    public void setOrganisationUnitSynchStatus( List<OrganisationUnitSynchStatus> organisationUnitSynchStatus )
+    {
+        this.organisationUnitSynchStatus = organisationUnitSynchStatus;
+    }
+    
+    @JsonProperty
+    @JacksonXmlElementWrapper( localName = "validationRuleSynchStatuss", namespace = DxfNamespaces.DXF_2_0 )
+    @JacksonXmlProperty( localName = "validationRuleSynchStatus", namespace = DxfNamespaces.DXF_2_0 )
+    public List<ValidationRuleSynchStatus> getValidationRuleSynchStatus()
+    {
+        return validationRuleSynchStatus;
+    }
+
+    public void setValidationRuleSynchStatus( List<ValidationRuleSynchStatus> validationRuleSynchStatus )
+    {
+        this.validationRuleSynchStatus = validationRuleSynchStatus;
+    }
+        
+    // For meta data synch getter and setter end
+    
+    
     @JsonProperty
     @JacksonXmlElementWrapper( localName = "dataApprovalLevels", namespace = DxfNamespaces.DXF_2_0 )
     @JacksonXmlProperty( localName = "dataApprovalLevel", namespace = DxfNamespaces.DXF_2_0 )
