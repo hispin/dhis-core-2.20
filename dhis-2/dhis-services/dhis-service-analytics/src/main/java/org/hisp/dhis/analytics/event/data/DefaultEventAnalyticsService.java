@@ -85,6 +85,8 @@ import org.hisp.dhis.legend.LegendSet;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.program.Program;
+import org.hisp.dhis.program.ProgramIndicator;
+import org.hisp.dhis.program.ProgramIndicatorService;
 import org.hisp.dhis.program.ProgramService;
 import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStageService;
@@ -130,6 +132,9 @@ public class DefaultEventAnalyticsService
 
     @Autowired
     private TrackedEntityAttributeService attributeService;
+    
+    @Autowired
+    ProgramIndicatorService programIndicatorService;
     
     @Autowired
     private OrganisationUnitService organisationUnitService;
@@ -699,6 +704,13 @@ public class DefaultEventAnalyticsService
         if ( at != null )
         {
             return new QueryItem( at, legendSet, at.getValueType(), at.getAggregationType(), at.getOptionSet() );
+        }
+        
+        ProgramIndicator pi = programIndicatorService.getProgramIndicatorByUid( item );
+        
+        if ( pi != null )
+        {
+            return new QueryItem( pi, legendSet, DataElement.VALUE_TYPE_INT, pi.getAggregationType(), null );
         }
 
         throw new IllegalQueryException( "Item identifier does not reference any data element or attribute part of the program: " + item );

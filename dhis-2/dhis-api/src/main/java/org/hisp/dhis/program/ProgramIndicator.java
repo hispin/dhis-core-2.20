@@ -32,8 +32,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.hisp.dhis.analytics.AggregationType;
+import org.hisp.dhis.common.BaseDimensionalObject;
 import org.hisp.dhis.common.BaseIdentifiableObject;
-import org.hisp.dhis.common.BaseNameableObject;
+import org.hisp.dhis.common.DimensionType;
 import org.hisp.dhis.common.DxfNamespaces;
 import org.hisp.dhis.common.IdentifiableObject;
 import org.hisp.dhis.common.MergeStrategy;
@@ -53,7 +54,7 @@ import com.google.common.collect.Sets;
  */
 @JacksonXmlRootElement( localName = "programIndicator", namespace = DxfNamespaces.DXF_2_0 )
 public class ProgramIndicator
-    extends BaseNameableObject
+    extends BaseDimensionalObject
 {
     public static final String SEPARATOR_ID = "\\.";
     public static final String SEP_OBJECT = ":";
@@ -148,6 +149,16 @@ public class ProgramIndicator
         return Sets.union( 
             RegexUtils.getMatches( DATAELEMENT_PATTERN, input, 2 ),
             RegexUtils.getMatches( ATTRIBUTE_PATTERN, input, 1 ) );
+    }
+    
+    // -------------------------------------------------------------------------
+    // DimensionalObject
+    // -------------------------------------------------------------------------
+
+    @Override
+    public DimensionType getDimensionType()
+    {
+        return DimensionType.PROGRAM_INDICATOR;
     }
     
     // -------------------------------------------------------------------------
