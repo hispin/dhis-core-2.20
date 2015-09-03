@@ -175,6 +175,8 @@ public class DefaultEventAnalyticsService
         
         queryPlanner.validate( params );
         
+        params.removeProgramIndicatorItems(); // Not supported as items for aggregate
+        
         Grid grid = new ListGrid();
 
         int maxLimit = queryPlanner.getMaxLimit();

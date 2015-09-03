@@ -28,8 +28,8 @@ package org.hisp.dhis.analytics.event;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.hisp.dhis.common.DimensionalObject.PERIOD_DIM_ID;
 import static org.hisp.dhis.common.DimensionalObject.DATA_X_DIM_ID;
+import static org.hisp.dhis.common.DimensionalObject.PERIOD_DIM_ID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +47,8 @@ import org.hisp.dhis.common.NameableObject;
 import org.hisp.dhis.common.NameableObjectUtils;
 import org.hisp.dhis.common.QueryItem;
 import org.hisp.dhis.commons.collection.ListUtils;
+import org.hisp.dhis.commons.filter.Filter;
+import org.hisp.dhis.commons.filter.FilterUtils;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.legend.Legend;
 import org.hisp.dhis.option.OptionSet;
@@ -147,8 +149,6 @@ public class EventQueryParams
     
     public static EventQueryParams fromDataQueryParams( DataQueryParams dataQueryParams )
     {
-        //TODO indicator filter
-        
         EventQueryParams params = new EventQueryParams();
         
         dataQueryParams.copyTo( params );
@@ -294,6 +294,22 @@ public class EventQueryParams
         }
         
         return optionSets;
+    }
+
+    /**
+     * Removes items and item filters of type program indicators.
+     */
+    public EventQueryParams removeProgramIndicatorItems()
+    {
+        FilterUtils.filter( items, new Filter<QueryItem>()
+        {
+            public boolean retain( QueryItem object )
+            {
+                return !object.isProgramIndicator();
+            }
+        } );
+        
+        return this;
     }
 
     /**
