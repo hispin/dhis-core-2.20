@@ -29,8 +29,8 @@ package org.hisp.dhis.commons.sqlfunc;
  */
 
 /**
- * Function which evaluates numerical values to zero if negative, unchanged if
- * zero or positive.
+ * Function which evaluates numerical values to zero if negative or null, unchanged 
+ * if zero or positive.
  * 
  * @author Lars Helge Overland
  */
@@ -42,6 +42,6 @@ public class ZeroIfNegativeSqlFunction
     @Override
     public String evaluate( String column )
     {
-        return "case when " + column + " < 0 then 0 else " + column + " end";
+        return "coalesce(case when " + column + " < 0 then 0 else " + column + " end, 0)";
     }
 }
