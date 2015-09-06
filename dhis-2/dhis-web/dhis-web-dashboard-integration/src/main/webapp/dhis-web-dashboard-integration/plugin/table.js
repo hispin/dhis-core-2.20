@@ -854,6 +854,17 @@ Ext.onReady( function() {
 				} : null;
 			};
 
+            // connection
+            support.connection = {};
+
+            support.connection.ajax = function(requestConfig, authConfig) {
+                if (authConfig.crossDomain && Ext.isString(authConfig.username) && Ext.isString(authConfig.password)) {
+                    requestConfig.headers = Ext.isObject(authConfig.headers) ? authConfig.headers : {};
+                    requestConfig.headers['Authorization'] = 'Basic ' + btoa(authConfig.username + ':' + authConfig.password);
+                }
+
+                Ext.Ajax.request(requestConfig);
+            };
 		}());
 
 		// service
@@ -3056,9 +3067,9 @@ Ext.onReady( function() {
 		var isInit = false,
 			requests = [],
 			callbackCount = 0,
-            type = config.plugin && config.crossDomain ? 'jsonp' : 'json',
-			fn,
-            ajax;
+            type = 'json',
+            ajax,
+			fn;
 
         init.contextPath = config.url;
 
@@ -3074,10 +3085,10 @@ Ext.onReady( function() {
 			}
 		};
 
-        ajax = function(requestConfig) {
-            if (config.crossDomain && Ext.isString(config.username) && Ext.isString(config.password)) {
-                requestConfig.headers = Ext.isObject(config.headers) ? config.headers : {};
-                requestConfig.headers['Authorization'] = 'Basic ' + btoa(config.username + ':' + config.password);
+        ajax = function(requestConfig, authConfig) {
+            if (authConfig.crossDomain && Ext.isString(authConfig.username) && Ext.isString(authConfig.password)) {
+                requestConfig.headers = Ext.isObject(authConfig.headers) ? authConfig.headers : {};
+                requestConfig.headers['Authorization'] = 'Basic ' + btoa(authConfig.username + ':' + authConfig.password);
             }
 
             Ext.Ajax.request(requestConfig);
@@ -3166,7 +3177,7 @@ Ext.onReady( function() {
         //init.legendSets = [];
 
 		for (var i = 0; i < requests.length; i++) {
-            ajax(requests[i]);
+            ajax(requests[i], config);
 		}
 	};
 
@@ -3254,7 +3265,7 @@ Ext.onReady( function() {
 				support = ns.core.support,
 				service = ns.core.service,
 				web = ns.core.web,
-                type = appConfig.plugin && appConfig.crossDomain ? 'jsonp' : 'json',
+                type = 'json',
                 headerMap = {
                     json: 'application/json',
                     jsonp: 'application/javascript'
@@ -3264,6 +3275,19 @@ Ext.onReady( function() {
                     'Accepts': headerMap[type]
                 },
                 el = Ext.get(init.el);
+
+			init.el = config.el;
+
+			// ns
+            ns.plugin = appConfig.plugin;
+            ns.dashboard = appConfig.dashboard;
+            ns.crossDomain = appConfig.crossDomain;
+            ns.skipMask = appConfig.skipMask;
+            ns.skipFade = appConfig.skipFade;
+            ns.el = appConfig.el;
+            ns.username = appConfig.username;
+            ns.password = appConfig.password;
+            ns.ajax = support.connection.ajax;
 
 			// message
 			web.message = web.message || {};
@@ -3369,12 +3393,7 @@ Ext.onReady( function() {
                 config.success = success;
                 config.failure = failure;
 
-                if (type === 'jsonp') {
-                    Ext.data.JsonP.request(config);
-                }
-                else {
-                    Ext.Ajax.request(config);
-                }
+                ns.ajax(config, ns);
 			};
 
 			web.pivot.getData = function(layout, isUpdateGui) {
@@ -3430,12 +3449,7 @@ Ext.onReady( function() {
                 config.success = success;
                 config.failure = failure;
 
-                if (type === 'jsonp') {
-                    Ext.data.JsonP.request(config);
-                }
-                else {
-                    Ext.Ajax.request(config);
-                }
+                ns.ajax(config, ns);
 			};
 
 			web.pivot.createTable = function(layout, response, xResponse, isUpdateGui) {
@@ -3554,16 +3568,6 @@ Ext.onReady( function() {
 				//web.pivot.createTable(layout, null, response, false);
 			//};
 
-			// ns
-            ns.plugin = appConfig.plugin;
-            ns.dashboard = appConfig.dashboard;
-            ns.crossDomain = appConfig.crossDomain;
-            ns.skipMask = appConfig.skipMask;
-            ns.skipFade = appConfig.skipFade;
-            ns.el = appConfig.el;
-
-			init.el = config.el;
-
             //if (!ns.skipFade && el) {
 				//el.setStyle('opacity', 0);
             //}
@@ -3589,7 +3593,9 @@ Ext.onReady( function() {
                 crossDomain: Ext.isBoolean(config.crossDomain) ? config.crossDomain : true,
                 skipMask: Ext.isBoolean(config.skipMask) ? config.skipMask : false,
                 skipFade: Ext.isBoolean(config.skipFade) ? config.skipFade : false,
-                el: Ext.isString(config.el) ? config.el : null
+                el: Ext.isString(config.el) ? config.el : null,
+                username: Ext.isString(config.username) ? config.username : null,
+                password: Ext.isString(config.password) ? config.password : null
             };
 
             // css
