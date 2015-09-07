@@ -28,13 +28,6 @@ package org.hisp.dhis.webapi.utils;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.hisp.dhis.common.NameableObjectUtils;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementCategoryCombo;
@@ -54,6 +47,13 @@ import org.hisp.dhis.webapi.webdomain.form.Group;
 import org.hisp.dhis.webapi.webdomain.form.InputType;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Morten Olav Hansen <mortenoh@gmail.com>
@@ -205,7 +205,10 @@ public class FormUtils
 
         for ( ProgramStageDataElement programStageDataElement : programStageDataElements )
         {
-            dataElements.add( programStageDataElement.getDataElement() );
+            if ( programStageDataElement != null && programStageDataElement.getDataElement() != null )
+            {
+                dataElements.add( programStageDataElement.getDataElement() );
+            }
         }
 
         return inputFromDataElements( dataElements, new ArrayList<DataElementOperand>() );
