@@ -535,11 +535,21 @@ public class JdbcEventAnalyticsManager
 
         if ( params.hasProgramIndicatorDimension() && params.getProgramIndicator().hasFilter() )
         {
-            String filter = programIndicatorService.getAnalyticsSQl( params.getProgramIndicator().getFilter() );
+            String filter = programIndicatorService.getAnalyticsSQl( params.getProgramIndicator().getFilter(), false );
             
             String sqlFilter = ExpressionUtils.asSql( filter );
             
             sql += "and (" + sqlFilter + ") ";
+        }
+        
+        if ( params.hasProgramIndicatorDimension() )
+        {
+            String anyValueFilter = programIndicatorService.getAnyValueExistsClauseAnalyticsSql( params.getProgramIndicator().getExpression() );
+            
+            if ( anyValueFilter != null )
+            {
+                sql += "and (" + anyValueFilter + ") ";
+            }
         }
         
         // ---------------------------------------------------------------------
