@@ -23,7 +23,7 @@ trackerCapture.controller('RegistrationController',
     $scope.customForm = null;    
     $scope.selectedTei = {};
     $scope.tei = {};
-    $scope.registrationMode = null;
+    $scope.registrationMode = 'REGISTRATION';
     
     //Infinite Scroll
     $scope.infiniteScroll = {};
