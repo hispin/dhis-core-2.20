@@ -102,6 +102,7 @@ scripts/notes-controller.js
 styles/style.css
 
 ../dhis-web-commons/css/light_blue/logo_banner.png
+../dhis-web-commons/css/light_blue/light_blue.css
 ../images/ajax-loader-bar.gif
 ../images/colapse.png
 ../images/expand.png
@@ -130,6 +131,8 @@ views/eventList.html
 views/home.html
 views/modal.html
 views/notes.html
+views/buttons-section.html
+views/indicators-section.html
 
 ../dhis-web-commons/fonts/LiberationSans-Regular-webfont.eot
 ../dhis-web-commons/fonts/LiberationSans-Regular-webfont.woff

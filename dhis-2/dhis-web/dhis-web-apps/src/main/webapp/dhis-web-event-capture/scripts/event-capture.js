@@ -197,10 +197,7 @@ function getUserRoles()
 }
 
 function getCalendarSetting()
-{
-    if(localStorage['CALENDAR_SETTING']){
-       return; 
-    }    
+{        
     var def = $.Deferred();
 
     $.ajax({
