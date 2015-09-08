@@ -30,10 +30,6 @@ package org.hisp.dhis.program;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.hisp.dhis.constant.Constant;
-import org.hisp.dhis.trackedentity.TrackedEntityAttribute;
 
 /**
  * @author Chau Thu Tran
@@ -156,28 +152,4 @@ public interface ProgramIndicatorService
      *         {@link ProgramIndicator.INVALID_VARIABLES_IN_EXPRESSION}.
      */
     String filterIsValid( String filter );
-    
-    /**
-     * Get all {@link ProgramStageDataElement} part of the expression.
-     * 
-     * @param expression the expression.
-     * @return a set of ProgramStageDataElements.
-     */
-    Set<ProgramStageDataElement> getProgramStageDataElementsInExpression( String expression );
-
-    /**
-     * Get all {@link TrackedEntityAttribute} part of the expression.
-     * 
-     * @param expression the expression.
-     * @return a set of TrackedEntityAttributes.
-     */
-    Set<TrackedEntityAttribute> getAttributesInExpression( String expression );
-    
-    /**
-     * Get all {@link Constant} part of the expression of the expression.
-     * 
-     * @param expression the expression.
-     * @return a set of Constants.
-     */
-    Set<Constant> getConstantsInExpression( String expression );
 }

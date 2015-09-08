@@ -32,7 +32,6 @@ import static org.hisp.dhis.i18n.I18nUtils.i18n;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +46,6 @@ import org.hisp.dhis.constant.Constant;
 import org.hisp.dhis.constant.ConstantService;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementService;
-import org.hisp.dhis.expression.ExpressionService;
 import org.hisp.dhis.i18n.I18n;
 import org.hisp.dhis.i18n.I18nManager;
 import org.hisp.dhis.i18n.I18nService;
@@ -648,77 +646,6 @@ public class DefaultProgramIndicatorService
         matcher.appendTail( expr );
 
         return expr.toString();
-    }
-    
-    @Override
-    @Transactional
-    public Set<ProgramStageDataElement> getProgramStageDataElementsInExpression( String expression )
-    {
-        Set<ProgramStageDataElement> elements = new HashSet<>();
-        
-        Matcher matcher = ProgramIndicator.DATAELEMENT_PATTERN.matcher( expression );
-        
-        while ( matcher.find() )
-        {
-            String ps = matcher.group( 1 );
-            String de = matcher.group( 2 );
-            
-            ProgramStage programStage = programStageService.getProgramStage( ps );
-            DataElement dataElement = dataElementService.getDataElement( de );
-            
-            if ( programStage != null && dataElement != null )
-            {
-                elements.add( new ProgramStageDataElement( programStage, dataElement ) );
-            }
-        }
-        
-        return elements;
-    }
-    
-    @Override
-    @Transactional
-    public Set<TrackedEntityAttribute> getAttributesInExpression( String expression )
-    {
-        Set<TrackedEntityAttribute> attributes = new HashSet<>();
-
-        Matcher matcher = ProgramIndicator.ATTRIBUTE_PATTERN.matcher( expression );
-        
-        while ( matcher.find() )
-        {
-            String at = matcher.group( 1 );
-            
-            TrackedEntityAttribute attribute = attributeService.getTrackedEntityAttribute( at );
-            
-            if ( attribute != null )
-            {
-                attributes.add( attribute );
-            }
-        }
-        
-        return attributes;        
-    }
-
-    @Override
-    @Transactional
-    public Set<Constant> getConstantsInExpression( String expression )
-    {
-        Set<Constant> constants = new HashSet<>();
-
-        Matcher matcher = ExpressionService.CONSTANT_PATTERN.matcher( expression );
-        
-        while ( matcher.find() )
-        {
-            String co = matcher.group( 1 );
-            
-            Constant constant = constantService.getConstant( co );
-            
-            if ( constant != null )
-            {
-                constants.add( constant );
-            }
-        }
-        
-        return constants;        
     }
     
     // -------------------------------------------------------------------------
