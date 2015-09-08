@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.commons.sqlfunc.OneIfZeroOrPositiveSqlFunction;
 import org.hisp.dhis.commons.sqlfunc.SqlFunction;
 import org.hisp.dhis.commons.sqlfunc.ZeroIfNegativeSqlFunction;
@@ -62,6 +63,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
+
+import static org.apache.commons.lang3.StringUtils.trim;
 
 /**
  * @author Chau Thu Tran
@@ -456,86 +459,145 @@ public class DefaultProgramIndicatorService
     @Override
     public String getAnalyticsSQl( String expression )
     {
+        return getAnalyticsSQl( expression, true );
+    }
+
+    @Override
+    public String getAnalyticsSQl( String expression, boolean ignoreMissingValues )
+    {
         if ( expression == null )
         {
             return null;
         }
 
-        // ---------------------------------------------------------------------
-        // Data elements, attributes, constants
-        // ---------------------------------------------------------------------
+        expression = getSubstitutedVariablesForAnalyticsSql( expression );
+        
+        expression = getSubstitutedFunctionsAnalyticsSql( expression, false );
 
+        expression = getSubstitutedElementsAnalyticsSql( expression, ignoreMissingValues );
+        
+        return expression;
+    }
+
+    private String getSubstitutedFunctionsAnalyticsSql( String expression, boolean ignoreMissingValues )
+    {
+        if ( expression == null )
+        {
+            return null;
+        }
+        
+        StringBuffer buffer = new StringBuffer();
+
+        Matcher matcher = ProgramIndicator.SQL_FUNC_PATTERN.matcher( expression );
+
+        while ( matcher.find() )
+        {
+            String func = StringUtils.trim( matcher.group( 1 ) );
+            String arg1 = getSubstitutedElementsAnalyticsSql( trim( matcher.group( 2 ) ), false );
+
+            SqlFunction function = SQL_FUNC_MAP.get( func );
+
+            if ( function == null )
+            {
+                throw new IllegalStateException( "Function not recognized: " + func );
+            }
+
+            String result = function.evaluate( arg1 );
+
+            matcher.appendReplacement( buffer, result );
+        }
+
+        return TextUtils.appendTail( matcher, buffer );
+    }
+
+    private String getSubstitutedVariablesForAnalyticsSql( String expression )
+    {
+        if ( expression == null )
+        {
+            return null;
+        }
+        
+        StringBuffer buffer = new StringBuffer();
+
+        Matcher matcher = ProgramIndicator.VARIABLE_PATTERN.matcher( expression );
+
+        while ( matcher.find() )
+        {
+            String var = matcher.group( 1 );
+            
+            String sql = getVariableAsSql( var, expression );
+
+            if ( sql != null )
+            {
+                matcher.appendReplacement( buffer, sql );
+            }
+        }
+        
+        return TextUtils.appendTail( matcher, buffer );
+    }
+    
+    private String getSubstitutedElementsAnalyticsSql( String expression, boolean ignoreMissingValues )
+    {
+        if ( expression == null )
+        {
+            return null;
+        }
+        
         StringBuffer buffer = new StringBuffer();
 
         Matcher matcher = ProgramIndicator.EXPRESSION_PATTERN.matcher( expression );
-        
+
         while ( matcher.find() )
         {
             String key = matcher.group( 1 );
-            String val = matcher.group( 2 );
+            String el1 = matcher.group( 2 );
+            String el2 = matcher.group( 3 );
             
             if ( ProgramIndicator.KEY_DATAELEMENT.equals( key ) )
             {
-                String de = statementBuilder.columnQuote( matcher.group( 3 ) );
+                String de = ignoreMissingValues ? getIgnoreNullSql( statementBuilder.columnQuote( el2 ) ) : statementBuilder.columnQuote( el2 );
                 
                 matcher.appendReplacement( buffer, de );
             }
             else if ( ProgramIndicator.KEY_ATTRIBUTE.equals( key ) )
             {
-                matcher.appendReplacement( buffer, statementBuilder.columnQuote( val ) );
+                String at = ignoreMissingValues ? getIgnoreNullSql( statementBuilder.columnQuote( el1 ) ) : statementBuilder.columnQuote( el1 );
+                
+                matcher.appendReplacement( buffer, at );
             }
             else if ( ProgramIndicator.KEY_CONSTANT.equals( key ) )
             {
-                Constant constant = constantService.getConstant( val );
-                
+                Constant constant = constantService.getConstant( el1 );
+
                 if ( constant != null )
                 {
                     matcher.appendReplacement( buffer, String.valueOf( constant.getValue() ) );
                 }
             }
-            else if ( ProgramIndicator.KEY_PROGRAM_VARIABLE.equals( key ) )
-            {
-                String sql = getVariableAsSql( val, expression );
-                
-                if ( sql != null )
-                {
-                    matcher.appendReplacement( buffer, sql );
-                }
-            }
-        }
-        
-        expression = TextUtils.appendTail( matcher, buffer );
-
-        // ---------------------------------------------------------------------
-        // Functions
-        // ---------------------------------------------------------------------
-
-        buffer = new StringBuffer();
-        
-        matcher = ProgramIndicator.SQL_FUNC_PATTERN.matcher( expression );
-        
-        while ( matcher.find() )
-        {
-            String func = matcher.group( 1 );
-            String column = matcher.group( 2 );
-            
-            SqlFunction function = SQL_FUNC_MAP.get( func );
-            
-            if ( function == null )
-            {
-                throw new IllegalStateException( "Function not recognized: " + func );
-            }
-            
-            String result = function.evaluate( column );
-            
-            matcher.appendReplacement( buffer, result );
         }
 
-        expression = TextUtils.appendTail( matcher, buffer );
-
-        return expression;
+        return TextUtils.appendTail( matcher, buffer );
     }
-    
+
+    @Override
+    public String getAnyValueExistsClauseAnalyticsSql( String expression )
+    {
+        Set<String> uids = ProgramIndicator.getDataElementAndAttributeIdentifiers( expression );
+                
+        if ( uids.isEmpty() )
+        {
+            return null;
+        }
+        
+        String sql = "";
+        
+        for ( String uid : uids )
+        {
+            sql += statementBuilder.columnQuote( uid ) + " is not null or ";
+        }
+        
+        return TextUtils.removeLastOr( sql ).trim();
+    }
     @Override
     @Transactional
     public String expressionIsValid( String expression )
@@ -651,13 +713,13 @@ public class DefaultProgramIndicatorService
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
-    
+
     /**
      * Creates a SQL select clause from the given program indicator variable
      * based on the given expression. Wraps the count variables with
      * <code>nullif</code> to avoid potential division by zero.
-     * 
-     * @param var the program indicator variable.
+     *
+     * @param var        the program indicator variable.
      * @param expression the program indicator expression.
      * @return a SQL select clause.
      */
@@ -667,6 +729,10 @@ public class DefaultProgramIndicatorService
         {
             return "executiondate";
         }
+        else if ( ProgramIndicator.VAR_ENROLLMENT_DATE.equals( var ) )
+        {
+            return "enrollmentdate";
+        }
         else if ( ProgramIndicator.VAR_CURRENT_DATE.equals( var ) )
         {
             return "'" + DateUtils.getLongDateString() + "'";
@@ -674,29 +740,34 @@ public class DefaultProgramIndicatorService
         else if ( ProgramIndicator.VAR_VALUE_COUNT.equals( var ) )
         {
             String sql = "nullif((";
-            
+
             for ( String uid : ProgramIndicator.getDataElementAndAttributeIdentifiers( expression ) )
             {
                 sql += "case when " + statementBuilder.columnQuote( uid ) + " is not null then 1 else 0 end + ";
             }
-            
-            return TextUtils.removeLast( sql, "+" ) + "),0)";
+
+            return TextUtils.removeLast( sql, "+" ).trim() + "),0)";
         }
         else if ( ProgramIndicator.VAR_ZERO_POS_VALUE_COUNT.equals( var ) )
         {
             String sql = "nullif((";
-            
+
             for ( String uid : ProgramIndicator.getDataElementAndAttributeIdentifiers( expression ) )
             {
                 sql += "case when " + statementBuilder.columnQuote( uid ) + " > 0 then 1 else 0 end + ";
             }
-            
-            return TextUtils.removeLast( sql, "+" ) + "),0)";
+
+            return TextUtils.removeLast( sql, "+" ).trim() + "),0)";
         }
-        
+
         return null;
     }
 
+    private String getIgnoreNullSql( String column )
+    {
+        return "coalesce(" + column + ",0)";
+    }
+    
     private boolean isZeroOrPositive( String value )
     {
         return MathUtils.isNumeric( value ) && Double.valueOf( value ) >= 0d;

@@ -298,7 +298,6 @@ public class ProgramIndicatorServiceTest
         programA.getProgramIndicators().add( indicatorA );
 
         indicatorB = createProgramIndicator( 'B', programA, "70", null );
-        //indicatorB.setValueType( ProgramIndicator.VALUE_TYPE_DATE );
         programA.getProgramIndicators().add( indicatorB );
 
         indicatorC = createProgramIndicator( 'C', programA, "0", null );
@@ -332,13 +331,11 @@ public class ProgramIndicatorServiceTest
             + KEY_DATAELEMENT + "{" + psA.getUid() + "." + deB.getUid() + "} ) + " + KEY_DATAELEMENT + "{"
             + psA.getUid() + "." + deA.getUid() + "}";
         indicatorI = createProgramIndicator( 'I', programB, expressionI, null );
-        //indicatorI.setValueType( VALUE_TYPE_DATE );
 
         String expressionJ = "(" + KEY_ATTRIBUTE + "{" + atC.getUid() + "}  - " + KEY_PROGRAM_VARIABLE + "{"
             + ProgramIndicator.VAR_ENROLLMENT_DATE + "} ) + " + KEY_DATAELEMENT + "{" + psA.getUid() + "." + deA.getUid()
             + "} * " + ProgramIndicator.KEY_CONSTANT + "{" + constantA.getUid() + "}";
         indicatorJ = createProgramIndicator( 'J', programB, expressionJ, null );
-        //indicatorJ.setValueType( VALUE_TYPE_DATE );
     }
 
     // -------------------------------------------------------------------------
@@ -472,41 +469,99 @@ public class ProgramIndicatorServiceTest
     }
 
     @Test
+    public void testGetAnyValueExistsFilterAnalyticsSQl()
+    {
+        String expected = "\"GCyeKSqlpdk\" is not null or \"gAyeKSqlpdk\" is not null";
+        String expression = "#{OXXcwl6aPCQ.GCyeKSqlpdk} - A{gAyeKSqlpdk}";
+
+        assertEquals( expected, programIndicatorService.getAnyValueExistsClauseAnalyticsSql( expression ) );
+    }
+    
+    @Test
     public void testGetAnalyticsSQl()
     {
-        String expected = COL_QUOTE + deA.getUid() + COL_QUOTE + " + " + COL_QUOTE + atA.getUid() + COL_QUOTE + " > 10";
-        
+        String expected = "coalesce(\"" + deA.getUid() + "\",0) + coalesce(\"" + atA.getUid() + "\",0) > 10";
+
         assertEquals( expected, programIndicatorService.getAnalyticsSQl( indicatorE.getFilter() ) );
     }
 
     @Test
-    public void testGetAnalyticsSqlWithFunctionsA()
+    public void testGetAnalyticsSQlRespectMissingValues()
+    {
+        String expected = "\"" + deA.getUid() + "\" + \"" + atA.getUid() + "\" > 10";
+
+        assertEquals( expected, programIndicatorService.getAnalyticsSQl( indicatorE.getFilter(), false ) );
+    }
+    
+    @Test
+    public void testGetAnalyticsWithVariables()
+    {
+        String expected = 
+            "coalesce(case when \"EZq9VbPWgML\" < 0 then 0 else \"EZq9VbPWgML\" end, 0) + " +
+            "coalesce(\"GCyeKSqlpdk\",0) + " +
+            "nullif((case when \"EZq9VbPWgML\" > 0 then 1 else 0 end + case when \"GCyeKSqlpdk\" > 0 then 1 else 0 end),0)";
+        
+        String expression = 
+            "d2:zing(#{OXXcwl6aPCQ.EZq9VbPWgML}) + " +
+            "#{OXXcwl6aPCQ.GCyeKSqlpdk} + " +
+            "V{zero_pos_value_count}";
+        
+        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );
+    }
+
+    @Test
+    public void testGetAnalyticsSqlWithFunctionsZingA()
     {
         String col = COL_QUOTE + deA.getUid() + COL_QUOTE;
         String expected = "coalesce(case when " + col + " < 0 then 0 else " + col + " end, 0)";
         String expression = "d2:zing(" + col + ")";
 
-        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );        
+        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );
+    }
+    
+    @Test
+    public void testGetAnalyticsSqlWithFunctionsZingB()
+    {
+        String expected = 
+            "coalesce(case when \"EZq9VbPWgML\" < 0 then 0 else \"EZq9VbPWgML\" end, 0) + " +
+            "coalesce(case when \"GCyeKSqlpdk\" < 0 then 0 else \"GCyeKSqlpdk\" end, 0) + " +
+            "coalesce(case when \"hsCmEqBcU23\" < 0 then 0 else \"hsCmEqBcU23\" end, 0)";        
+            
+        String expression = 
+            "d2:zing(#{OXXcwl6aPCQ.EZq9VbPWgML}) + " +
+            "d2:zing(#{OXXcwl6aPCQ.GCyeKSqlpdk}) + " +
+            "d2:zing(#{OXXcwl6aPCQ.hsCmEqBcU23})";
+        
+        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );
     }
 
     @Test
-    public void testGetAnalyticsSqlWithFunctionsB()
+    public void testGetAnalyticsSqlWithFunctionsOizp()
     {
         String col = COL_QUOTE + deA.getUid() + COL_QUOTE;
         String expected = "coalesce(case when " + col + " >= 0 then 1 else 0 end, 0)";
         String expression = "d2:oizp(" + col + ")";
 
-        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );        
+        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );
     }
 
     @Test( expected = IllegalStateException.class )
-    public void testGetAnalyticsSqlWithFunctionsC()
+    public void testGetAnalyticsSqlWithFunctionsInvalid()
     {
         String col = COL_QUOTE + deA.getUid() + COL_QUOTE;
-        String expected = "coalesce(case when " + col + " >= 0 then 1 else " + col + " end, 0)";
+        String expected = "case when " + col + " >= 0 then 1 else " + col + " end";
         String expression = "d2:xyza(" + col + ")";
 
-        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );        
+        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );
+    }
+
+    @Test
+    public void testGetAnalyticsSqlWithVariables()
+    {
+        String expected = "coalesce(\"EZq9VbPWgML\",0) + (executiondate - enrollmentdate)";
+        String expression = "#{OXXcwl6aPCQ.EZq9VbPWgML} + (V{execution_date} - V{enrollment_date})";
+
+        assertEquals( expected, programIndicatorService.getAnalyticsSQl( expression ) );
     }
     
     @Test

@@ -124,14 +124,33 @@ public interface ProgramIndicatorService
      * @return The description
      */
     String getExpressionDescription( String expression );
-    
+
     /**
-     * Get the expression as an analytics SQL clause.
+     * Get the expression as an analytics SQL clause. Ignores missing numeric
+     * values for data elements and attributes.
      * 
      * @param expression the expression.
      * @return the SQL string.
      */
     String getAnalyticsSQl( String expression );
+    
+    /**
+     * Get the expression as an analytics SQL clause.
+     * 
+     * @param expression the expression.
+     * @param whether to ignore missing values for data elements and attributes.
+     * @return the SQL string.
+     */
+    String getAnalyticsSQl( String expression, boolean ignoreMissingValues );
+    
+    /**
+     * Returns a SQL clause which matches any value for the data elements and
+     * attributes in the given expression.
+     * 
+     * @param expression the expression.
+     * @return the SQL string.
+     */
+    String getAnyValueExistsClauseAnalyticsSql( String expression );
 
     /**
      * Indicates whether the given program indicator expression is valid.
