@@ -323,7 +323,7 @@ public class EventQueryParams
         {
             return aggregationType;
         }
-        else if ( hasValueDimension() )
+        else if ( hasValueDimension() && value.getAggregationType() != null )
         {
             return value.getAggregationType();
         }
