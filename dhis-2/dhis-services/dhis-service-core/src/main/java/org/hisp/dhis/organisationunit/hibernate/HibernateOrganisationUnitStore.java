@@ -214,6 +214,11 @@ public class HibernateOrganisationUnitStore
             hql = TextUtils.removeLastOr( hql ) + ")";
         }
         
+        if ( params.getMaxLevels() != null )
+        {
+            hql += hlp.whereAnd() + " length(o.path) <= :pathLength ";
+        }
+        
         Query query = getQuery( hql );
         
         if ( params.getQuery() != null )
@@ -236,6 +241,11 @@ public class HibernateOrganisationUnitStore
             {
                 query.setString( parent.getUid(), "%" + parent.getUid() + "%" );
             }
+        }
+        
+        if ( params.getMaxLevels() != null )
+        {
+            query.setInteger( "pathLength", params.getMaxLevelsPathLength() );
         }
 
         if ( params.getFirst() != null )
