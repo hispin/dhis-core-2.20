@@ -58,6 +58,8 @@ import org.hisp.dhis.user.CurrentUserService;
 import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Sets;
+
 /**
  * @author Lars Helge Overland
  * @version $Id: DefaultDataSetService.java 6255 2008-11-10 16:01:24Z larshelg $
@@ -527,12 +529,12 @@ public class DefaultDataSetService
     @Override
     public void mergeWithCurrentUserOrganisationUnits( DataSet dataSet, Collection<OrganisationUnit> mergeOrganisationUnits )
     {
-        Set<OrganisationUnit> selectedOrgUnits = new HashSet<>( dataSet.getSources() );
+        Set<OrganisationUnit> selectedOrgUnits = Sets.newHashSet( dataSet.getSources() );
         
         OrganisationUnitQueryParams params = new OrganisationUnitQueryParams();
         params.setParents( currentUserService.getCurrentUser().getOrganisationUnits() );
 
-        List<OrganisationUnit> userOrganisationUnits = organisationUnitService.getOrganisationUnitsByQuery( params );
+        Set<OrganisationUnit> userOrganisationUnits = Sets.newHashSet( organisationUnitService.getOrganisationUnitsByQuery( params ) );
 
         selectedOrgUnits.removeAll( userOrganisationUnits );
         selectedOrgUnits.addAll( mergeOrganisationUnits );

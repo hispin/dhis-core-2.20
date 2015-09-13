@@ -321,18 +321,18 @@ public class DefaultProgramService
     @Override
     public void mergeWithCurrentUserOrganisationUnits( Program program, Collection<OrganisationUnit> mergeOrganisationUnits )
     {
-        Set<OrganisationUnit> selectedOrgUnits = new HashSet<>( program.getOrganisationUnits() );
-
+        Set<OrganisationUnit> selectedOrgUnits = Sets.newHashSet( program.getOrganisationUnits() );
+        
         OrganisationUnitQueryParams params = new OrganisationUnitQueryParams();
         params.setParents( currentUserService.getCurrentUser().getOrganisationUnits() );
 
-        List<OrganisationUnit> userOrganisationUnits = organisationUnitService.getOrganisationUnitsByQuery( params );
+        Set<OrganisationUnit> userOrganisationUnits = Sets.newHashSet( organisationUnitService.getOrganisationUnitsByQuery( params ) );
 
-        selectedOrgUnits.removeAll( userOrganisationUnits );
+        selectedOrgUnits.removeAll( userOrganisationUnits );        
         selectedOrgUnits.addAll( mergeOrganisationUnits );
-        
+
         program.updateOrganisationUnits( selectedOrgUnits );
-        
+
         updateProgram( program );
     }
 
