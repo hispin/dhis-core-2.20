@@ -43,6 +43,8 @@ import org.hisp.dhis.i18n.I18nFormat;
 import org.hisp.dhis.i18n.I18nService;
 import org.hisp.dhis.option.Option;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitQueryParams;
+import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.trackedentity.TrackedEntity;
 import org.hisp.dhis.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.trackedentity.TrackedEntityAttributeService;
@@ -58,6 +60,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
+import java.util.HashSet;
 
 /**
  * @author Abyot Asalefew
@@ -106,6 +109,13 @@ public class DefaultProgramService
     public void setUserService( UserService userService )
     {
         this.userService = userService;
+    }
+    
+    private OrganisationUnitService organisationUnitService;
+
+    public void setOrganisationUnitService( OrganisationUnitService organisationUnitService )
+    {
+        this.organisationUnitService = organisationUnitService;
     }
 
     @Autowired
@@ -307,7 +317,24 @@ public class DefaultProgramService
 
         return programs;
     }
-    
+
+    @Override
+    public void mergeWithCurrentUserOrganisationUnits( Program program, Collection<OrganisationUnit> mergeOrganisationUnits )
+    {
+        Set<OrganisationUnit> selectedOrgUnits = new HashSet<>( program.getOrganisationUnits() );
+
+        OrganisationUnitQueryParams params = new OrganisationUnitQueryParams();
+        params.setParents( currentUserService.getCurrentUser().getOrganisationUnits() );
+
+        List<OrganisationUnit> userOrganisationUnits = organisationUnitService.getOrganisationUnitsByQuery( params );
+
+        selectedOrgUnits.removeAll( userOrganisationUnits );
+        selectedOrgUnits.addAll( mergeOrganisationUnits );
+        
+        program.updateOrganisationUnits( selectedOrgUnits );
+        
+        updateProgram( program );
+    }
 
     @Override
     public String prepareDataEntryFormForAdd( String htmlCode, Program program, Collection<User> healthWorkers,
