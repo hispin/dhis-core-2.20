@@ -2008,6 +2008,7 @@ Ext.onReady( function() {
                 type = (obj.status || 'INFO').toLowerCase();
 
 				config.title = obj.status;
+                config.cls = 'ns-window-title-messagebox';
 				config.iconCls = 'ns-window-title-messagebox ' + type;
 
                 // html
@@ -3155,7 +3156,7 @@ Ext.onReady( function() {
 			}
 		});
 
-        // user orgunit
+        // dimensions
 		requests.push({
 			url: init.contextPath + '/api/dimensions.' + type + '?fields=id,name&paging=false',
             disableCaching: false,
@@ -3183,7 +3184,8 @@ Ext.onReady( function() {
 
     applyCss = function(config) {
         var css = '',
-            arrowUrl = config.dashboard ? init.contextPath + '/dhis-web-commons/javascripts/plugin/images/arrowupdown.png' : '//dhis2-cdn.org/v217/plugin/images/arrowupdown.png';
+            arrowUrl = config.dashboard ? init.contextPath + '/dhis-web-commons/javascripts/plugin/images/arrowupdown.png' : '//dhis2-cdn.org/v220/plugin/images/arrowupdown.png',
+            errorUrl = config.dashboard ? init.contextPath + '/dhis-web-commons/javascripts/plugin/images/error_m.png' : '//dhis2-cdn.org/v220/plugin/images/error_m.png';
 
         css += 'table.pivot { font-family: arial,sans-serif,ubuntu,consolas; border-collapse: collapse; border-spacing: 0px; border: 0 none; } \n';
         css += '.td-nobreak { white-space: nowrap; } \n';
@@ -3228,6 +3230,10 @@ Ext.onReady( function() {
 
         // alert
         css += '.ns-plugin-alert { width: 90%; padding: 5%; color: #777 } \n';
+
+        css += '.x-window-body { font-size: 13px; } \n';
+        css += '.ns-window-title-messagebox { padding-left: 16px; background-position-y: 1px; } \n';
+        css += '.ns-window-title-messagebox.error { background-image: url("' + errorUrl + '"); } \n';
 
         Ext.util.CSS.createStyleSheet(css);
     };
@@ -3399,57 +3405,72 @@ Ext.onReady( function() {
 			web.pivot.getData = function(layout, isUpdateGui) {
 				var xLayout,
 					paramString,
-                    success,
-                    failure,
-                    config = {};
+                    sortedParamString,
+                    onFailure;
 
 				if (!layout) {
 					return;
 				}
 
+                onFailure = function(r) {
+                    if (!appConfig.skipMask) {
+                        web.mask.hide(ns.app.centerRegion);
+                    }
+                };
+
 				xLayout = service.layout.getExtendedLayout(layout);
-				paramString = web.analytics.getParamString(xLayout, true);
+				paramString = web.analytics.getParamString(xLayout) + '&skipData=true';
+				sortedParamString = web.analytics.getParamString(xLayout, true) + '&skipMeta=true';
 
 				// mask
                 if (!appConfig.skipMask) {
                     web.mask.show(ns.app.centerRegion);
                 }
 
-                success = function(r) {
-                    var response = api.response.Response((r.responseText ? Ext.decode(r.responseText) : r));
+                ns.ajax({
+					url: init.contextPath + '/api/analytics.json' + paramString,
+					timeout: 60000,
+					headers: {
+						'Content-Type': 'application/json',
+						'Accepts': 'application/json'
+					},
+					disableCaching: false,
+					failure: function(r) {
+                        onFailure(r);
+					},
+					success: function(r) {
+                        var metaData = Ext.decode(r.responseText).metaData;
 
-                    if (!response) {
-                        web.mask.hide(ns.app.centerRegion);
-                        return;
+                        ns.ajax({
+                            url: init.contextPath + '/api/analytics.json' + sortedParamString,
+                            timeout: 60000,
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accepts': 'application/json'
+                            },
+                            disableCaching: false,
+                            failure: function(r) {
+                                onFailure(r);
+                            },
+                            success: function(r) {
+                                ns.app.dateCreate = new Date();
+
+                                var response = api.response.Response(Ext.decode(r.responseText));
+
+                                if (!response) {
+                                    onFailure();
+                                    return;
+                                }
+
+                                response.metaData = metaData;
+
+                                ns.app.paramString = sortedParamString;
+
+                                web.pivot.createTable(layout, response, null, isUpdateGui);
+                            }
+                        }, ns);
                     }
-
-                    // sync xLayout with response
-                    //xLayout = service.layout.getSyncronizedXLayout(xLayout, response);
-
-                    //if (!xLayout) {
-                        //web.mask.hide(ns.app.centerRegion);
-                        //return;
-                    //}
-
-                    ns.app.paramString = paramString;
-
-                    web.pivot.createTable(layout, response, null, isUpdateGui);
-                };
-
-                failure = function(r) {
-                    if (!appConfig.skipMask) {
-                        web.mask.hide(ns.app.centerRegion);
-                    }
-                };
-
-                config.url = init.contextPath + '/api/analytics.' + type + paramString;
-                config.disableCaching = false;
-                config.timeout = 60000;
-                config.headers = headers;
-                config.success = success;
-                config.failure = failure;
-
-                ns.ajax(config, ns);
+                }, ns);
 			};
 
 			web.pivot.createTable = function(layout, response, xResponse, isUpdateGui) {
