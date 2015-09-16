@@ -60,7 +60,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
-import java.util.HashSet;
 
 /**
  * @author Abyot Asalefew
