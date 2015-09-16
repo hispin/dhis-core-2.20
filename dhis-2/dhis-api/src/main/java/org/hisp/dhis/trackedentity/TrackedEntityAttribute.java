@@ -41,7 +41,6 @@ import org.hisp.dhis.common.view.DetailedView;
 import org.hisp.dhis.common.view.ExportView;
 import org.hisp.dhis.option.Option;
 import org.hisp.dhis.option.OptionSet;
-import org.hisp.dhis.schema.annotation.PropertyRange;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -68,8 +67,6 @@ public class TrackedEntityAttribute
     public static final String TYPE_OPTION_SET = "optionSet";
     public static final String TYPE_TRACKER_ASSOCIATE = "trackerAssociate";
     public static final String TYPE_USERS = "users";
-
-    private String description;
 
     private String valueType;
     
@@ -207,22 +204,6 @@ public class TrackedEntityAttribute
     public void setInherit( Boolean inherit )
     {
         this.inherit = inherit;
-    }
-
-    @Override
-    @JsonProperty
-    @JsonView( { DetailedView.class, ExportView.class } )
-    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
-    @PropertyRange( min = 2 )
-    public String getDescription()
-    {
-        return description;
-    }
-
-    @Override
-    public void setDescription( String description )
-    {
-        this.description = description;
     }
 
     @JsonProperty

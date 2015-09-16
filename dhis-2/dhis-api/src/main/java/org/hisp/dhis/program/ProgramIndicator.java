@@ -92,8 +92,6 @@ public class ProgramIndicator
     
     private String filter;
     
-    private AggregationType aggregationType;
-
     /**
      * Number of decimals to use for indicator value, null implies default.
      */
@@ -197,19 +195,6 @@ public class ProgramIndicator
     public void setFilter( String filter )
     {
         this.filter = filter;
-    }
-
-    @JsonProperty
-    @JsonView( { DetailedView.class, ExportView.class } )
-    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
-    public AggregationType getAggregationType()
-    {
-        return aggregationType;
-    }
-
-    public void setAggregationType( AggregationType aggregationType )
-    {
-        this.aggregationType = aggregationType;
     }
 
     @JsonProperty
