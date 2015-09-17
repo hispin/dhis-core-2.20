@@ -920,7 +920,8 @@ public class TableAlteror
         List<String> tables = Lists.newArrayList( "user", "usergroup", "organisationunit", "orgunitgroup", "orgunitgroupset", 
             "section", "dataset", "sqlview", "dataelement", "dataelementgroup", "dataelementgroupset", "categorycombo", 
             "dataelementcategory", "indicator", "indicatorgroup", "indicatorgroupset", "indicatortype", 
-            "validationrule", "validationrulegroup", "constant", "attribute", "attributegroup" );
+            "validationrule", "validationrulegroup", "constant", "attribute", "attributegroup",
+            "program", "programstage", "programindicator", "trackedentity", "trackedentityattribute" );
         
         for ( String table : tables )
         {
