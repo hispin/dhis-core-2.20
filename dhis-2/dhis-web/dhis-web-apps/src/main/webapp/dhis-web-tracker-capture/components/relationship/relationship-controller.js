@@ -465,9 +465,6 @@ trackerCapture.controller('RelationshipController',
         
         if($scope.showRegistrationDiv){
             $scope.showTrackedEntityDiv = false;
-            /*$timeout(function() { 
-                $rootScope.$broadcast('registrationWidget', {registrationMode: 'RELATIONSHIP'});
-            }, 100);*/
         }
         else{
             $scope.showTrackedEntityDiv = true;            
@@ -633,7 +630,7 @@ trackerCapture.controller('RelationshipController',
         var teiId = '';
 
         TEIService.register($scope.tei, $scope.optionSets, $scope.attributesById).then(function(registrationResponse){            
-            var reg = registrationResponse.response && registrationResponse.response.importSummaries && registrationResponse.response.importSummaries[0] ? registrationResponse.response.importSummaries[0] : {};
+            var reg = registrationResponse.response ? registrationResponse.response : {};
             if(reg.reference && reg.status === 'SUCCESS'){                
                 teiId = reg.reference;                
                 //registration is successful and check for enrollment
@@ -642,12 +639,13 @@ trackerCapture.controller('RelationshipController',
                     var enrollment = {trackedEntityInstance: teiId,
                                 program: $scope.selectedProgramForRelative.id,
                                 status: 'ACTIVE',
+                                orgUnit: $scope.selectedOrgUnit.id,
                                 dateOfEnrollment: DateUtils.formatFromUserToApi($scope.enrollment.enrollmentDate),
                                 dateOfIncident: $scope.enrollment.incidentDate === '' ? DateUtils.formatFromUserToApi($scope.enrollment.enrollmentDate) : DateUtils.formatFromUserToApi($scope.enrollment.incidentDate)
                             };
-                    EnrollmentService.enroll(enrollment).then(function(enrollmentResponse){
+                    EnrollmentService.enroll(enrollment).then(function(enrollmentResponse){                        
                         var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
-                        if(en.reference && en.status === 'SUCCESS'){
+                        if(!en.reference || en.status !== 'SUCCESS'){
                             //enrollment has failed
                             var dialogOptions = {
                                     headerText: 'enrollment_error',
