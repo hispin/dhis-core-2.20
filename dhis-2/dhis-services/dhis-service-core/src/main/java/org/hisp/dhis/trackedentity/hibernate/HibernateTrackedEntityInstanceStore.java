@@ -465,8 +465,6 @@ public class HibernateTrackedEntityInstanceStore
             sql = removeLastAnd( sql ) + ") ";
         }
 
-        System.err.println( "sql: " + sql );
-
         return sql;
     }
 
