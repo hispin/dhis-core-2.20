@@ -12,15 +12,24 @@
             </h4>
         </div>
         <div ng-switch-default>
-            <h4>
+            <span>
                 {{'registered_events'| translate}}<span class="small-horizonal-spacing" ng-if="pager.total">({{'total' | translate}}:  {{pager.total}})</span>
-                <button class="button button-std pull-right hideInPrint"
-                        ng-show="dhis2Events.length"
-                        ng-disabled="eventRegistration || editingEventInFull || editingEventInGrid"                                        
-                        ng-click="showHideColumns()">
-                    {{'show_hide_columns'| translate}}
-                </button>
-            </h4>
+                <span class="pull-right hideInPrint">
+                    <button class="button button-std"
+                            ng-if="editingEventInGrid"                            
+                            ng-click="showEventList()">
+                        {{'close_editing'| translate}}
+                    </button>
+                    <span class="small-horizonal-spacing">
+                        <button class="button button-std"
+                                ng-show="dhis2Events.length"
+                                ng-disabled="eventRegistration || editingEventInFull || editingEventInGrid"                                        
+                                ng-click="showHideColumns()">
+                            {{'show_hide_columns'| translate}}
+                        </button>
+                    </span>
+                </span>                
+            </span>
 
             <!-- context menu for event grid -->
             <div id="contextMenu" class="contextMenu" style="width: 180px;">
@@ -35,7 +44,7 @@
             <!-- grid begins -->
             <form name="outerForm" novalidate>                              
 
-                <table class="listTable dhis2-table-striped-border dhis2-table-hover">
+                <table class="listTable dhis2-table-striped-border dhis2-table-hover small-vertical-spacing">
                     <thead>                        
                         <tr>
                             <th ng-repeat="eventGridColumn in eventGridColumns | filter: {show: true}">                                
@@ -133,7 +142,7 @@
                                                                ng-required={{eventGridColumn.compulsory}}
                                                                name="foo" 
                                                                d2-option-validator
-                                                               on-select={{updateEventDataValue(dhis2Event,eventGridColumn.id)}} 
+                                                               on-select="updateEventDataValue(dhis2Event,eventGridColumn.id)"
                                                                on-remove="validateOptionOnRemove(eventGridColumn.compulsory)"
                                                                input-field-id={{eventGridColumn.id}}
                                                                style="width:100%;"
