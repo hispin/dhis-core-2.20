@@ -676,18 +676,6 @@ public class DefaultProgramInstanceService
         programInstance.setStatus( ProgramInstance.STATUS_ACTIVE );
         addProgramInstance( programInstance );
 
-        // ---------------------------------------------------------------------
-        // Generate event if program is single event and has program stage.
-        // At some point, programs of type single event should be removed.
-        // ---------------------------------------------------------------------
-
-        if ( program.isRegistration() && program.getProgramStages().size() == 1 )
-        {
-            ProgramStage programStage = program.getProgramStages().iterator().next();
-            programStageInstanceService.createProgramStageInstance( programInstance, programStage, enrollmentDate,
-                dateOfIncident, organisationUnit );
-        }
-
         // -----------------------------------------------------------------
         // Send messages after enrolling in program
         // -----------------------------------------------------------------
