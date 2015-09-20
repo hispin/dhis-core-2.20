@@ -299,9 +299,9 @@ public class DefaultPdfDataEntryFormService
                 }
                 else if ( dataElementTextType.equals( DataElement.VALUE_TYPE_INT ) )
                 {                    
-                    rectangle = new Rectangle( TEXTBOXWIDTH_NUMBERTYPE, PdfDataEntryFormUtil.CONTENT_HEIGHT_DEFAULT );
+                    Rectangle rectNum = new Rectangle( TEXTBOXWIDTH_NUMBERTYPE, PdfDataEntryFormUtil.CONTENT_HEIGHT_DEFAULT );
 
-                    addCell_WithTextField( table, rectangle, writer, PdfDataEntryFormUtil.getPdfPCell( hasBorder ), strFieldLabel, PdfFieldCell.TYPE_TEXT_NUMBER );
+                    addCell_WithTextField( table, rectNum, writer, PdfDataEntryFormUtil.getPdfPCell( hasBorder ), strFieldLabel, PdfFieldCell.TYPE_TEXT_NUMBER );
                 }
                 else
                 {
