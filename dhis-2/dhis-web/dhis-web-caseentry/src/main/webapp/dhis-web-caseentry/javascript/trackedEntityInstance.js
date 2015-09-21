@@ -49,7 +49,7 @@ function TrackedEntityInstance() {
 	
 	this.advancedSearch = function(params, page) {
 		$.ajax({
-			url : '../api/trackedEntityInstances.json',
+			url : '../api/trackedEntityInstances/query.json',
 			type : "GET",
 			data : params,
 			success : function(json) {
@@ -629,7 +629,7 @@ function searchByIdsOnclick()
 	}); 
 	
 	$.ajax({
-		url : '../api/trackedEntityInstances.json',
+		url : '../api/trackedEntityInstances/query.json',
 		type : "GET",
 		data : params,
 		success : function(json) {
