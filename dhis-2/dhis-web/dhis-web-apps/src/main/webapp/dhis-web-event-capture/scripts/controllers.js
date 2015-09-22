@@ -419,7 +419,7 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
     
     $scope.cancel = function(){
         
-        if($scope.formHasUnsavedData()){
+        if($scope.formIsChanged()){
             var modalOptions = {
                 closeButtonText: 'cancel',
                 actionButtonText: 'proceed',
@@ -841,7 +841,7 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
         var isChanged = false;
         for(var i=0; i<$scope.selectedProgramStage.programStageDataElements.length && !isChanged; i++){
             var deId = $scope.selectedProgramStage.programStageDataElements[i].dataElement.id;
-            if($scope.currentEvent[deId] && $scope.currentEventOriginialValue[deId] !== $scope.currentEvent[deId]){
+            if($scope.currentEventOriginialValue[deId] !== $scope.currentEvent[deId]){
                 isChanged = true;
             }
         }        
@@ -881,13 +881,6 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
         }
         
         return formIsInvalid;
-    };
-
-    $scope.formHasUnsavedData = function(){        
-        if(angular.isObject($scope.currentEvent) && angular.isObject($scope.currentEventOriginialValue)){
-            return !angular.equals($scope.currentEvent, $scope.currentEventOriginialValue);
-        }
-        return false;
     };
     
     //watch for event editing
