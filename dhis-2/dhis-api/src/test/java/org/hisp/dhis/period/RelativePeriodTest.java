@@ -268,12 +268,21 @@ public class RelativePeriodTest
     }
 
     @Test
+    public void testGetThisWeek()
+    {
+        List<Period> relatives = new RelativePeriods().setThisWeek( true ).getRelativePeriods( getDate( 2012, 1, 20 ), null, false );
+
+        assertEquals( 1, relatives.size() );
+        assertTrue( relatives.contains( new Period( new WeeklyPeriodType(), getDate( 2012, 1, 16 ), getDate( 2012, 1, 22 ) ) ) );
+    }
+
+    @Test
     public void testGetLastWeek()
     {
         List<Period> relatives = new RelativePeriods().setLastWeek( true ).getRelativePeriods( getDate( 2012, 1, 20 ), null, false );
 
         assertEquals( 1, relatives.size() );
-        assertTrue( relatives.contains( new Period( new WeeklyPeriodType(), getDate( 2012, 1, 16 ), getDate( 2012, 1, 22 ) ) ) );
+        assertTrue( relatives.contains( new Period( new WeeklyPeriodType(), getDate( 2012, 1, 9 ), getDate( 2012, 1, 15 ) ) ) );
     }
 
     @Test
