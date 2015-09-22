@@ -259,7 +259,6 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                             newInputField = '<input type="text" ' +
                                     this.getAttributesAsString(attributes) +
                                     ' ng-model="currentEvent.' + fieldId + '"' +
-                                    ' style="width:100%;" ' +
                                     ' input-field-id="' + fieldId + '"' +
                                     ' d2-date ' +
                                     ' d2-date-validator ' +
@@ -281,7 +280,6 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 
                             var commonInputFieldProperty = this.getAttributesAsString(attributes) +
                                     ' ng-model="currentEvent.' + fieldId + '" ' +
-                                    ' style="width:100%;" ' +
                                     ' input-field-id="' + fieldId + '"' +
                                     ' ng-class="{{getInputNotifcationClass(prStDes.' + fieldId + '.dataElement.id, true)}}" ' +
                                     ' ng-disabled="isHidden(prStDes.' + fieldId + '.dataElement.id) || selectedEnrollment.status===\'CANCELLED\' || selectedEnrollment.status===\'COMPLETED\' || currentEvent[uid]==\'uid\' || currentEvent.editingNotAllowed"' +
@@ -292,7 +290,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                 if (prStDe.dataElement.optionSetValue) {
                                     var optionSetId = prStDe.dataElement.optionSet.id;                 
                                     newInputField = '<ui-select theme="select2" ' + commonInputFieldProperty + ' on-select="saveDatavalue(prStDes.' + fieldId + ', outerForm.' + fieldId + ')" >' +
-                                            '<ui-select-match allow-clear="true" style="width:100%;" placeholder="' + $translate.instant('select_or_search') + '">{{$select.selected.name || $select.selected}}</ui-select-match>' +
+                                            '<ui-select-match allow-clear="true" placeholder="' + $translate.instant('select_or_search') + '">{{$select.selected.name || $select.selected}}</ui-select-match>' +
                                             '<ui-select-choices ' +
                                             ' repeat="option.name as option in optionSets.' + optionSetId + '.options | filter: $select.search | limitTo:30">' +
                                             '<span ng-bind-html="option.name | highlight: $select.search"></span>' +
@@ -391,7 +389,6 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 
                             var commonInputFieldProperty = ' name="' + fieldName + '"' +
                                     ' element-id="' + i + '"' +
-                                    ' style="width:100%;" ' +
                                     this.getAttributesAsString(attributes) +
                                     ' d2-focus-next-on-enter' +
                                     ' ng-model="selectedTei.' + attId + '" ' +
@@ -403,7 +400,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                             if (att.optionSetValue) {
                                 var optionSetId = att.optionSet.id;
                                 newInputField = '<ui-select theme="select2" ' + commonInputFieldProperty + ' >' +
-                                        '<ui-select-match style="width:100%;" allow-clear="true" placeholder="' + $translate.instant('select_or_search') + '">{{$select.selected.name || $select.selected}}</ui-select-match>' +
+                                        '<ui-select-match allow-clear="true" placeholder="' + $translate.instant('select_or_search') + '">{{$select.selected.name || $select.selected}}</ui-select-match>' +
                                         '<ui-select-choices ' +
                                         'repeat="option.name as option in optionSets.' + optionSetId + '.options | filter: $select.search | limitTo:30">' +
                                         '<span ng-bind-html="option.name | highlight: $select.search"></span>' +
@@ -424,7 +421,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                             commonInputFieldProperty + ' > ' +
                                             ' <option value="">{{\'please_select\'| translate}}</option>' +
                                             ' <option value="false">{{\'no\'| translate}}</option>' +
-                                            ' <option value="true">{{\'yes\'| translate}}</option>' +
+                                            ' <option value="true">{{\'yes\'| transslate}}</option>' +
                                             '</select> ';
                                 }
                                 else if (att.valueType === "date") {
