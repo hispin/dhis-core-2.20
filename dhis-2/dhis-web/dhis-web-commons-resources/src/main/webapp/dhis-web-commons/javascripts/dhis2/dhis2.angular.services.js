@@ -338,7 +338,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                 }
                             }
                         }
-                        newInputField = newInputField + ' <div ng-messages="outerForm.' + fieldId + '.$error" class="required" ng-if="interacted(outerForm.' + fieldId + ')" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>';
+                        newInputField = newInputField + ' <span ng-messages="outerForm.' + fieldId + '.$error" class="required" ng-if="interacted(outerForm.' + fieldId + ')" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></span>';
 
                         htmlCode = htmlCode.replace(inputField, newInputField);
                     }
@@ -486,7 +486,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                         }
                     }
 
-                    newInputField = newInputField + ' <div ng-messages="outerForm.' + fieldName + '.$error" class="required" ng-if="interacted(outerForm.' + fieldName + ')" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>';
+                    newInputField = newInputField + ' <span ng-messages="outerForm.' + fieldName + '.$error" class="required" ng-if="interacted(outerForm.' + fieldName + ')" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></span>';
 
                     htmlCode = htmlCode.replace(inputField, newInputField);
                 }
