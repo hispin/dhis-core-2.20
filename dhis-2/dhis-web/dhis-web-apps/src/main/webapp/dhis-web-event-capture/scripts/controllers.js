@@ -918,6 +918,9 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
     
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function(event, args) {
+        //Blank hidden rule effects, they will be rebuilt by this function.
+        $scope.hiddenFields = [];
+        
         if($rootScope.ruleeffects[args.event]) {
             //Establish which event was affected:
             var affectedEvent = $scope.currentEvent;
@@ -931,7 +934,7 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
             }
             
             angular.forEach($rootScope.ruleeffects[args.event], function(effect) {
-                if( effect.dataElement ) {
+                if( effect.dataElement && effect.ineffect ) {
                     //in the data entry controller we only care about the "hidefield" actions
                     if(effect.action === "HIDEFIELD") {
                         if(effect.dataElement) {

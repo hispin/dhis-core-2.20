@@ -65,6 +65,9 @@ trackerCapture.controller('DataEntryController',
 
     
     var processRuleEffect = function(event){
+        //Blank hidden rule effects, they will be rebuilt by this function.
+        $scope.hiddenFields = [];
+        
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
         //In most cases the updated effects apply to the current event. In case the affected event is not the current event, fetch the correct event to affect:
@@ -77,7 +80,7 @@ trackerCapture.controller('DataEntryController',
         }
 
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
-            if (effect.dataElement) {
+            if (effect.dataElement && effect.ineffect) {
                 //in the data entry controller we only care about the "hidefield" actions
                 if (effect.action === "HIDEFIELD") {
                     if (effect.dataElement) {
@@ -130,8 +133,6 @@ trackerCapture.controller('DataEntryController',
         } else {
             TrackerRulesExecutionService.executeRules($scope.allProgramRules, $scope.currentEvent, evs, $scope.prStDes, $scope.selectedTei, $scope.selectedEnrollment, flag);
         }
-        
-        processRuleEffect($scope.currentEvent);
     };
 
 
