@@ -51,6 +51,7 @@ public class ObjectUtils
         put( TrackedEntityAttribute.TYPE_LETTER, String.class );
         put( TrackedEntityAttribute.TYPE_OPTION_SET, String.class );
         put( TrackedEntityAttribute.TYPE_EMAIL, String.class );
+        put( TrackedEntityAttribute.TYPE_PHONE_NUMBER, String.class );
     } };
     
     /**
