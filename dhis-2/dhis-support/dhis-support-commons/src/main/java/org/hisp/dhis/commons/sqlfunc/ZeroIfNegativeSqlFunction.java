@@ -38,10 +38,17 @@ public class ZeroIfNegativeSqlFunction
     implements SqlFunction
 {
     public static final String KEY = "zing";
-    
+
     @Override
-    public String evaluate( String column )
+    public String evaluate( String... args )
     {
-        return "coalesce(case when " + column + " < 0 then 0 else " + column + " end, 0)";
+        if ( args == null || args.length != 1 )
+        {
+            throw new IllegalArgumentException( "Illegal arguments, expected 1 argument: value" );
+        }
+        
+        String value = args[0];
+        
+        return "coalesce(case when " + value + " < 0 then 0 else " + value + " end, 0)";
     }
 }

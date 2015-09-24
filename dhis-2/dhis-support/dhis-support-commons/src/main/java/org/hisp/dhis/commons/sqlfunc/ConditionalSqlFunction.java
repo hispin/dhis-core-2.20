@@ -29,26 +29,29 @@ package org.hisp.dhis.commons.sqlfunc;
  */
 
 /**
- * Function which evaluates numerical values to one if zero or positive, zero
- * if negative or null.
+ * Function which evaluates conditional statements.
  * 
  * @author Lars Helge Overland
  */
-public class OneIfZeroOrPositiveSqlFunction
+public class ConditionalSqlFunction
     implements SqlFunction
 {
-    public static final String KEY = "oizp";
+    public static final String KEY = "condition";
 
     @Override
     public String evaluate( String... args )
     {
-        if ( args == null || args.length != 1 )
+        if ( args == null || args.length != 3 )
         {
-            throw new IllegalArgumentException( "Illegal arguments, expected 1 argument: value" );
+            throw new IllegalArgumentException( "Illegal arguments, expected 3 arguments: condition, true-value, false-value" );
         }
         
-        String value = args[0];
+        String condition = args[0];
+        String trueValue = args[1];
+        String falseValue = args[2];
         
-        return "coalesce(case when " + value + " >= 0 then 1 else 0 end, 0)";
+        String conditional = condition.replaceAll( "^\"|^'|\"$|'$", "" );
+        
+        return "case when (" + conditional + ") then " + trueValue + " else " + falseValue + " end";
     }
 }
