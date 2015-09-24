@@ -29,26 +29,24 @@ package org.hisp.dhis.commons.sqlfunc;
  */
 
 /**
- * Function which evaluates numerical values to one if zero or positive, zero
- * if negative or null.
- * 
  * @author Lars Helge Overland
  */
-public class OneIfZeroOrPositiveSqlFunction
+public class DaysBetweenSqlFunction
     implements SqlFunction
 {
-    public static final String KEY = "oizp";
-
+    public static final String KEY = "daysBetween";
+    
     @Override
     public String evaluate( String... args )
     {
-        if ( args == null || args.length != 1 )
+        if ( args == null || args.length != 2 )
         {
-            throw new IllegalArgumentException( "Illegal arguments, expected 1 argument: value" );
+            throw new IllegalArgumentException( "Illegal arguments, expected 2 arguments: start-date, end-date" );
         }
         
-        String value = args[0];
+        String startDate = args[0];
+        String endDate = args[1];
         
-        return "coalesce(case when " + value + " >= 0 then 1 else 0 end, 0)";
+        return "(cast(" + endDate + " as date) - cast(" + startDate + " as date))";
     }
 }

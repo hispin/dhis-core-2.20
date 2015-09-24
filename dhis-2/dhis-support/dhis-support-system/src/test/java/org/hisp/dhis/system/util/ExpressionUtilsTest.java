@@ -58,8 +58,10 @@ public class ExpressionUtilsTest
         assertEquals( 0d, ExpressionUtils.evaluateToDouble( "d2:oizp(-4)", null ), DELTA );
         assertEquals( 1d, ExpressionUtils.evaluateToDouble( "d2:oizp(0)", null ), DELTA );
         assertEquals( 2d, ExpressionUtils.evaluateToDouble( "d2:oizp(-4) + d2:oizp(0) + d2:oizp(3.0)", null ), DELTA );
+        assertEquals( 2d, ExpressionUtils.evaluateToDouble( "d2:zpvc(1,3)", null ), DELTA );
+        assertEquals( 3d, ExpressionUtils.evaluateToDouble( "d2:zpvc(1,-1,2,-3,0)", null ), DELTA );
     }
-
+    
     @Test
     public void testEvaluateToDoubleWithVars()
     {

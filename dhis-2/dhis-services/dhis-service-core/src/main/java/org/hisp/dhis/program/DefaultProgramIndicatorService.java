@@ -28,6 +28,7 @@ package org.hisp.dhis.program;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import static org.apache.commons.lang3.StringUtils.trim;
 import static org.hisp.dhis.i18n.I18nUtils.i18n;
 
 import java.util.Date;
@@ -37,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.commons.sqlfunc.OneIfZeroOrPositiveSqlFunction;
 import org.hisp.dhis.commons.sqlfunc.SqlFunction;
 import org.hisp.dhis.commons.sqlfunc.ZeroIfNegativeSqlFunction;
@@ -63,8 +63,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
-
-import static org.apache.commons.lang3.StringUtils.trim;
 
 /**
  * @author Chau Thu Tran
@@ -492,19 +490,30 @@ public class DefaultProgramIndicatorService
 
         while ( matcher.find() )
         {
-            String func = StringUtils.trim( matcher.group( 1 ) );
-            String arg1 = getSubstitutedElementsAnalyticsSql( trim( matcher.group( 2 ) ), false );
-
-            SqlFunction function = SQL_FUNC_MAP.get( func );
-
-            if ( function == null )
+            String func = trim( matcher.group( 1 ) );
+            String arguments = trim( matcher.group( 2 ) );
+            
+            if ( func != null && arguments != null )
             {
-                throw new IllegalStateException( "Function not recognized: " + func );
+                String[] args = arguments.split( ProgramIndicator.ARGS_SPLIT );
+                
+                for ( int i = 0; i < args.length; i++ )
+                {
+                    String arg = getSubstitutedElementsAnalyticsSql( trim( args[i] ), false );
+                    args[i] = arg;
+                }
+                
+                SqlFunction function = SQL_FUNC_MAP.get( func );
+    
+                if ( function == null )
+                {
+                    throw new IllegalStateException( "Function not recognized: " + func );
+                }            
+                
+                String result = function.evaluate( args );
+    
+                matcher.appendReplacement( buffer, result );
             }
-
-            String result = function.evaluate( arg1 );
-
-            matcher.appendReplacement( buffer, result );
         }
 
         return TextUtils.appendTail( matcher, buffer );
