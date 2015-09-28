@@ -44,7 +44,7 @@ public class AggregatableDataElementFilter
 {
     public static final AggregatableDataElementFilter INSTANCE = new AggregatableDataElementFilter();
     
-    private static Set<String> TYPES = Sets.newHashSet( DataElement.VALUE_TYPE_BOOL, DataElement.VALUE_TYPE_INT, DataElement.VALUE_TYPE_STRING );
+    private static Set<String> TYPES = Sets.newHashSet( DataElement.VALUE_TYPE_BOOL, DataElement.VALUE_TYPE_TRUE_ONLY, DataElement.VALUE_TYPE_INT, DataElement.VALUE_TYPE_STRING );
     
     @Override
     public boolean retain( DataElement object )
