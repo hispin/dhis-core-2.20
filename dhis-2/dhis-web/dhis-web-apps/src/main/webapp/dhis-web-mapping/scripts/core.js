@@ -2359,7 +2359,7 @@ Ext.onReady( function() {
 			}
 
             // display property
-            paramString += '&displayProperty=' + gis.init.userAccount.settings.keyAnalysisDisplayProperty.toUpperCase();            
+            paramString += '&displayProperty=' + gis.init.userAccount.settings.keyAnalysisDisplayProperty.toUpperCase();
 
             if (Ext.isArray(view.userOrgUnit) && view.userOrgUnit.length) {
                 paramString += '&userOrgUnit=';
@@ -2408,7 +2408,7 @@ Ext.onReady( function() {
 
 					valueMap[id] = value;
 				}
-                
+
 				for (var i = 0; i < features.length; i++) {
 					var feature = features[i],
 						id = feature.attributes.id;
@@ -2512,7 +2512,7 @@ Ext.onReady( function() {
                     minSize: view.radiusLow,
                     maxSize: view.radiusHigh
                 };
-                
+
                 layer.core.view = view;
                 layer.core.colorInterpolation = colors;
                 layer.core.applyClassification(options);
@@ -2754,26 +2754,48 @@ Ext.onReady( function() {
 						value: 'indicators',
 						param: 'in',
 						dimensionName: 'dx',
-						objectName: 'in'
+						objectName: 'in',
+                        itemType: 'INDICATOR'
 					},
 					dataElement: {
 						id: 'dataElement',
 						value: 'dataElement',
 						param: 'de',
 						dimensionName: 'dx',
-						objectName: 'de'
+						objectName: 'de',
+                        itemType: 'AGGREGATE_DATA_ELEMENT'
 					},
 					operand: {
 						id: 'operand',
 						value: 'operand',
 						param: 'dc',
 						dimensionName: 'dx',
-						objectName: 'dc'
+						objectName: 'dc',
+                        itemType: 'DATA_ELEMENT_OPERAND'
 					},
 					dataSet: {
 						value: 'dataSets',
 						dimensionName: 'dx',
-						objectName: 'ds'
+						objectName: 'ds',
+                        itemType: 'DATA_SET'
+					},
+                    programDataElement: {
+						value: 'programDataElement',
+						dimensionName: 'dx',
+						objectName: 'pde',
+                        itemType: 'PROGRAM_DATA_ELEMENT'
+					},
+                    programAttribute: {
+						value: 'programAttribute',
+						dimensionName: 'dx',
+						objectName: 'pa',
+                        itemType: 'PROGRAM_ATTRIBUTE'
+					},
+					programIndicator: {
+						value: 'programIndicator',
+						dimensionName: 'dx',
+						objectName: 'pi',
+                        itemType: 'PROGRAM_INDICATOR'
 					},
 					period: {
 						id: 'period',
@@ -2819,6 +2841,34 @@ Ext.onReady( function() {
 					id: 'root'
 				}
 			};
+
+            // dimension objectNameMap
+            (function() {
+                dimConf = conf.finals.dimension;
+
+                dimConf.objectNameMap = {};
+                dimConf.objectNameMap[dimConf.indicator.objectName] = dimConf.indicator;
+                dimConf.objectNameMap[dimConf.dataElement.objectName] = dimConf.dataElement;
+                dimConf.objectNameMap[dimConf.operand.objectName] = dimConf.operand;
+                dimConf.objectNameMap[dimConf.dataSet.objectName] = dimConf.dataSet;
+                dimConf.objectNameMap[dimConf.programDataElement.objectName] = dimConf.programDataElement;
+                dimConf.objectNameMap[dimConf.programAttribute.objectName] = dimConf.programAttribute;
+                dimConf.objectNameMap[dimConf.programIndicator.objectName] = dimConf.programIndicator;
+            })();
+
+            // dimension itemTypeMap
+            (function() {
+                dimConf = conf.finals.dimension;
+
+                dimConf.itemTypeMap = {};
+                dimConf.itemTypeMap[dimConf.indicator.itemType] = dimConf.indicator;
+                dimConf.itemTypeMap[dimConf.dataElement.itemType] = dimConf.dataElement;
+                dimConf.itemTypeMap[dimConf.operand.itemType] = dimConf.operand;
+                dimConf.itemTypeMap[dimConf.dataSet.itemType] = dimConf.dataSet;
+                dimConf.itemTypeMap[dimConf.programDataElement.itemType] = dimConf.programDataElement;
+                dimConf.itemTypeMap[dimConf.programAttribute.itemType] = dimConf.programAttribute;
+                dimConf.itemTypeMap[dimConf.programIndicator.itemType] = dimConf.programIndicator;
+            })();
 
 			conf.layout = {
 				widget: {
@@ -3364,7 +3414,23 @@ Ext.onReady( function() {
 
                 window.show();
             };
-		}());
+
+            util.dhis = {};
+
+            util.dhis.getDataDimensionItemTypes = function(dataDimensionItems) {
+                var types = [];
+
+                if (Ext.isArray(dataDimensionItems) && dataDimensionItems.length) {
+                    for (var i = 0, obj; i < dataDimensionItems.length; i++) {
+                        if (Ext.isObject(dataDimensionItems[i])) {
+                            types.push(dataDimensionItems[i].dataDimensionItemType);
+                        }
+                    }
+                }
+
+                return types;
+            };
+        }());
 
 		gis.init = init;
 		gis.conf = conf;
@@ -3460,7 +3526,7 @@ Ext.onReady( function() {
 
             api.layout.Layout = function(config, applyConfig, forceApplyConfig) {
                 config = Ext.apply(config, applyConfig);
-                
+
                 var layout = {},
                     getValidatedDimensionArray,
                     validateSpecialCases;
@@ -3492,6 +3558,8 @@ Ext.onReady( function() {
                 // areaRadius: integer
 
                 // hidden: boolean (false)
+
+                // dataDimensionItems: array
 
                 getValidatedDimensionArray = function(dimensionArray) {
                     var dimensions = [];
@@ -3578,7 +3646,7 @@ Ext.onReady( function() {
                         console.log('Organisation unit dimension is invalid', config.rows);
                         return;
                     }
-                    
+
                     if (!config.filters) {
                         console.log('Please select a valid period', config.filters);
                         return;
@@ -3660,6 +3728,8 @@ Ext.onReady( function() {
                     layout.legendSet = config.legendSet;
 
                     layout.organisationUnitGroupSet = config.organisationUnitGroupSet;
+
+                    layout.dataDimensionItems = config.dataDimensionItems;
 
                     if (Ext.Array.from(config.userOrgUnit).length) {
                         layout.userOrgUnit = Ext.Array.from(config.userOrgUnit);
