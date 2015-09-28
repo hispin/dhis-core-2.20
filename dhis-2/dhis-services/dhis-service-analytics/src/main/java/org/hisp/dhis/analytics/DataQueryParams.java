@@ -55,7 +55,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.common.BaseDimensionalObject;
 import org.hisp.dhis.common.CombinationGenerator;
-import org.hisp.dhis.common.DataDimensionItem.DataDimensionItemType;
+import org.hisp.dhis.common.DataDimensionItemType;
 import org.hisp.dhis.common.DimensionType;
 import org.hisp.dhis.common.DimensionalObject;
 import org.hisp.dhis.common.DimensionalObjectUtils;
