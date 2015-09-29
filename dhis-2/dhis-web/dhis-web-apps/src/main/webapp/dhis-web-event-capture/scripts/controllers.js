@@ -839,10 +839,13 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
     
     $scope.formIsChanged = function(){        
         var isChanged = false;
+        var emptyForm = $scope.formIsEmpty();
         for(var i=0; i<$scope.selectedProgramStage.programStageDataElements.length && !isChanged; i++){
             var deId = $scope.selectedProgramStage.programStageDataElements[i].dataElement.id;
             if($scope.currentEventOriginialValue[deId] !== $scope.currentEvent[deId]){
-                isChanged = true;
+                if($scope.currentEvent[deId] || $scope.currentEventOriginialValue[deId] !== "" && !emptyForm){                    
+                    isChanged = true; 
+                }                               
             }
         }        
         if(!isChanged){
@@ -881,6 +884,15 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
         }
         
         return formIsInvalid;
+    };
+    
+    $scope.formIsEmpty = function(){
+        for(var dataElement in $scope.prStDes){
+            if($scope.currentEvent[dataElement]){
+                return false;
+            }
+        }
+        return true;
     };
     
     //watch for event editing
