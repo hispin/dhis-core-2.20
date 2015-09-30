@@ -111,7 +111,7 @@ public class OrganisationUnitStoreTest
 
         assertEquals( 3, ous.size() );
         assertTrue( ous.containsAll( Sets.newHashSet( ouC, ouF, ouG ) ) );
-
+        
         params = new OrganisationUnitQueryParams();
         params.setGroups( Sets.newHashSet( ogA ) );
 
@@ -119,6 +119,14 @@ public class OrganisationUnitStoreTest
 
         assertEquals( 2, ous.size() );
         assertTrue( ous.containsAll( Sets.newHashSet( ouD, ouF ) ) );
+        
+        params = new OrganisationUnitQueryParams();
+        params.setGroups( Sets.newHashSet( ogA, ogB ) );
+
+        ous = orgUnitStore.getOrganisationUnits( params );
+
+        assertEquals( 4, ous.size() );
+        assertTrue( ous.containsAll( Sets.newHashSet( ouD, ouF, ouE, ouG ) ) );
 
         params = new OrganisationUnitQueryParams();
         params.setParents( Sets.newHashSet( ouC ) );        

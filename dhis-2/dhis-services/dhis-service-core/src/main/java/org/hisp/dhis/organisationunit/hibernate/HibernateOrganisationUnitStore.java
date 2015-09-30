@@ -194,14 +194,6 @@ public class HibernateOrganisationUnitStore
             hql += hlp.whereAnd() + " (lower(o.name) like :queryLower or o.code = :query or o.uid = :query)" ;
         }
 
-        if ( params.hasGroups() )
-        {
-            for ( OrganisationUnitGroup group : params.getGroups() )
-            {
-                hql += hlp.whereAnd() + " :" + group.getUid() + " in elements(o.groups) ";
-            }
-        }
-        
         if ( params.hasParents() )
         {
             hql += hlp.whereAnd() + " (";
@@ -211,9 +203,21 @@ public class HibernateOrganisationUnitStore
                 hql += "o.path like :" + parent.getUid() + " or ";
             }
             
-            hql = TextUtils.removeLastOr( hql ) + ")";
+            hql = TextUtils.removeLastOr( hql ) + ") ";
         }
         
+        if ( params.hasGroups() )
+        {
+            hql += hlp.whereAnd() + " (";
+            
+            for ( OrganisationUnitGroup group : params.getGroups() )
+            {
+                hql += " :" + group.getUid() + " in elements(o.groups) or ";
+            }
+            
+            hql = TextUtils.removeLastOr( hql ) + ") ";
+        }
+                
         if ( params.getMaxLevels() != null )
         {
             hql += hlp.whereAnd() + " length(o.path) <= :pathLength ";
