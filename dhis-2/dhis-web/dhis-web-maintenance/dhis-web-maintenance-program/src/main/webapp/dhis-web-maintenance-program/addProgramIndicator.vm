@@ -67,16 +67,6 @@ jQuery( document ).ready( function()
 	            </select>
 	        </td>
 	    </tr>
-	    <tr>
-	        <td><label for="missingValueReplacement">$i18n.getString( "missing_value_replacement" )</label></td>
-	        <td>
-	            <select id="missingValueReplacement" name="missingValueReplacement">
-	                <option value="0">0</option>
-	                <option value="1">1</option>
-	                <option value="-1">-1</option>
-	            </select>
-	        </td>
-	    </tr>
 		<tr>
 			<td><label for="decimals">$i18n.getString( "decimals_in_data_output" )</label></td>
 			<td>
