@@ -836,6 +836,8 @@ public class TableAlteror
         executeSql( "update categoryoptiongroupset set datadimensiontype = 'ATTRIBUTE' where datadimensiontype is null" );
         executeSql( "update categoryoptiongroup set datadimensiontype = 'ATTRIBUTE' where datadimensiontype is null" );
 
+        executeSql( "alter table programindicator drop column missingvaluereplacement" );
+        
         oauth2();
 
         upgradeDataValuesWithAttributeOptionCombo();
