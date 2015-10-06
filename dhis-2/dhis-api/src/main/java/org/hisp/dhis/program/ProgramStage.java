@@ -93,6 +93,7 @@ public class ProgramStage
 
     private String reportDateDescription;
 
+    @Scanned
     private Set<TrackedEntityInstanceReminder> reminders = new HashSet<>();
 
     private Boolean autoGenerateEvent = true;
