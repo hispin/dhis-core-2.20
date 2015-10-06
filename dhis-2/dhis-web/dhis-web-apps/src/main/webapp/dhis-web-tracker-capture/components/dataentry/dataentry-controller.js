@@ -453,16 +453,19 @@ trackerCapture.controller('DataEntryController',
         });
 
         if (oldValue !== value) {
-            if (value) {
-                if (prStDe.dataElement.type === 'date') {
-                    value = DateUtils.formatFromUserToApi(value);
-                }
-                if (prStDe.dataElement.optionSetValue) {
-                    if (prStDe.dataElement.optionSet && $scope.optionSets[prStDe.dataElement.optionSet.id] && $scope.optionSets[prStDe.dataElement.optionSet.id].options) {
-                        value = OptionSetService.getCode($scope.optionSets[prStDe.dataElement.optionSet.id].options, value);
-                    }
+            if (value && prStDe.dataElement.type === 'date') {
+                value = DateUtils.formatFromUserToApi(value);
+            }
+            if (value && prStDe.dataElement.optionSetValue) {
+                if (prStDe.dataElement.optionSet && $scope.optionSets[prStDe.dataElement.optionSet.id] && $scope.optionSets[prStDe.dataElement.optionSet.id].options) {
+                    value = OptionSetService.getCode($scope.optionSets[prStDe.dataElement.optionSet.id].options, value);
                 }
             }
+            if (prStDe.dataElement.type === 'trueOnly') {
+                if(!value){
+                    value = "";
+                }
+            }   
 
             $scope.updateSuccess = false;
 
