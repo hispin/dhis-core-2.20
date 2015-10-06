@@ -525,18 +525,23 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
         var dataValues = [];        
         for(var dataElement in $scope.prStDes){            
             var val = $scope.currentEvent[dataElement];
-            if(val){
-                valueExists = true;            
-                if($scope.prStDes[dataElement].dataElement.optionSetValue){
-                    if($scope.prStDes[dataElement].dataElement.optionSet){                        
-                        val = OptionSetService.getCode($scope.optionSets[$scope.prStDes[dataElement].dataElement.optionSet.id].options,val);
-                    }
+            
+            if($scope.prStDes[dataElement].dataElement.type === 'trueOnly'){
+                valueExists = true;
+                if(!val){
+                    val = "";
                 }
-
-                if($scope.prStDes[dataElement].dataElement.type === 'date'){
-                    val = DateUtils.formatFromUserToApi(val);
-                }
+            }            
+            if(val && $scope.prStDes[dataElement].dataElement.optionSetValue){
+                valueExists = true;
+                if($scope.prStDes[dataElement].dataElement.optionSet){                    
+                    val = OptionSetService.getCode($scope.optionSets[$scope.prStDes[dataElement].dataElement.optionSet.id].options,val); 
+                }    
             }
+            if(val && $scope.prStDes[dataElement].dataElement.type === 'date'){
+                valueExists = true;
+                val = DateUtils.formatFromUserToApi(val);    
+            }            
             dataValues.push({dataElement: dataElement, value: val});
         }
         
@@ -652,6 +657,11 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
         for(var dataElement in $scope.prStDes){
             var val = $scope.currentEvent[dataElement];
             
+            if($scope.prStDes[dataElement].dataElement.type === 'trueOnly'){
+                if(!val){
+                    val = "";
+                }
+            }            
             if(val && $scope.prStDes[dataElement].dataElement.optionSetValue){
                 if($scope.prStDes[dataElement].dataElement.optionSet){                    
                     val = OptionSetService.getCode($scope.optionSets[$scope.prStDes[dataElement].dataElement.optionSet.id].options,val); 
@@ -787,6 +797,12 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
             }            
             if($scope.prStDes[dataElement].dataElement.type === 'date'){
                 newValue = DateUtils.formatFromUserToApi(newValue);
+            }
+            
+            if($scope.prStDes[dataElement].dataElement.type === 'trueOnly'){
+                if(!newValue){
+                    newValue = "";
+                }
             }
             
             var updatedSingleValueEvent = {event: $scope.currentEvent.event, dataValues: [{value: newValue, dataElement: dataElement}]};
