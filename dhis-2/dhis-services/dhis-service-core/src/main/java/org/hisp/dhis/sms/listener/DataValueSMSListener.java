@@ -80,67 +80,71 @@ public class DataValueSMSListener
 
     private CompleteDataSetRegistrationService registrationService;
 
-    private DataValueService dataValueService;
-
-    private SmsSender smsSender;
-
-    private DataElementCategoryService dataElementCategoryService;
-
-    private SMSCommandService smsCommandService;
-
-    private UserService userService;
-
-    private DataSetService dataSetService;
-
-    private IncomingSmsService incomingSmsService;
-
-    private DataElementService dataElementService;
-
     public void setRegistrationService( CompleteDataSetRegistrationService registrationService )
     {
         this.registrationService = registrationService;
     }
+
+    private DataValueService dataValueService;
 
     public void setDataValueService( DataValueService dataValueService )
     {
         this.dataValueService = dataValueService;
     }
 
-    public void setSmsCommandService( SMSCommandService smsCommandService )
-    {
-        this.smsCommandService = smsCommandService;
-    }
-
-    public void setUserService( UserService userService )
-    {
-        this.userService = userService;
-    }
-
-    public void setDataSetService( DataSetService dataSetService )
-    {
-        this.dataSetService = dataSetService;
-    }
-
-    public void setDataElementCategoryService( DataElementCategoryService dataElementCategoryService )
-    {
-        this.dataElementCategoryService = dataElementCategoryService;
-    }
+    private SmsSender smsSender;
 
     public void setSmsSender( SmsSender smsSender )
     {
         this.smsSender = smsSender;
     }
 
+    private DataElementCategoryService dataElementCategoryService;
+
+    public void setDataElementCategoryService( DataElementCategoryService dataElementCategoryService )
+    {
+        this.dataElementCategoryService = dataElementCategoryService;
+    }
+
+    private SMSCommandService smsCommandService;
+
+    public void setSmsCommandService( SMSCommandService smsCommandService )
+    {
+        this.smsCommandService = smsCommandService;
+    }
+
+    private UserService userService;
+
+    public void setUserService( UserService userService )
+    {
+        this.userService = userService;
+    }
+
+    private DataSetService dataSetService;
+
+    public void setDataSetService( DataSetService dataSetService )
+    {
+        this.dataSetService = dataSetService;
+    }
+
+    private IncomingSmsService incomingSmsService;
+
     public void setIncomingSmsService( IncomingSmsService incomingSmsService )
     {
         this.incomingSmsService = incomingSmsService;
     }
+
+    private DataElementService dataElementService;
 
     public void setDataElementService( DataElementService dataElementService )
     {
         this.dataElementService = dataElementService;
     }
     
+    // -------------------------------------------------------------------------
+    // IncomingSmsListener implementation
+    // -------------------------------------------------------------------------
+
     @Transactional
     @Override
     public boolean accept( IncomingSms sms )
@@ -151,6 +155,7 @@ public class DataValueSMSListener
         for ( int i = 0; i < message.length(); i++ )
         {
             String c = String.valueOf( message.charAt( i ) );
+            
             if ( c.matches( "\\W" ) )
             {
                 commandString = message.substring( 0, i );
@@ -296,6 +301,7 @@ public class DataValueSMSListener
             cal.setTime( date );
             int year = Calendar.getInstance().get( Calendar.YEAR );
             int month = Calendar.getInstance().get( Calendar.MONTH );
+            
             if ( cal.get( Calendar.MONTH ) < month )
             {
                 cal.set( Calendar.YEAR, year );
@@ -304,6 +310,7 @@ public class DataValueSMSListener
             {
                 cal.set( Calendar.YEAR, year - 1 );
             }
+            
             date = cal.getTime();
         }
         catch ( Exception e )
@@ -414,7 +421,6 @@ public class DataValueSMSListener
 
         Set<SMSSpecialCharacter> specialCharacters = command.getSpecialCharacters();
 
-        // Check for special character cases
         for ( SMSSpecialCharacter each : specialCharacters )
         {
             if ( each.getName().equalsIgnoreCase( value ) )
@@ -427,6 +433,7 @@ public class DataValueSMSListener
         if ( !StringUtils.isEmpty( value ) )
         {
             boolean newDataValue = false;
+            
             if ( dv == null )
             {
                 dv = new DataValue();
