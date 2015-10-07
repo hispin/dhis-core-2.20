@@ -114,6 +114,7 @@ public class ProgramStageSection
 
     @JsonProperty
     @JsonView( { DetailedView.class, ExportView.class } )
+    @JsonSerialize( contentAs = BaseIdentifiableObject.class )
     @JacksonXmlElementWrapper( localName = "programStageDataElements", namespace = DxfNamespaces.DXF_2_0 )
     @JacksonXmlProperty( localName = "programStageDataElement", namespace = DxfNamespaces.DXF_2_0 )
     public List<ProgramStageDataElement> getProgramStageDataElements()
@@ -128,6 +129,7 @@ public class ProgramStageSection
 
     @JsonProperty
     @JsonView( { DetailedView.class, ExportView.class } )
+    @JsonSerialize( contentAs = BaseIdentifiableObject.class )
     @JacksonXmlElementWrapper( localName = "programIndicators", namespace = DxfNamespaces.DXF_2_0 )
     @JacksonXmlProperty( localName = "programIndicator", namespace = DxfNamespaces.DXF_2_0 )
     public List<ProgramIndicator> getProgramIndicators()
