@@ -12,7 +12,7 @@
     </id>
     &identifiableProperties;
 
-    <set name="attributeValues" inverse="true" lazy="false">
+    <set name="attributeValues" inverse="true">
       <key column="trackedentityinstanceid" />
       <one-to-many class="org.hisp.dhis.trackedentityattributevalue.TrackedEntityAttributeValue" />
     </set>
