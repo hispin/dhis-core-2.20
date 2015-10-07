@@ -28,11 +28,13 @@ package org.hisp.dhis.program;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.google.common.collect.Sets;
 import org.hisp.dhis.attribute.AttributeValue;
 import org.hisp.dhis.common.BaseIdentifiableObject;
 import org.hisp.dhis.common.DxfNamespaces;
@@ -53,13 +55,10 @@ import org.hisp.dhis.trackedentity.TrackedEntityInstanceReminder;
 import org.hisp.dhis.user.UserAuthorityGroup;
 import org.hisp.dhis.validation.ValidationCriteria;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Abyot Asalefew
@@ -399,7 +398,7 @@ public class Program
     {
         this.programType = programType;
     }
-    
+
     @JsonProperty( "validationCriterias" )
     @JsonSerialize( contentAs = BaseIdentifiableObject.class )
     @JsonView( { DetailedView.class, ExportView.class } )
@@ -456,7 +455,7 @@ public class Program
     {
         return programType.equals( ProgramType.WITHOUT_REGISTRATION );
     }
-    
+
     @JsonProperty
     @JsonSerialize( contentAs = BaseIdentifiableObject.class )
     @JsonView( { DetailedView.class, ExportView.class } )
@@ -660,7 +659,7 @@ public class Program
     {
         this.dataEntryForm = dataEntryForm;
     }
-    
+
     @Override
     public void mergeWith( IdentifiableObject other, MergeStrategy strategy )
     {
@@ -713,7 +712,12 @@ public class Program
             organisationUnits.addAll( program.getOrganisationUnits() );
 
             programStages.clear();
-            programStages.addAll( program.getProgramStages() );
+
+            for ( ProgramStage programStage : program.getProgramStages() )
+            {
+                programStages.add( programStage );
+                programStage.setProgram( this );
+            }
 
             validationCriteria.clear();
             validationCriteria.addAll( program.getValidationCriteria() );
