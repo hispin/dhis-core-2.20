@@ -114,13 +114,15 @@ public abstract class AbstractTrackedEntityInstanceService
     // -------------------------------------------------------------------------
 
     @Override
-    public List<TrackedEntityInstance> getTrackedEntityInstances( List<org.hisp.dhis.trackedentity.TrackedEntityInstance> trackedEntityInstances, boolean includeRelationships )
+    public List<TrackedEntityInstance> getTrackedEntityInstances( TrackedEntityInstanceQueryParams params )
     {
+        List<org.hisp.dhis.trackedentity.TrackedEntityInstance> teis = entityInstanceService.getTrackedEntityInstances( params );
+        
         List<TrackedEntityInstance> teiItems = new ArrayList<>();
 
-        for ( org.hisp.dhis.trackedentity.TrackedEntityInstance trackedEntityInstance : trackedEntityInstances )
+        for ( org.hisp.dhis.trackedentity.TrackedEntityInstance trackedEntityInstance : teis )
         {
-            teiItems.add( getTrackedEntityInstance( trackedEntityInstance, includeRelationships ) );
+            teiItems.add( getTrackedEntityInstance( trackedEntityInstance, false ) );
         }
 
         return teiItems;
