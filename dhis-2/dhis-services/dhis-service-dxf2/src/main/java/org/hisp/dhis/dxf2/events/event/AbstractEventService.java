@@ -40,6 +40,8 @@ import org.hisp.dhis.common.IdentifiableProperty;
 import org.hisp.dhis.common.IllegalQueryException;
 import org.hisp.dhis.common.OrganisationUnitSelectionMode;
 import org.hisp.dhis.common.Pager;
+import org.hisp.dhis.commons.collection.CachingMap;
+import org.hisp.dhis.commons.util.DebugUtils;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementService;
 import org.hisp.dhis.dbms.DbmsManager;
@@ -78,8 +80,6 @@ import org.hisp.dhis.trackedentitydatavalue.TrackedEntityDataValue;
 import org.hisp.dhis.trackedentitydatavalue.TrackedEntityDataValueService;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.User;
-import org.hisp.dhis.commons.collection.CachingMap;
-import org.hisp.dhis.commons.util.DebugUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -354,8 +354,16 @@ public abstract class AbstractEventService
 
             if ( programInstances.isEmpty() )
             {
-                return new ImportSummary( ImportStatus.ERROR,
-                    "There is no program instance for program " + program.getUid() );
+                // this is a WOR program, so just create the PI if it doesn't exist (should only be one)
+                ProgramInstance pi = new ProgramInstance();
+                pi.setEnrollmentDate( new Date() );
+                pi.setDateOfIncident( new Date() );
+                pi.setProgram( program );
+                pi.setStatus( ProgramInstance.STATUS_ACTIVE );
+
+                programInstanceService.addProgramInstance( pi );
+
+                programInstances.add( pi );
             }
             else if ( programInstances.size() > 1 )
             {
