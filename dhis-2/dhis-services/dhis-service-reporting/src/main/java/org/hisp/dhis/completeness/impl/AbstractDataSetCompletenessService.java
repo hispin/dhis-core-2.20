@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -241,10 +243,19 @@ public abstract class AbstractDataSetCompletenessService
             periodService.getPeriodsBetweenDates( dataSet.getPeriodType(), period.getStartDate(), period.getEndDate() ) );
 
         final List<DataSetCompletenessResult> results = new ArrayList<>();
-
+        
+        final List<OrganisationUnit> orgUnits = organisationUnitService.getOrganisationUnits( organisationUnitIds );
+        
+        final Map<Integer, OrganisationUnit> orgUnitMap = new HashMap<>();
+        
+        for ( OrganisationUnit unit : orgUnits )
+        {
+			orgUnitMap.put( unit.getId(), unit );
+		}
+        
         for ( final Integer unitId : organisationUnitIds )
         {
-            final OrganisationUnit unit = organisationUnitService.getOrganisationUnit( unitId );
+            final OrganisationUnit unit = orgUnitMap.get( unitId );
 
             final Set<Integer> children = organisationUnitService.getOrganisationUnitHierarchy().getChildren(
                 unit.getId() );
