@@ -1897,7 +1897,7 @@ Ext.onReady( function() {
 			});
 
 			window = Ext.create('Ext.window.Window', {
-				title: 'Write interpretation' + '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>',
+				title: NS.i18n.write_interpretation + '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>',
 				layout: 'fit',
 				width: 550,
 				bodyStyle: 'padding:1px; background-color:#fff',
@@ -6828,7 +6828,7 @@ Ext.onReady( function() {
 		});
 
 		interpretationItem = Ext.create('Ext.menu.Item', {
-			text: 'Write interpretation' + '&nbsp;&nbsp;',
+			text: NS.i18n.write_interpretation + '&nbsp;&nbsp;',
 			iconCls: 'ns-menu-item-tablelayout',
 			disabled: true,
 			xable: function() {
@@ -6851,7 +6851,7 @@ Ext.onReady( function() {
 		});
 
 		pluginItem = Ext.create('Ext.menu.Item', {
-			text: 'Embed in web page' + '&nbsp;&nbsp;',
+			text: NS.i18n.embed_in_web_page + '&nbsp;&nbsp;',
 			iconCls: 'ns-menu-item-datasource',
 			disabled: true,
 			xable: function() {
@@ -6890,7 +6890,7 @@ Ext.onReady( function() {
 				});
 
 				window = Ext.create('Ext.window.Window', {
-                    title: 'Embed in web page' + (ns.app.layout.name ? '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>' : ''),
+                    title: NS.i18n.embed_in_web_page + (ns.app.layout.name ? '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>' : ''),
 					layout: 'fit',
 					modal: true,
 					resizable: false,
@@ -6926,7 +6926,7 @@ Ext.onReady( function() {
 		});
 
         favoriteUrlItem = Ext.create('Ext.menu.Item', {
-			text: 'Favorite link' + '&nbsp;&nbsp;',
+			text: NS.i18n.favorite_link + '&nbsp;&nbsp;',
 			iconCls: 'ns-menu-item-datasource',
 			disabled: true,
 			xable: function() {
@@ -6947,7 +6947,7 @@ Ext.onReady( function() {
                 });
 
 				window = Ext.create('Ext.window.Window', {
-                    title: 'Favorite link' + '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>',
+                    title: NS.i18n.favorite_link + '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>',
 					layout: 'fit',
 					modal: true,
 					resizable: false,
@@ -6975,7 +6975,7 @@ Ext.onReady( function() {
         });
 
         apiUrlItem = Ext.create('Ext.menu.Item', {
-			text: 'API link' + '&nbsp;&nbsp;',
+			text: NS.i18n.api_link + '&nbsp;&nbsp;',
 			iconCls: 'ns-menu-item-datasource',
 			disabled: true,
 			xable: function() {
@@ -6996,7 +6996,7 @@ Ext.onReady( function() {
                 });
 
 				window = Ext.create('Ext.window.Window', {
-                    title: 'API link' + '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>',
+                    title: NS.i18n.api_link + '<span style="font-weight:normal">&nbsp;|&nbsp;&nbsp;' + ns.app.layout.name + '</span>',
 					layout: 'fit',
 					modal: true,
 					resizable: false,
