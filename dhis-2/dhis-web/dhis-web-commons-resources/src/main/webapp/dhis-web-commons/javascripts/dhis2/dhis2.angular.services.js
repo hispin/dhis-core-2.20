@@ -330,6 +330,18 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                                 ' ng-change="saveDatavalue(prStDes.' + fieldId + ', outerForm.' + fieldId + ')"' +
                                                 commonInputFieldProperty + ' >';
                                     }
+                                    else if (prStDe.dataElement.type === "string") {
+										if(prStDe.dataElement.textType === "longText"){
+											newInputField = '<textarea row ="3" ' +                                                
+                                                ' ng-blur="saveDatavalue(prStDes.' + fieldId + ', outerForm.' + fieldId + ')"' +
+                                                commonInputFieldProperty + ' >';
+										}
+										else{
+											newInputField = '<input type="text" ' +
+                                                ' ng-blur="saveDatavalue(prStDes.' + fieldId + ', outerForm.' + fieldId + ')"' +
+                                                commonInputFieldProperty + ' >';
+										}
+                                    }
                                     else {
                                         newInputField = '<input type="text" ' +
                                                 ' ng-blur="saveDatavalue(prStDes.' + fieldId + ', outerForm.' + fieldId + ')"' +
