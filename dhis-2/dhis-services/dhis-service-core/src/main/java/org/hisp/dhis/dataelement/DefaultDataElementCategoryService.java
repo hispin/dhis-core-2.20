@@ -409,7 +409,7 @@ public class DefaultDataElementCategoryService
     @Override
     public void updateDataElementCategoryCombo( DataElementCategoryCombo dataElementCategoryCombo )
     {
-        categoryComboStore.save( dataElementCategoryCombo );
+        categoryComboStore.update( dataElementCategoryCombo );
     }
 
     @Override
