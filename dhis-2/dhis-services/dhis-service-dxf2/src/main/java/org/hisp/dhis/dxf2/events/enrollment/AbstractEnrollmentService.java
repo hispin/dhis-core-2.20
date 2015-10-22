@@ -512,6 +512,11 @@ public abstract class AbstractEnrollmentService
     {
         List<ImportConflict> importConflicts = new ArrayList<>();
 
+        if ( tei == null || value == null )
+        {
+            return importConflicts;
+        }
+
         TrackedEntityInstanceQueryParams params = new TrackedEntityInstanceQueryParams();
 
         QueryItem queryItem = new QueryItem( attribute, QueryOperator.EQ, value, attribute.getValueType(), attribute.getAggregationType(), null );
