@@ -2521,6 +2521,7 @@ Ext.onReady( function() {
 					xColAxis,
 					xRowAxis,
 					config,
+                    dx = dimConf.data.objectName,
                     ind = dimConf.indicator.objectName,
                     legendSet,
                     fn;
@@ -2571,9 +2572,9 @@ Ext.onReady( function() {
 				ns.app.xResponse = xResponse;
 
                 // legend set
-                if (xLayout.type === 'gauge' && Ext.Array.contains(xLayout.axisObjectNames, ind) && xLayout.objectNameIdsMap[ind].length) {
+                if (xLayout.type === 'gauge' && Ext.Array.contains(xLayout.axisObjectNames, dx) && xLayout.dimensionNameIdsMap[dx].length) {
                     Ext.Ajax.request({
-                        url: ns.core.init.contextPath + '/api/indicators/' + xLayout.objectNameIdsMap[ind][0] + '.json?fields=legendSet[legends[id,name,startValue,endValue,color]]',
+                        url: ns.core.init.contextPath + '/api/indicators/' + xLayout.dimensionNameIdsMap[dx][0] + '.json?fields=legendSet[legends[id,name,startValue,endValue,color]]',
                         disableCaching: false,
                         success: function(r) {
                             legendSet = Ext.decode(r.responseText).legendSet;
