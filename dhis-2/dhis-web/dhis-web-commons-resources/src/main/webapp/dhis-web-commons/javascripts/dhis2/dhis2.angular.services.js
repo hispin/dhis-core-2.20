@@ -334,7 +334,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 										if(prStDe.dataElement.textType === "longText"){
 											newInputField = '<textarea row ="3" ' +                                                
                                                 ' ng-blur="saveDatavalue(prStDes.' + fieldId + ', outerForm.' + fieldId + ')"' +
-                                                commonInputFieldProperty + ' >';
+                                                commonInputFieldProperty + '></textarea>';
 										}
 										else{
 											newInputField = '<input type="text" ' +
