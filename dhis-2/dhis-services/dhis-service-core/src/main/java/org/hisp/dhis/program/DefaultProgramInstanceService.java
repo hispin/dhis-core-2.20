@@ -726,7 +726,7 @@ public class DefaultProgramInstanceService
             programStages.add( programStageInstance.getProgramStage() );
         }
 
-        return programStages.size() != programInstance.getProgram().getProgramStages().size();
+        return programStages.size() == programInstance.getProgram().getProgramStages().size();
     }
 
     @Override
