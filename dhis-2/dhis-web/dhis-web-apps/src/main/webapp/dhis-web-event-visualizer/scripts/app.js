@@ -3965,7 +3965,7 @@ Ext.onReady( function() {
 			}
 
 			// data items
-            onStageSelect(null, layout);
+            onProgramSelect(layout.program.id, layout);
         };
 
 		program = Ext.create('Ext.form.field.ComboBox', {
