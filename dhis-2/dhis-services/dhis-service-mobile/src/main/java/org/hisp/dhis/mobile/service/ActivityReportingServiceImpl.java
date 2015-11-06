@@ -661,6 +661,7 @@ public class ActivityReportingServiceImpl
         programInstance.setDateOfIncident( incidentDate );
         programInstance.setProgram( program );
         programInstance.setEntityInstance( patient );
+		programInstance.setOrganisationUnit( patient.getOrganisationUnit() );
         programInstance.setStatus( ProgramInstance.STATUS_ACTIVE );
         programInstanceService.addProgramInstance( programInstance );
 
@@ -674,6 +675,7 @@ public class ActivityReportingServiceImpl
             {
                 ProgramStageInstance programStageInstance = new ProgramStageInstance();
                 programStageInstance.setProgramInstance( programInstance );
+				programStageInstance.setOrganisationUnit( patient.getOrganisationUnit() );
                 programStageInstance.setProgramStage( programStage );
                 Date dateCreatedEvent = new Date();
                 if ( programStage.getGeneratedByEnrollmentDate() )
