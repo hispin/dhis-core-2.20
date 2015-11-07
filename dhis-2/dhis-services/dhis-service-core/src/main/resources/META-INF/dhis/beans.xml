@@ -1267,10 +1267,11 @@
     class="org.hisp.dhis.sms.listener.TrackedEntityRegistrationSMSListener">
     <property name="smsCommandService" ref="org.hisp.dhis.sms.command.SMSCommandService" />
     <property name="userService" ref="org.hisp.dhis.user.UserService" />
-    <property name="trackedEntityService" ref="org.hisp.dhis.trackedentity.TrackedEntityService" />
     <property name="trackedEntityInstanceService" ref="org.hisp.dhis.trackedentity.TrackedEntityInstanceService" />
     <property name="programInstanceService" ref="org.hisp.dhis.program.ProgramInstanceService" />
     <property name="smsSender" ref="org.hisp.dhis.sms.SmsSender" />
+    <property name="programStageInstanceService" ref="org.hisp.dhis.program.ProgramStageInstanceService" />
+    <property name="incomingSmsService" ref="org.hisp.dhis.sms.incoming.IncomingSmsService" />
   </bean>
 
   <!-- I18n UI -->
