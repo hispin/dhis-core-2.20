@@ -61,6 +61,13 @@
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-service-datamart-default</artifactId>
     </dependency>
+	<!-- for india api -->
+	<dependency>
+      <groupId>org.hisp.dhis</groupId>
+      <artifactId>dhis-in-api</artifactId>
+	  <version>${project.version}</version>
+    </dependency>
+	
 	
   </dependencies>
   <properties>
