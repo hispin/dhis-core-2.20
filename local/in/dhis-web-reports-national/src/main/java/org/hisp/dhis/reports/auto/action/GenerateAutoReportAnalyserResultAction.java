@@ -31,8 +31,8 @@ package org.hisp.dhis.reports.auto.action;
  * @version $Id$
  */
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -95,13 +95,14 @@ public class GenerateAutoReportAnalyserResultAction implements Action
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
-    private StatementManager statementManager;
+    /*
+	private StatementManager statementManager;
 
     public void setStatementManager( StatementManager statementManager )
     {
         this.statementManager = statementManager;
     }
-
+	*/
     private ReportService reportService;
 
     public void setReportService( ReportService reportService )
@@ -211,7 +212,7 @@ public class GenerateAutoReportAnalyserResultAction implements Action
     public String execute()
         throws Exception
     {
-        statementManager.initialise();
+        //statementManager.initialise();
 
         // Initialization
         raFolderName = reportService.getRAFolderName();
@@ -409,17 +410,78 @@ public class GenerateAutoReportAnalyserResultAction implements Action
                         if ( aggData.equalsIgnoreCase( USECAPTUREDDATA ) )
                         {
                             tempStr = getAggVal( deCodeString, aggDeMap );
+                            
+                            if ( deCodeString.equalsIgnoreCase( "[1.1]" ) || deCodeString.equalsIgnoreCase( "[2.1]" ) || deCodeString.equalsIgnoreCase( "[153.1]" ) 
+                                || deCodeString.equalsIgnoreCase( "[155.1]" ) || deCodeString.equalsIgnoreCase( "[157.1]" ) || deCodeString.equalsIgnoreCase( "[158.1]" )
+                                || deCodeString.equalsIgnoreCase( "[160.1]" ) )
+                            {
+                                //System.out.println( " USECAPTUREDDATA Before Converting : SType : " + sType + " DECode : " + deCodeString + "   TempStr : " + tempStr );
+                                
+                                if( tempStr.equalsIgnoreCase( "0.0" ) )
+                                {
+                                    tempStr = ""+ 1.0;
+                                }
+                                else if ( tempStr.equalsIgnoreCase( "1.0" ) )
+                                {
+                                    tempStr = ""+ 0.0;
+                                }
+                                else
+                                {
+                                }
+                                //System.out.println( " USECAPTUREDDATA After Converting : SType : " + sType + " DECode : " + deCodeString + "   TempStr : " + tempStr );
+                            }
                             //tempStr = reportService.getIndividualResultDataValue(deCodeString, tempStartDate.getTime(), tempEndDate.getTime(), currentOrgUnit, reportModelTB );
                         } 
                         else if( aggData.equalsIgnoreCase( GENERATEAGGDATA ) )
                         {
                             tempStr = getAggVal( deCodeString, aggDeMap );
+                            
+                            if ( deCodeString.equalsIgnoreCase( "[1.1]" ) || deCodeString.equalsIgnoreCase( "[2.1]" ) || deCodeString.equalsIgnoreCase( "[153.1]" ) 
+                                || deCodeString.equalsIgnoreCase( "[155.1]" ) || deCodeString.equalsIgnoreCase( "[157.1]" ) || deCodeString.equalsIgnoreCase( "[158.1]" )
+                                || deCodeString.equalsIgnoreCase( "[160.1]" ) )
+                            {
+                                //System.out.println( " GENERATEAGGDATA Before Converting : SType : " + sType + " DECode : " + deCodeString + "   TempStr : " + tempStr );
+                                
+                                if( tempStr.equalsIgnoreCase( "0.0" ) )
+                                {
+                                    tempStr = ""+ 1.0;
+                                }
+                                else if ( tempStr.equalsIgnoreCase( "1.0" ) )
+                                {
+                                    tempStr = ""+ 0.0;
+                                }
+                                else
+                                {
+                                }
+                                //System.out.println( " GENERATEAGGDATA After Converting : SType : " + sType + " DECode : " + deCodeString + "   TempStr : " + tempStr );
+                            }
                             //tempStr = reportService.getResultDataValue( deCodeString, tempStartDate.getTime(), tempEndDate.getTime(), currentOrgUnit, reportModelTB );
                         }
                         else if( aggData.equalsIgnoreCase( USEEXISTINGAGGDATA ) )
                         {
                             
                             tempStr = getAggVal( deCodeString, aggDeMap );
+                            
+                            if ( deCodeString.equalsIgnoreCase( "[1.1]" ) || deCodeString.equalsIgnoreCase( "[2.1]" ) || deCodeString.equalsIgnoreCase( "[153.1]" ) 
+                                || deCodeString.equalsIgnoreCase( "[155.1]" ) || deCodeString.equalsIgnoreCase( "[157.1]" ) || deCodeString.equalsIgnoreCase( "[158.1]" )
+                                || deCodeString.equalsIgnoreCase( "[160.1]" ) )
+                            {
+                                //System.out.println( " USEEXISTINGAGGDATA Before Converting : SType : " + sType + " DECode : " + deCodeString + "   TempStr : " + tempStr );
+                                
+                                if( tempStr.equalsIgnoreCase( "0.0" ) )
+                                {
+                                    tempStr = ""+ 1.0;
+                                }
+                                else if ( tempStr.equalsIgnoreCase( "1.0" ) )
+                                {
+                                    tempStr = ""+ 0.0;
+                                }
+                                else
+                                {
+                                }
+                                //System.out.println( "  USEEXISTINGAGGDATA After Converting : SType : " + sType + " DECode : " + deCodeString + "   TempStr : " + tempStr );
+                            }
+                            
                             /*
                             List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( tempStartDate.getTime(), tempEndDate.getTime() ) );
                             Collection<Integer> periodIds = new ArrayList<Integer>( getIdentifiers(Period.class, periodList ) );
@@ -543,7 +605,7 @@ public class GenerateAutoReportAnalyserResultAction implements Action
         }// outer while loop end
 
 
-        statementManager.destroy();
+        //statementManager.destroy();
 
         if( zipDirectory( outputReportFolderPath, outputReportFolderPath+".zip" ) )
         {

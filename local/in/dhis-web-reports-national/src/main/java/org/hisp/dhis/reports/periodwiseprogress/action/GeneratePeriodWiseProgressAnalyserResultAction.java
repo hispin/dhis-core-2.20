@@ -1,7 +1,7 @@
 package org.hisp.dhis.reports.periodwiseprogress.action;
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -34,7 +34,6 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-import org.amplecode.quick.StatementManager;
 import org.hisp.dhis.config.Configuration_IN;
 import org.hisp.dhis.i18n.I18nFormat;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -63,14 +62,14 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
-    
+    /*
     private StatementManager statementManager;
 
     public void setStatementManager( StatementManager statementManager )
     {
         this.statementManager = statementManager;
     }
-
+*/
     private ReportService reportService;
 
     public void setReportService( ReportService reportService )
@@ -191,16 +190,19 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
 
     private int tempRowNo;
     
+    private List<Period> periodList = new ArrayList<Period>();
+    
     // -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
     public String execute()
         throws Exception
     {
-        statementManager.initialise();
+        //statementManager.initialise();
         
         // Initialization
         raFolderName = reportService.getRAFolderName();
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat( "EEEE, dd MMMM yyyy HH:mm:ss zzzz" );
 
         String colArray[] = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
             "AA","AB","AC","AD","AE","AF","AG","AH","AI","AJ","AK","AL","AM","AN","AO","AP","AQ","AR","AS","AT","AU","AV","AW","AX","AY","AZ",
@@ -248,11 +250,59 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
 
         sDate = format.parseDate( String.valueOf( selectedPeriod.getStartDate() ) );
         eDate = format.parseDate( String.valueOf( selectedEndPeriod.getEndDate() ) );
-
-        PeriodType periodType = periodService.getPeriodTypeByName( periodTypeId );
-        List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( periodType, sDate, eDate ) );
-        //List<Period> periodList = new ArrayList<Period>( periodService.getIntersectingPeriods( sDate, eDate ) );
-        Collections.sort( periodList, new PeriodStartDateComparator() );
+        
+        Map<String, String> batchDataMap = new HashMap<String, String>();
+        
+        if ( reportModelTB.equalsIgnoreCase( "PROGRESSIVE-BATCH" ) )
+        {
+            String dataElementIds = "";
+            
+            List<Report_inDesign> headerList = reportService.getHeaderInfo( deCodesXMLFileName );
+            
+            Iterator<Report_inDesign> headerIterator = headerList.iterator();
+            while (  headerIterator.hasNext() )
+            {
+                Report_inDesign header =  headerIterator.next();
+                dataElementIds = header.getExpression();
+            }
+                
+            PeriodType periodType = periodService.getPeriodTypeByName( periodTypeId );
+            List<Period> tempperiodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( periodType, sDate, eDate ) );
+            Collection<Integer> periodIds = new ArrayList<Integer>( getIdentifiers(Period.class, tempperiodList ) );        
+            String periodIdsByComma = getCommaDelimitedString( periodIds );
+     
+            batchDataMap = new HashMap<String, String>( reportService.getBatchDataFromDataValueTable( ""+currentOrgUnit.getId(), dataElementIds, periodIdsByComma ));
+            if( batchDataMap != null )
+            {
+                periodList = new ArrayList<Period>();
+                
+                for( String periodId : batchDataMap.keySet() )
+                {
+                    Period period = periodService.getPeriod( Integer.parseInt( periodId ) );
+                    periodList.add( period );
+                    
+                    //System.out.println( " Key is : " + periodId + " Value is : " + batchDataMap.get( periodId ));
+                }
+                
+                Collections.sort( periodList, new PeriodStartDateComparator() );
+            }
+            else
+            {
+                
+            }
+        }
+        
+        else
+        {
+            PeriodType periodType = periodService.getPeriodTypeByName( periodTypeId );
+            //List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( periodType, sDate, eDate ) );
+            
+            periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( periodType, sDate, eDate ) );
+            //List<Period> periodList = new ArrayList<Period>( periodService.getIntersectingPeriods( sDate, eDate ) );
+            Collections.sort( periodList, new PeriodStartDateComparator() );
+            
+        }
+        
         
         if( periodTypeId.equalsIgnoreCase( "monthly" ) )
         {
@@ -275,21 +325,24 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
         String dataElmentIdsByComma = reportService.getDataelementIdsByStype( reportDesignList, Report_inDesign.ST_DATAELEMENT );
         String nonNumberDataElementIdsByComma = reportService.getDataelementIdsByStype( reportDesignList, Report_inDesign.ST_NON_NUMBER_DATAELEMENT );
         
-        //Collection<Integer> periodIds1 = new ArrayList<Integer>( getIdentifiers(Period.class, periodList ) );
-        String periodsByComma = "";
-        //getCommaDelimitedString( periodIds1 );
-                
+        //System.out.println( " Size of Period List is : " + periodList.size() );
+        
+	//Collection<Integer> periodIds1 = new ArrayList<Integer>( getIdentifiers(Period.class, periodList ) );
+	String periodsByComma = "";
+	//getCommaDelimitedString( periodIds1 );
+		
         int colCount = 0;
+        int batchCount = 1;
         for( Period period : periodList )
-        {               
+        {		
             if( periodTypeId.equalsIgnoreCase( "daily" ) )
             {
-                periodsByComma = ""+period.getId();
+		periodsByComma = ""+period.getId();
             }
             else
             {
-                Collection<Integer> periodIds = new ArrayList<Integer>( getIdentifiers(Period.class, periodService.getIntersectingPeriods( period.getStartDate(), period.getEndDate() ) ) );
-                periodsByComma = getCommaDelimitedString( periodIds );
+		Collection<Integer> periodIds = new ArrayList<Integer>( getIdentifiers(Period.class, periodService.getIntersectingPeriods( period.getStartDate(), period.getEndDate() ) ) );
+		periodsByComma = getCommaDelimitedString( periodIds );
             }
 
             Map<String, String> aggDeMap = new HashMap<String, String>();
@@ -301,14 +354,15 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
             {
                 aggDeMap.putAll( reportService.getAggDataFromDataValueTable( childOrgUnitsByComma, dataElmentIdsByComma, periodsByComma ) );
                 aggDeMap.putAll( reportService.getAggNonNumberDataFromDataValueTable(childOrgUnitsByComma, nonNumberDataElementIdsByComma, periodsByComma ) );
-                System.out.println(childOrgUnitsByComma +" \n " + dataElmentIdsByComma + " \n " + periodsByComma );
+		//System.out.println(childOrgUnitsByComma +" \n " + dataElmentIdsByComma + " \n " + periodsByComma );
             }
             else if( aggData.equalsIgnoreCase( USECAPTUREDDATA ) )
             {
                 aggDeMap.putAll( reportService.getAggDataFromDataValueTable( ""+currentOrgUnit.getId(), dataElmentIdsByComma, periodsByComma ) );
                 aggDeMap.putAll( reportService.getAggNonNumberDataFromDataValueTable(""+currentOrgUnit.getId(), nonNumberDataElementIdsByComma, periodsByComma ) );
             }
-            System.out.println( "aggDeMap size : " + aggDeMap.size() );
+            
+            //System.out.println( "aggDeMap size : " + aggDeMap.size() );
 
             Iterator<Report_inDesign> reportDesignIterator = reportDesignList.iterator();
             while (  reportDesignIterator.hasNext() )
@@ -334,7 +388,25 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
                 else if( deCodeString.equalsIgnoreCase( "PROGRESSIVE-PERIOD" ) )
                 {
                     tempStr = simpleDateFormat.format( period.getStartDate() );
+                }
+                
+                else if( deCodeString.equalsIgnoreCase( "PROGRESSIVE-BATCH" ) )
+                {
+                    tempStr =  "Batch - " + batchDataMap.get( ""+period.getId() );
+                    //tempStr = "Batch - " + batchCount; 
+                    
                 } 
+                
+                else if( deCodeString.equalsIgnoreCase( "DISCHARGED" ) )
+                {
+                    tempStr = simpleDateFormat.format( period.getStartDate() );
+                    
+                } 
+                
+                else if ( deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) )
+                {
+                    tempStr = dateTimeFormat.format( new Date() );
+                }
                 else if( deCodeString.equalsIgnoreCase( "NA" ) )
                 {
                     tempStr = " ";
@@ -358,12 +430,46 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
                             tempStr = getAggVal( deCodeString, aggDeMap );
                         }
                     }
+                    else if( sType.equalsIgnoreCase( "dataelement-date" ) )
+                    {
+                        String deIdsByComma = "-1";
+                        
+                        for( int i = 0; i < deCodeString.split( "," ).length; i++ )
+                        {
+                            deIdsByComma += "," + deCodeString.split( "," )[i];
+                        }
+                        
+                        tempStr = reportService.getTextDataFromDataValueTable( ""+currentOrgUnit.getId(), deIdsByComma, periodsByComma );
+                        
+                        tempStr = tempStr.replace( tempStr.substring( tempStr.length()-1 ), "");
+                        
+                        //System.out.println( " Temp String  : " + tempStr );
+                        
+                        //tempStr = simpleDateFormat.format( tempStr );
+                        
+                        //System.out.println( " Temp String after : " + tempStr );
+                    }
+                    
+                    else if( sType.equalsIgnoreCase( "month-count" ) )
+                    {
+                        tempStr = simpleDateFormat.format( period.getStartDate() );
+                        
+                        String[] tempString = tempStr.split( "-" );
+                        //String year = tempString[0];
+                        String month = tempString[1];
+                        //String date = tempString[2];
+                        
+                        tempStr = month;
+                        //System.out.println( " Temp String  : " + tempStr );
+                    }
+                    
+                    
                     else if( sType.equalsIgnoreCase( Report_inDesign.ST_DATAELEMENT_NO_REPEAT ) )
                     {
                         deCodeString = deCodeString.replaceAll( ":", "\\." );
                         deCodeString = deCodeString.replaceAll( "[", "" );
                         deCodeString = deCodeString.replaceAll( "]", "" );
-                        System.out.println( "deCodeString : "+ deCodeString );
+                        //System.out.println( "deCodeString : "+ deCodeString );
                         tempStr = aggDeMap.get( deCodeString );
                     }
                 }
@@ -378,9 +484,9 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
                 } 
                 else
                 {
-                    if( reportModelTB.equalsIgnoreCase( "PROGRESSIVE-PERIOD" ) )
+                    if( reportModelTB.equalsIgnoreCase( "PROGRESSIVE-PERIOD" ) || reportModelTB.equalsIgnoreCase( "PROGRESSIVE-BATCH" ))
                     {
-                        if( deCodeString.equalsIgnoreCase( "FACILITY" ) || deCodeString.equalsIgnoreCase( "PERIOD-RANGE" ) )
+                        if( deCodeString.equalsIgnoreCase( "FACILITY" ) || deCodeString.equalsIgnoreCase( "PERIOD-RANGE" ) || deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) )
                         {                            
                         } 
                         else
@@ -410,6 +516,7 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
             }// inner while loop end
 
             colCount++;
+            batchCount++;
         }// outer while loop end
 
         // ---------------------------------------------------------------------
@@ -422,8 +529,10 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
             Report_inDesign reportDesign =  reportDesignIterator.next();
             
             String deCodeString = reportDesign.getExpression();
+            String sType = reportDesign.getStype();
 
             if( deCodeString.equalsIgnoreCase( "FACILITY" ) || 
+                deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) ||
                 deCodeString.equalsIgnoreCase( "PERIOD-RANGE" ) )
             {
                 continue;
@@ -446,11 +555,11 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
             totalCellformat.setVerticalAlignment( VerticalAlignment.CENTRE );
             totalCellformat.setWrap( true );
 
-            if( deCodeString.equalsIgnoreCase( "PROGRESSIVE-PERIOD" ) )
+            if( deCodeString.equalsIgnoreCase( "PROGRESSIVE-PERIOD" ) || deCodeString.equalsIgnoreCase( "PROGRESSIVE-BATCH" ) )
             {
                 totalSheet.addCell( new Label( tempColNo+colCount, tempRowNo, "Total", totalCellformat ) );
             }
-            else if( deCodeString.equalsIgnoreCase( "NA" ) )
+            else if( deCodeString.equalsIgnoreCase( "NA" ) || sType.equalsIgnoreCase( "dataelement-date" ) || sType.equalsIgnoreCase( "month-count" ) || deCodeString.equalsIgnoreCase( "DISCHARGED" ) )
             {
                 totalSheet.addCell( new Label( tempColNo+colCount, tempRowNo, " ", totalCellformat ) );
             }
@@ -473,7 +582,7 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
 
         outputReportFile.deleteOnExit();
 
-        statementManager.destroy();
+        //statementManager.destroy();
 
         return SUCCESS;
     }
@@ -495,7 +604,7 @@ public class GeneratePeriodWiseProgressAnalyserResultAction
 
                 replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
 
-                                System.out.println( replaceString + " : " + aggDeMap.get( replaceString ) );
+		//System.out.println( replaceString + " : " + aggDeMap.get( replaceString ) );
                 replaceString = aggDeMap.get( replaceString );
                 
                 if( replaceString == null )

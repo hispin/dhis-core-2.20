@@ -89,6 +89,8 @@ implements Action
 
         }
         
+        System.out.println( "monthlyPeriods List Size  : " + monthlyPeriods.size()   );
+        
         Collections.sort( monthlyPeriods, new PeriodComparator() );
         simpleDateFormat = new SimpleDateFormat( "MMM-yyyy" );
 

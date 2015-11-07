@@ -127,7 +127,6 @@ public class GetPeriodsAction
                 {
                     periodIterator.remove( );
                 }
-                
             }
             Collections.sort( periods, new PeriodComparator() );
 
@@ -171,7 +170,7 @@ public class GetPeriodsAction
                     periodNameList.add( simpleDateFormat1.format( p1.getStartDate() ) );
                 }
             }
-            else
+            else if ( periodType.getName().equalsIgnoreCase( "Forteen" ) )
             {
                 simpleDateFormat1 = new SimpleDateFormat( "yyyy-MM-dd" );
                 for ( Period p1 : periods )
@@ -181,8 +180,38 @@ public class GetPeriodsAction
                     periodNameList.add( tempPeriodName );
                 }
             }
+            
+            else if ( periodType.getName().equalsIgnoreCase( "Weekly" ) )
+            {
+                simpleDateFormat1 = new SimpleDateFormat( "yyyy-MM-dd" );
+                for ( Period p1 : periods )
+                {
+                    String tempPeriodName = simpleDateFormat1.format( p1.getStartDate() ) + " - "
+                        + simpleDateFormat1.format( p1.getEndDate() );
+                    periodNameList.add( tempPeriodName );
+                }
+            }
+            
+            else 
+            {
+                simpleDateFormat1 = new SimpleDateFormat( "yyyy-MM-dd" );
+                for ( Period p1 : periods )
+                {
+                    String tempPeriodName = simpleDateFormat1.format( p1.getStartDate() ) + " - "
+                        + simpleDateFormat1.format( p1.getEndDate() );
+                    periodNameList.add( tempPeriodName );
+                }
+            }
+            
+            
         }
-
+        /*
+        for( String periodName : periodNameList )
+        {
+            System.out.println( periodName );
+        }
+        */
+        
         return SUCCESS;
     }
 

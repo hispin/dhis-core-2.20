@@ -68,7 +68,7 @@
 
 </script>
 
-<h1>NBITS Report Analyser</h1>
+<h1>Benificiary Information Report Analyser</h1>
 <hr /><br />
 
 <form id="reportForm" name="reportForm" action="generateBenificiaryInfoReport.action" method="post" onsubmit="return formValidations()" target="_blank">

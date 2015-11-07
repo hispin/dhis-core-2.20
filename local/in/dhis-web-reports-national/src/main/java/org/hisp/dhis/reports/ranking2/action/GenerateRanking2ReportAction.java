@@ -1,8 +1,8 @@
 package org.hisp.dhis.reports.ranking2.action;
 
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -33,7 +33,6 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-import org.amplecode.quick.StatementManager;
 import org.hisp.dhis.config.Configuration_IN;
 import org.hisp.dhis.i18n.I18nFormat;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -61,13 +60,14 @@ public class GenerateRanking2ReportAction implements Action
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
+	/*
     private StatementManager statementManager;
 
     public void setStatementManager( StatementManager statementManager )
     {
         this.statementManager = statementManager;
     }
-
+*/
     private ReportService reportService;
 
     public void setReportService( ReportService reportService )
@@ -192,10 +192,10 @@ public class GenerateRanking2ReportAction implements Action
     public String execute()
         throws Exception
     {
-        System.out.println( ouIDTB + "-" + availablePeriods + "" + aggData );
+        //System.out.println( ouIDTB + "-" + availablePeriods + "" + aggData );
 
 
-        statementManager.initialise();
+        //statementManager.initialise();
         // Initialization
         simpleDateFormat = new SimpleDateFormat( "MMM-yyyy" );
         defaultDateFromat = new SimpleDateFormat( "yyyy-MM-dd" );
@@ -356,7 +356,7 @@ public class GenerateRanking2ReportAction implements Action
                 {
                     tempStr = "" + Double.parseDouble( tempStr ) * monthDays[ month ];
                 }
-                System.out.println( tempStr + " : " + month + " : " + year );
+                //System.out.println( tempStr + " : " + month + " : " + year );
             }            
             else if ( sType.equalsIgnoreCase( "dataelement" ) )
             {
@@ -400,7 +400,7 @@ public class GenerateRanking2ReportAction implements Action
 
         outputReportFile.deleteOnExit();
 
-        statementManager.destroy();
+        //statementManager.destroy();
 
 
         return SUCCESS;

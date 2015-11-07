@@ -80,7 +80,20 @@ public class GetReportsAction
     {
         return ouName;
     }
-
+    
+    private Integer ouLavel;
+    
+    public Integer getOuLavel()
+    {
+        return ouLavel;
+    }
+    private int selectedOrgUnitLevel;
+    
+    public int getSelectedOrgUnitLevel()
+    {
+        return selectedOrgUnitLevel;
+    }
+    
     // -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
@@ -92,10 +105,19 @@ public class GetReportsAction
         {
             try
             {
-                OrganisationUnit orgUnit = organisationUnitService.getOrganisationUnit( Integer.parseInt( ouId ) );
-
+                //System.out.println( "ouName  : " + ouId + "---- periodType  : " + periodType + "------reportType :" + reportType );
+                OrganisationUnit orgUnit = organisationUnitService.getOrganisationUnit( ouId ); //use uid
+                //OrganisationUnit orgUnit = organisationUnitService.getOrganisationUnit( Integer.parseInt( ouId ) );
+                
                 ouName = orgUnit.getShortName();
-
+                ouLavel = orgUnit.getLevel();
+                
+                //selectedOrgUnitLevel = organisationUnitService.getLevelOfOrganisationUnit( Integer.parseInt( ouId ) );
+                selectedOrgUnitLevel = organisationUnitService.getLevelOfOrganisationUnit( orgUnit.getId() );
+                
+                //System.out.println( "ouName  : " + orgUnit.getShortName() + "---- ouLavel  : " + orgUnit.getLevel() + "------LAVEL----- " + selectedOrgUnitLevel );
+                //System.out.println( "periodType  : " + periodType + "---- reportType  : " + reportType  );
+                
                 PeriodType periodTypeObj = periodService.getPeriodTypeByName( periodType );
                 
                 reportList = new ArrayList<Report_in>( reportService.getReportsByPeriodSourceAndReportType(

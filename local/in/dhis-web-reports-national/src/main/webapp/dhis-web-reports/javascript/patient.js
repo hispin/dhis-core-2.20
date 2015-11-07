@@ -32,10 +32,44 @@ function searchPatients()
 			showWarningMessage( i18n_specify_search_criteria );
 			flag = false;
 		}
+		
 	});
 	
-	if(!flag) return;
+	//if(!flag) return;
 	
+	var params = '';
+	if(flag){
+		
+		jQuery( searchTextFields ).each( function( i, item )
+				{
+					params += "&searchTexts=" + "iden";
+					if( item.name == 'searchText' )
+					{
+						params += "_";
+						params += htmlEncode( item.value.toLowerCase().replace(/^\s*/, "").replace(/\s*$/, "") );
+					}
+					
+				});
+		params += '&isSelectedOrg=' + byId('isSelectedOrg').checked;
+		
+		contentDiv = 'listPatientDiv';
+		jQuery( "#loaderDiv" ).show();
+		$.ajax({
+			url: 'searchRegistredPatient.action',
+			type:"POST",
+			//data: getParamsForDiv('searchPatientDiv'),
+			data: params,
+			success: function( html ){
+					statusSearching = 1;
+					setInnerHTML( 'listPatientDiv', html );
+					showById('listPatientDiv');
+					jQuery( "#loaderDiv" ).hide();
+				}
+			});
+	}
+	
+	
+	/*
 	contentDiv = 'listPatientDiv';
 	jQuery( "#loaderDiv" ).show();
 	$.ajax({
@@ -49,6 +83,7 @@ function searchPatients()
 				jQuery( "#loaderDiv" ).hide();
 			}
 		});
+		*/
 }
 
 function getParamsForDiv( patientDiv )
@@ -226,15 +261,39 @@ function generatePatientFollowUpReport( event, patientId )
 	var tempPatientId = "";
 	var tempProgramId = "";
 	
+	var excelTemplateName = "";
+	var xmlTemplateName = "";
+	
 	var programDropDown = document.getElementById("programId_"+patientId);
 	var selProgramId = programDropDown.options[ programDropDown.selectedIndex ].value;
 	
-	var excelTemplateName = "SNCUFollowUpSheet.xls";
-	var xmlTemplateName = "SNCUFollowUpSheet.xml";
+	if ( selProgramId == 1 )
+	{
+		excelTemplateName = "NRCFollowUpSheet.xls";
+		xmlTemplateName = "NRCFollowUpSheet.xml";
+		
+		tempPatientId = patientId;
+		tempProgramId = selProgramId;
+	}
 	
-	tempPatientId = patientId;
-	tempProgramId = selProgramId;
-
+	if ( selProgramId == 2 )
+	{
+		excelTemplateName = "SNCUFollowUpSheet.xls";
+		xmlTemplateName = "SNCUFollowUpSheet.xml";
+		
+		tempPatientId = patientId;
+		tempProgramId = selProgramId;
+		
+	}
+	
+	//var excelTemplateName = "SNCUFollowUpSheet.xls";
+	//var xmlTemplateName = "SNCUFollowUpSheet.xml";
+	
+	//tempPatientId = patientId;
+	//tempProgramId = selProgramId;
+	
+	//alert( tempPatientId + " --- " + tempProgramId );
+	//alert( excelTemplateName + " --- " + xmlTemplateName );
 
 
     //event.target.href = "generatePatientReport.action?patientId=" + patientId + "&selProgramId=" + selProgramId + "&excelTemplateName=" + excelTemplateName + "&xmlTemplateName=" + xmlTemplateName;
@@ -249,6 +308,4 @@ function generatePatientFollowUpReport( event, patientId )
     document.patientForm.action = "generatePatientReport.action";
     document.patientForm.submit();
 	    
-   
-	
 }

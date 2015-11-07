@@ -66,14 +66,14 @@ public class GenerateRankingReportResultAction implements Action
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
-
+/*
     private StatementManager statementManager;
 
     public void setStatementManager( StatementManager statementManager )
     {
         this.statementManager = statementManager;
     }
-
+*/
     private PeriodService periodService;
 
     public void setPeriodService( PeriodService periodService )
@@ -207,7 +207,7 @@ public class GenerateRankingReportResultAction implements Action
         throws Exception
     {        
         // Initialization
-        statementManager.initialise();
+        //statementManager.initialise();
         
         raFolderName = reportService.getRAFolderName();        
         deCodeType = new ArrayList<String>();
@@ -366,7 +366,7 @@ public class GenerateRankingReportResultAction implements Action
 
         outputReportFile.deleteOnExit();
         
-        statementManager.destroy();
+        //statementManager.destroy();
         
         return SUCCESS;
     }
@@ -539,8 +539,8 @@ public class GenerateRankingReportResultAction implements Action
                         tempPeriod = (Period) periodList.get( 0 );
                     }
 
-                    DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod,
-                        optionCombo );
+                    //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
 
                     if ( dataValue != null )
                     {

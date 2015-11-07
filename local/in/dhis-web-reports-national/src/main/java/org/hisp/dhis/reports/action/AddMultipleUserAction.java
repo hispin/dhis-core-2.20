@@ -84,13 +84,14 @@ public class AddMultipleUserAction
         Integer rowEnd = Integer.parseInt( sheet0.getCell( 8, 1 ).getContents() );
         System.out.println( "User  Creation Start Time is : " + new Date() );
         System.out.println( "Row Start : " + rowStart + " ,Row End : "  + rowEnd );
+        
         int orgunitcount = 0;
         for( int i = rowStart ; i <= rowEnd ; i++ )
         {
             Integer orgUnitId = Integer.parseInt( sheet0.getCell( 0, i ).getContents() );
             String orgUnitname = sheet0.getCell( 1, i ).getContents();
             String orgUnitCode = sheet0.getCell( 2, i ).getContents();
-            String userId = sheet0.getCell( 3, i ).getContents();
+            String userName = sheet0.getCell( 3, i ).getContents();
             String passWord = sheet0.getCell( 4, i ).getContents();
             Integer userRoleId = Integer.parseInt( sheet0.getCell( 5, i ).getContents() );
             
@@ -106,25 +107,30 @@ public class AddMultipleUserAction
                 {
                     //UserCredentials uc = userStore.getUserCredentials( u );
                     UserCredentials uc = userService.getUserCredentials( u );
-                    if ( uc != null && uc.getUsername().equalsIgnoreCase( userId ) )
+                    if ( uc != null && uc.getUsername().equalsIgnoreCase( userName ) )
+                    {
                         flag = 1;
+                    }
                 }
             }
+            
             if ( flag == 1 )
             {
-                System.out.println( userId + " ALREADY EXITS" );
+                System.out.println( userName + " ALREADY EXITS" );
                 continue;
             }
             
             User user = new User();
             user.setSurname( orgUnitname );
-            user.setFirstName( orgUnitCode );
+            //user.setFirstName( orgUnitCode );
+            user.setFirstName( orgUnitname );
             user.setOrganisationUnits( orgUnits );
             
             UserCredentials userCredentials = new UserCredentials();
             userCredentials.setUser( user );
-            userCredentials.setUsername( userId );
-            userCredentials.setPassword( passwordManager.encodePassword( userId, passWord ) );
+            userCredentials.setUsername( userName );
+            //userCredentials.setPassword( passwordManager.encodePassword( userName, passWord ) );
+            userCredentials.setPassword( passwordManager.encode( passWord ) );
             
             UserAuthorityGroup group = userService.getUserAuthorityGroup( userRoleId );
             

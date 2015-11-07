@@ -63,14 +63,13 @@ public class GenerateDataSetLockReportResultAction
     {
         this.dataSetService = dataSetService;
     }
-/*
-    private DataSetLockService dataSetLockService;
 
-    public void setDataSetLockService( DataSetLockService dataSetLockService )
-    {
-        this.dataSetLockService = dataSetLockService;
-    }
-*/
+    /*
+     * private DataSetLockService dataSetLockService;
+     * 
+     * public void setDataSetLockService( DataSetLockService dataSetLockService
+     * ) { this.dataSetLockService = dataSetLockService; }
+     */
     private ReportService reportService;
 
     public void setReportService( ReportService reportService )
@@ -144,6 +143,12 @@ public class GenerateDataSetLockReportResultAction
 
     private int x;
 
+    /*
+     * private boolean lockStatus;
+     * 
+     * public boolean isLockStatus() { return lockStatus; }
+     */
+
     public String execute()
         throws Exception
     {
@@ -170,11 +175,13 @@ public class GenerateDataSetLockReportResultAction
         dataSet = dataSetService.getDataSet( dataSets );
         dSetSource = dataSet.getSources();
 
-        //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
-        
-        String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator +  Configuration_IN.DEFAULT_TEMPFOLDER;
+        // String outputReportPath = System.getenv( "DHIS2_HOME" ) +
+        // File.separator + raFolderName + File.separator + "output" +
+        // File.separator + UUID.randomUUID().toString() + ".xls";
+
+        String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + Configuration_IN.DEFAULT_TEMPFOLDER;
         File newdir = new File( outputReportPath );
-        if( !newdir.exists() )
+        if ( !newdir.exists() )
         {
             newdir.mkdirs();
         }
@@ -314,10 +321,12 @@ public class GenerateDataSetLockReportResultAction
                 sheet0.mergeCells( colStart + columnNo, rowStart + rowNo + 1, colStart + columnNo, x + 1 );
                 for ( Period periodElement : periods )
                 {
-                    
-                    boolean lockStatus = dataSetService.isLocked( dataSet, periodElement, organisationUnit, null );
-                    //DataSetLock dataSetLock = dataSetLockService.getDataSetLockByDataSetPeriodAndSource( dataSet, periodElement, organisationUnit );
-                    //if ( dataSetLock != null )
+                    // DataSetLock dataSetLock =
+                    // dataSetLockService.getDataSetLockByDataSetPeriodAndSource(
+                    // dataSet, periodElement, organisationUnit );
+                    //boolean lockStatus = dataSetService.isLocked( dataSet, periodElement, organisationUnit, null );
+                    boolean lockStatus = dataSetService.isLocked( dataSet, periodElement, organisationUnit, null, null );
+                    // if ( dataSetLock != null )
                     if ( lockStatus )
                     {
                         sheet0.addCell( new Number( colStart
@@ -389,9 +398,12 @@ public class GenerateDataSetLockReportResultAction
                 int periodsCounter = 0;
                 for ( Period periodElement : periods )
                 {
-                    //DataSetLock dataSetLock = dataSetLockService.getDataSetLockByDataSetPeriodAndSource( dataSet, periodElement, organisationUnit );
-                    boolean lockStatus = dataSetService.isLocked( dataSet, periodElement, organisationUnit, null );
-                    //if ( dataSetLock != null )
+                    // DataSetLock dataSetLock =
+                    // dataSetLockService.getDataSetLockByDataSetPeriodAndSource(
+                    // dataSet, periodElement, organisationUnit );
+                    //boolean lockStatus = dataSetService.isLocked( dataSet, periodElement, organisationUnit, null );
+                    boolean lockStatus = dataSetService.isLocked( dataSet, periodElement, organisationUnit, null, null );
+                    // if ( dataSetLock != null )
                     if ( lockStatus )
                     {
                         sheet0.addCell( new Number( colStart

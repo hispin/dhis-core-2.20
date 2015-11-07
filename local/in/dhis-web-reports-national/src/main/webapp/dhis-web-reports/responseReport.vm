@@ -7,6 +7,7 @@
         	<model>$report.model</model>
         	<fileName>$report.fileName</fileName>
 			<ouName>$encoder.xmlEncode( $ouName )</ouName>
+			<ouLavel>$selectedOrgUnitLevel</ouLavel>
     	</report>
     #end
 </reports>

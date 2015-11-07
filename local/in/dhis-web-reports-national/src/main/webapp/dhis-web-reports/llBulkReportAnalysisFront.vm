@@ -75,21 +75,23 @@
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>&nbsp;</td>
+           
             <td class="NormalB">
                 <!--<input type="checkbox" id="aggCB" name="aggCB" checked> $i18n.getString( "aggregated_data" )-->
                 
-               <!--5. $i18n.getString( "generated_data_type" ) :<br />
+               5. $i18n.getString( "generated_data_type" ) :<br />
                 <select id="aggData" name="aggData" style="width:200px">
+                	<option value="usecaptureddata">$i18n.getString( "use_captured_data" )</option>
                     <option value="generateaggdata">$i18n.getString( "generate_agg_data" )</option>
                     <option value="useexistingaggdata">$i18n.getString( "use_existing_agg_data" )</option>
-                    <option value="usecaptureddata">$i18n.getString( "use_captured_data" )</option>
-                </select>-->
-                <input type="submit" id= "generate" name="generate" value='$i18n.getString( "generate_report" )' disabled="disabled">
+                </select>
+           </td>     
+           <td>
+           		<input type="submit" id= "generate" name="generate" value='$i18n.getString( "generate_report" )' disabled="disabled">
                 <input type="hidden" name="autogen" id="autogen" value="0" >
                 <input type="hidden" name="ouIDTB" id="ouIDTB">
                 <input type="hidden" name="reportTypeNameTB" id="reportTypeNameTB" value="$reportTypeName">
-            </td>
+           </td>
         </tr>
     </table>
 </form>

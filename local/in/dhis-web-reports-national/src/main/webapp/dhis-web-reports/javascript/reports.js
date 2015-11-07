@@ -134,7 +134,7 @@ function getDataElements()
         
     if ( dataElementGroupId != null )
     {
-        /* //var url = "getDataElements.action?id=" + dataElementGroupId;
+    /* //var url = "getDataElements.action?id=" + dataElementGroupId;
         var request = new Request();
         request.setResponseTypeXML('dataElement');
         request.setCallbackSuccess(getDataElementsReceived);
@@ -340,6 +340,58 @@ function getReportsReceived( xmlObject )
     }
 }
 
+//get Program List By OrgUnit 
+function getProgramListByOrgUnit( orgUnitIds )
+{ 
+          
+    if ( orgUnitIds != null && orgUnitIds != "" )
+    {
+    	
+		$.post("getProgramList.action",
+		{
+			orgUnitId : orgUnitIds[0]
+		},
+		function (data)
+		{
+			getProgramsReceived(data);
+		},'xml');
+    }
+}
+
+function getProgramsReceived( xmlObject )
+{	
+    var programList = document.getElementById( "programList" );
+    var orgUnitName = document.getElementById( "ouNameTB" );
+    
+    clearList( programList );
+    
+    var programs = xmlObject.getElementsByTagName( "program" );
+    for ( var i = 0; i < programs.length; i++)
+    {
+        var id = programs[ i ].getElementsByTagName( "id" )[0].firstChild.nodeValue;
+        var name = programs[ i ].getElementsByTagName( "name" )[0].firstChild.nodeValue;
+        var ouName = programs[ i ].getElementsByTagName( "ouName" )[0].firstChild.nodeValue;
+	
+        orgUnitName.value = ouName;
+		
+		$("#programList").append("<option value='"+ id +"'>" + name + "</option>");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function getPeriodsReceived( xmlObject )
 {	
     var availablePeriods = document.getElementById( "availablePeriods" );
@@ -517,6 +569,103 @@ function trim( stringToTrim )
     return stringToTrim.replace(/^\s+|\s+$/g,"");
 }
 
+//-----------------------------------------------------------------------------
+// ED Report javascript methods getting indicators filters etc
+//-----------------------------------------------------------------------------
+
+
+function getIndicators()
+{
+    var indicatorGroupList = document.getElementById( "indicatorGroupId" );
+    var indicatorGroupId = indicatorGroupList.options[ indicatorGroupList.selectedIndex ].value;
+    
+    if ( indicatorGroupId != null )
+    {
+        if ( indicatorGroupId != 0 )
+        {
+        	//alert( indicatorGroupId );
+        	document.getElementById( "availableIndicatorsFilter" ).value = "";
+        	document.getElementById( "availableIndicatorsFilter" ).disabled = true;
+        	//return false;
+        }
+        else
+        {
+        	document.getElementById( "availableIndicatorsFilter" ).value = "";
+        	document.getElementById( "availableIndicatorsFilter" ).disabled = false;
+        }
+    	//document.getElementById( "availableIndicatorsFilter" ).value = "";
+    	//document.getElementById( "availableIndicatorsFilter" ).disabled = false;
+        lockScreen();
+    	$.post("getIndicators.action",
+			{
+				id:indicatorGroupId
+			},
+			function (data)
+			{
+				getIndicatorsReceived(data);
+			},'xml');
+    }
+}
+
+function getIndicatorsReceived( xmlObject )
+{	
+    var availableIndicators = document.getElementById( "availableIndicators" );
+    var selectedIndicators = document.getElementById( "selectedIndicators" );
+	
+    clearList( availableIndicators );
+	
+    var indicators = xmlObject.getElementsByTagName( "indicator" );
+	
+    for ( var i = 0; i < indicators.length; i++ )
+    {
+        var id = indicators[ i ].getElementsByTagName( "id" )[0].firstChild.nodeValue;
+        var indicatorName = indicators[ i ].getElementsByTagName( "name" )[0].firstChild.nodeValue;
+		
+        if ( listContains( selectedIndicators, id ) == false )
+        {
+            var option = document.createElement( "option" );
+            option.value = id;
+            option.text = indicatorName;
+            availableIndicators.add( option, null );
+        }
+    }
+    unLockScreen();
+}
+//filter available indicators list
+function filterAvailableIndicators()
+{
+	var filter = document.getElementById( 'availableIndicatorsFilter' ).value;
+    var list = document.getElementById( 'availableIndicators' );
+    
+    list.options.length = 0;
+    
+    var selIndListId = document.getElementById( 'selectedIndicators' );
+    var selIndLength = selIndListId.options.length;
+    
+    for ( var id in availableIndicators )
+    {
+    	//alert( "id : " + id );
+        var value = availableIndicators[id];
+        
+        var flag = 1;
+        for( var i =0 ; i<selIndLength; i++ )
+        {
+        	//alert( selIndListId.options[i].text );
+        	//alert( selIndListId.options[i].value );
+        	if( id == selIndListId.options[i].value )
+        	{
+    			flag =2;
+    			//alert("aaaa");
+    			break;
+        	}
+        }
+        if ( value.toLowerCase().indexOf( filter.toLowerCase() ) != -1 && (flag == 1) )
+        {
+            list.add( new Option( value, id ), null );
+        }
+        //alert( flag );
+    }
+}    
 
 //-----------------------------------------------------------------------------
 //FormValidations for ED Report
@@ -528,6 +677,9 @@ function formValidationsForEDReport()
 	var endPeriodObj = document.getElementById('selectedEndPeriodId');
 	var indicatorGroupObj = document.getElementById('indicatorGroupId');
 	
+	var selIndicatorsListSize  = document.reportForm.selectedIndicators.options.length;//alert(selDEListSize);
+	
+	
 	sDateTxt = startPeriodObj.options[startPeriodObj.selectedIndex].text;
 	sDate = formatDate(new Date(getDateFromFormat(sDateTxt,"MMM-y")),"yyyy-MM-dd");
 	eDateTxt = endPeriodObj.options[endPeriodObj.selectedIndex].text;
@@ -537,9 +689,25 @@ function formValidationsForEDReport()
 	{
 		alert( "Starting Date is Greater" );return false;
 	}
+	/*
 	else if( indicatorGroupObj.options[indicatorGroupObj.selectedIndex].value == "ALL" )
 	{
 		alert( "Please Select Indicator Group" );return false;
 	}
+	*/
+	else if(  selIndicatorsListSize <= 0 ) 
+	{
+        alert( "Please Select Indicator(s)" );
+        return false;
+	}
+	
+	if( selIndicatorsListSize > 0 )
+	{
+		for(k=0;k<document.reportForm.selectedIndicators.options.length;k++)
+    	{
+    		document.reportForm.selectedIndicators.options[k].selected = true;
+        } 
+	}	
+	
 	return true;
 } // formValidations Function End

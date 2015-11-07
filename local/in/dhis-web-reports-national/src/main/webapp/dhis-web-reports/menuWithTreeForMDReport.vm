@@ -16,7 +16,7 @@
 
 	function orgUnitHasBeenSelected( orgUnitIds )
 	{
-		document.reportForm.ouIDTB.value = orgUnitIds;
+		document.getElementById("ouIDTB").value = orgUnitIds;
 	
 		reportTypeName = document.reportForm.reportTypeNameTB.value;
 	

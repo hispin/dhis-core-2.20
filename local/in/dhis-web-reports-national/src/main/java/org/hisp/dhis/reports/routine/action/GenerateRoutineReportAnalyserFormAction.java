@@ -8,7 +8,6 @@ import java.util.List;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroupSetPopulator;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
 import org.hisp.dhis.reports.ReportType;
@@ -18,6 +17,9 @@ import com.opensymphony.xwork2.Action;
 public class GenerateRoutineReportAnalyserFormAction
     implements Action
 {
+    public static final String NAME_TYPE = "Type";
+    public static final String NAME_OWNERSHIP = "Ownership";
+    
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
@@ -77,7 +79,7 @@ public class GenerateRoutineReportAnalyserFormAction
         {
             PeriodType type = periodTypeIterator.next();
             
-            if( type.getName().equalsIgnoreCase("Monthly") || type.getName().equalsIgnoreCase("quarterly") || type.getName().equalsIgnoreCase("yearly") || type.getName().equalsIgnoreCase("weekly") || type.getName().equalsIgnoreCase("Daily") )
+            if( type.getName().equalsIgnoreCase("Monthly") || type.getName().equalsIgnoreCase("quarterly") || type.getName().equalsIgnoreCase("yearly") || type.getName().equalsIgnoreCase("weekly") || type.getName().equalsIgnoreCase("Daily") || type.getName().equalsIgnoreCase( "Forteen" ) )
             {
             }
             else
@@ -86,11 +88,15 @@ public class GenerateRoutineReportAnalyserFormAction
             }
         }
         
-        OrganisationUnitGroupSet organisationUnitGroupSet1 = organisationUnitGroupService.getOrganisationUnitGroupSetByName( OrganisationUnitGroupSetPopulator.NAME_TYPE );
+	//List<OrganisationUnitGroupSet> organisationUnitGroupSet1List = new ArrayList<OrganisationUnitGroupSet>( organisationUnitGroupService.getOrganisationUnitGroupSetByName( OrganisationUnitGroupSetPopulator.NAME_TYPE ) );
+	List<OrganisationUnitGroupSet> organisationUnitGroupSet1List = new ArrayList<OrganisationUnitGroupSet>( organisationUnitGroupService.getOrganisationUnitGroupSetByName( NAME_TYPE ) );
+	OrganisationUnitGroupSet organisationUnitGroupSet1 = organisationUnitGroupSet1List.get( 0 );
         
         orgUnitGroupMembers = new ArrayList<OrganisationUnitGroup>( organisationUnitGroupSet1.getOrganisationUnitGroups() );
         
-        OrganisationUnitGroupSet organisationUnitGroupSet2 = organisationUnitGroupService.getOrganisationUnitGroupSetByName( OrganisationUnitGroupSetPopulator.NAME_OWNERSHIP );
+        //List<OrganisationUnitGroupSet> organisationUnitGroupSet2List = new ArrayList<OrganisationUnitGroupSet>( organisationUnitGroupService.getOrganisationUnitGroupSetByName( OrganisationUnitGroupSetPopulator.NAME_OWNERSHIP ) );
+        List<OrganisationUnitGroupSet> organisationUnitGroupSet2List = new ArrayList<OrganisationUnitGroupSet>( organisationUnitGroupService.getOrganisationUnitGroupSetByName( NAME_OWNERSHIP ) );
+        OrganisationUnitGroupSet organisationUnitGroupSet2 = organisationUnitGroupSet2List.get( 0 );
         
         orgUnitGroupMembers.addAll( new ArrayList<OrganisationUnitGroup>( organisationUnitGroupSet2.getOrganisationUnitGroups() ) );
         

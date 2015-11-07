@@ -1,3 +1,4 @@
+
 <style>
     #overlay {
     z-index:9998;
@@ -14,10 +15,28 @@
     }
     #overlayImg{ width: 50px; height: 50px; z-index: 9999; position: absolute; left:50%}
 </style>
+
+<script>
+	
+	var orgUnitLevelNames = new HashTable();
+	
+	#foreach($level in $levels )
+	    var levelId = ""+"$level.level";
+	    orgUnitLevelNames.put(levelId,"$level.name");
+	#end
+	
+	//alert( orgUnitLevelNames.get( 2 ) );
+	
+	
+	
+	leftBar.showAnimated();
+</script>
+
 <div id="overlay">
     <div id="overlayImg"><img  width="50" height="50" src="images/ajax-loader.gif" /></div>
 </div>
-<h1>$i18n.getString( "md_report_ra" )</h1>
+
+<h1>$i18n.getString( "md_report_ra" )</h1> 
 <hr /><br />
 <form id="reportForm" name="reportForm" action="generateMDReport.action" method="post" onSubmit="return formValidationsForMDReport()" target="_blank">
 	

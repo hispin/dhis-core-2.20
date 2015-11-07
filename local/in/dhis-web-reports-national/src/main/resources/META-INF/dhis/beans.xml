@@ -3,24 +3,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-
-
-    <!--Global Config Settings -->
-
-    <bean id="org.hisp.dhis.reports.reportmanagement.action.GenerateGlobalConfigAction"
-          class="org.hisp.dhis.reports.reportmanagement.action.GenerateGlobalConfigAction"
-          scope="prototype">
-        <property name="globalConfigService" ref="org.hisp.dhis.reports.GlobalConfigService">
-        </property>
-    </bean>
-
-
-    <bean id="org.hisp.dhis.reports.reportmanagement.action.DownloadRAFolderAction"
-          class="org.hisp.dhis.reports.reportmanagement.action.DownloadRAFolderAction"
-          scope="prototype">
-        <property name="configurationService" ref="org.hisp.dhis.config.ConfigurationService">
-        </property>
-    </bean>
     
     <!-- Reports -->
     <bean id="org.hisp.dhis.reports.action.ReportsHomePageAction"
@@ -29,6 +11,15 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService">
         </property>
     </bean>
+	
+    <!-- Export  File -->
+    <bean id="org.hisp.dhis.reports.action.ExcelExportResultAction"
+        class="org.hisp.dhis.reports.action.ExcelExportResultAction"
+        scope="prototype">
+        <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+    </bean>	
+	
+	
     <!-- Reports Management -->
     <bean id="org.hisp.dhis.reports.reportmanagement.action.ReportsListAction"
         class="org.hisp.dhis.reports.reportmanagement.action.ReportsListAction"
@@ -178,7 +169,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.routine.action.GenerateRoutineReportAnalyserResultAction"
         class="org.hisp.dhis.reports.routine.action.GenerateRoutineReportAnalyserResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>      
+        <!--<property name="statementManager" ref="statementManager"/>-->
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
@@ -186,6 +177,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     </bean>
 
     <!-- IDSP Reports -->
+    <!--
     <bean
         id="org.hisp.dhis.reports.idsp.action.GenerateIDSPReportAnalyserFormAction"
         class="org.hisp.dhis.reports.idsp.action.GenerateIDSPReportAnalyserFormAction"
@@ -196,16 +188,16 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.idsp.action.GenerateIDSPReportAnalyserResultAction"
         class="org.hisp.dhis.reports.idsp.action.GenerateIDSPReportAnalyserResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>      
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
 		<property name="dataElementCategoryOptionComboService" ref="org.hisp.dhis.dataelement.DataElementCategoryService" />		
-        <!--<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />-->
-    </bean>	    
+    </bean>
+    -->  
     <!-- ED Report -->
+    <!--
     <bean id="org.hisp.dhis.reports.ed.action.EDReportFormAction"
         class="org.hisp.dhis.reports.ed.action.EDReportFormAction"
         scope="prototype">
@@ -218,7 +210,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.ed.action.EDReportResultAction"
         scope="prototype">
         
-        <property name="statementManager" ref="statementManager"/>
+        
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
@@ -237,46 +229,46 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     <bean id="org.hisp.dhis.reports.ed.action.RankingReportResultAction"
         class="org.hisp.dhis.reports.ed.action.RankingReportResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>
+        
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
         <property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
     </bean>
-	
+	-->
 	<!-- MD Report -->
+	<!--
     <bean id="org.hisp.dhis.reports.md.action.MDReportFormAction"
         class="org.hisp.dhis.reports.md.action.MDReportFormAction"
         scope="prototype">
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
 		<property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
     </bean>
-	
+    <bean id="org.hisp.dhis.reports.md.action.GenerateMDReportAnalyserResultAction"
+        class="org.hisp.dhis.reports.md.action.GenerateMDReportAnalyserResultAction"
+        scope="prototype">
+		
+		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+		<property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+	</bean>
     <bean id="org.hisp.dhis.reports.md.action.GetOrgUnitsAction"
         class="org.hisp.dhis.reports.md.action.GetOrgUnitsAction"
         scope="prototype">
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
-    </bean>	
-
+    </bean>
     <bean id="org.hisp.dhis.reports.md.action.MDReportResultAction"
         class="org.hisp.dhis.reports.md.action.MDReportResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>
+       
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
-    </bean>	
-		
-    <bean id="org.hisp.dhis.reports.md.action.GenerateMDReportAnalyserResultAction"
-        class="org.hisp.dhis.reports.md.action.GenerateMDReportAnalyserResultAction"
-        scope="prototype">
-		<property name="statementManager" ref="statementManager"/>
-		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
-		<property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
-		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
-	</bean>
+    </bean>
+	-->
 	    
     <!-- Auto Reports -->
     <bean
@@ -290,7 +282,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.auto.action.GenerateAutoReportAnalyserResultAction"
         class="org.hisp.dhis.reports.auto.action.GenerateAutoReportAnalyserResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>
+        <!--<property name="statementManager" ref="statementManager"/>-->
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
@@ -308,7 +300,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.auto.action.GenerateLLBulkReportAnalyserResultAction"
         class="org.hisp.dhis.reports.auto.action.GenerateLLBulkReportAnalyserResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>
+        <!--<property name="statementManager" ref="statementManager"/>-->
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
@@ -318,6 +310,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     </bean>		
 	    
     <!-- Aggregation Report -->
+    <!--
     <bean
         id="org.hisp.dhis.reports.aggregation.action.GenerateAggregationReportAnalyserFormAction"
         class="org.hisp.dhis.reports.aggregation.action.GenerateAggregationReportAnalyserFormAction"
@@ -330,12 +323,13 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.aggregation.action.GenerateAggregationReportAnalyserResultAction"
         scope="prototype">
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
-        <property name="statementManager" ref="statementManager" />
+        
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
     </bean>
-    
+    -->
     <!-- Feedback Reports -->
+    <!--
     <bean
         id="org.hisp.dhis.reports.feedback.action.GenerateFeedbackReportAnalyserFormAction"
         class="org.hisp.dhis.reports.feedback.action.GenerateFeedbackReportAnalyserFormAction"
@@ -352,29 +346,27 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
     </bean>
-
-	
+	-->
     <!--District Feedback Reports -->
-
+	<!--
     <bean
-		id="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserFormAction"
-		class="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserFormAction"
-		scope="prototype">
+            id="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserFormAction"
+            class="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserFormAction"
+            scope="prototype">
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
     </bean>
 
     <bean
-		id="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserResultAction"
-		class="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserResultAction"
-		scope="prototype">
+            id="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserResultAction"
+            class="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserResultAction"
+            scope="prototype">
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
-        <property name="statementManager" ref="statementManager" />
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="stateDistrictFeedbackReportService" ref="org.hisp.dhis.reports.StateDistrictFeedbackReportService"/>
         <property name="reportOrgSpecificDataService" ref="org.hisp.dhis.reports.ReportOrgSpecificDataService"/>
-    </bean>	
-		    
+    </bean>
+    -->
     <!-- Upward / GOI Reports -->
     <bean
         id="org.hisp.dhis.reports.upward.action.GenerateUpwardReportAnalyserFormAction"
@@ -387,11 +379,52 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.upward.action.GenerateUpwardReportAnalyserResultAction"
         class="org.hisp.dhis.reports.upward.action.GenerateUpwardReportAnalyserResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>
+        <!--<property name="statementManager" ref="statementManager"/>-->
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
     </bean>
+	
+
+
+    <!-- Upward / GOI Reports Monthly -->
+    <bean
+        id="org.hisp.dhis.reports.goimonthly.action.GenerateGOIMonthlyReportAnalyserFormAction"
+        class="org.hisp.dhis.reports.goimonthly.action.GenerateGOIMonthlyReportAnalyserFormAction"
+        scope="prototype">
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+    </bean>
+    
+    <bean
+        id="org.hisp.dhis.reports.goimonthly.action.GenerateGOIMonthlyReportAnalyserResultAction"
+        class="org.hisp.dhis.reports.goimonthly.action.GenerateGOIMonthlyReportAnalyserResultAction"
+        scope="prototype">
+         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+    </bean>
+
+
+	<!-- ProgramWise OrgUnitProgress Reports -->	
+	
+    <bean
+        id="org.hisp.dhis.reports.programWiseOrgUnitProgress.action.GenerateProgramWiseOrgUnitProgressReportAnalyserFormAction"
+        class="org.hisp.dhis.reports.programWiseOrgUnitProgress.action.GenerateProgramWiseOrgUnitProgressReportAnalyserFormAction"
+        scope="prototype">
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+    </bean>	
+
+    <bean
+        id="org.hisp.dhis.reports.programWiseOrgUnitProgress.action.GenerateProgramWiseOrgUnitProgressReportAnalyserResultAction"
+        class="org.hisp.dhis.reports.programWiseOrgUnitProgress.action.GenerateProgramWiseOrgUnitProgressReportAnalyserResultAction"
+        scope="prototype">
+        <!--<property name="statementManager" ref="statementManager"/>-->
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+        <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+        <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+    </bean>		
+	
     
     <!-- DataSet Lock Reports -->
     <bean
@@ -453,10 +486,10 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingReportAnalyserFormAction"
         class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingReportAnalyserFormAction"
         scope="prototype">
-        
         <property name="periodService">
             <ref bean="org.hisp.dhis.period.PeriodService"/>
         </property>
+        <property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
     </bean>
     
     <bean
@@ -464,35 +497,29 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingReportAnalyserResultAction"
         scope="prototype">
         
-        <property name="statementManager" ref="statementManager"/>
+        <!--<property name="statementManager" ref="statementManager"/>-->
+       	<property name="reportService">
+            <ref bean="org.hisp.dhis.reports.ReportService"/>
+        </property> 
+        <property name="periodService">
+            <ref bean="org.hisp.dhis.period.PeriodService"/>
+        </property>        
+       	<property name="organisationUnitService">
+            <ref bean="org.hisp.dhis.organisationunit.OrganisationUnitService"/>
+        </property>        
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />        
+        <property name="dataSetService">
+            <ref bean="org.hisp.dhis.dataset.DataSetService"/>
+        </property>        
+
+        <property name="dataElementService">
+            <ref bean="org.hisp.dhis.dataelement.DataElementService"/>
+        </property>        
         
         <property name="dataElementCategoryOptionComboService">
             <ref bean="org.hisp.dhis.dataelement.DataElementCategoryService"/>
         </property>
-        <property name="periodService">
-            <ref bean="org.hisp.dhis.period.PeriodService"/>
-        </property>
-        <property name="organisationUnitService">
-            <ref bean="org.hisp.dhis.organisationunit.OrganisationUnitService"/>
-        </property>
-        <property name="dataElementService">
-            <ref bean="org.hisp.dhis.dataelement.DataElementService"/>
-        </property>
-        <property name="indicatorService">
-            <ref bean="org.hisp.dhis.indicator.IndicatorService"/>
-        </property>
-        <property name="dataSetService">
-            <ref bean="org.hisp.dhis.dataset.DataSetService"/>
-        </property>
-        <property name="aggregationService">
-            <ref bean="org.hisp.dhis.aggregation.AggregationService"/>
-        </property>
-        <property name="dataValueService">
-            <ref bean="org.hisp.dhis.datavalue.DataValueService"/>
-        </property>
-        <property name="reportService">
-            <ref bean="org.hisp.dhis.reports.ReportService"/>
-        </property>
+
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
         
     </bean>
@@ -509,7 +536,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.periodwiseprogress.action.GeneratePeriodWiseProgressAnalyserResultAction"
         class="org.hisp.dhis.reports.periodwiseprogress.action.GeneratePeriodWiseProgressAnalyserResultAction"
         scope="prototype">      
-        <property name="statementManager" ref="statementManager"/>      
+        <!--<property name="statementManager" ref="statementManager"/>-->
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
@@ -530,15 +557,43 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.ouwiseprogress.action.GenerateOuWiseProgressReportResultAction"
         class="org.hisp.dhis.reports.ouwiseprogress.action.GenerateOuWiseProgressReportResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager" />
+        <!--<property name="statementManager" ref="statementManager" />-->
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
 		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
-<!--    <property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
-        <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />-->
+		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
+        <!--<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />-->
     </bean>
     
+	
+	
+	
+    <bean
+        id="org.hisp.dhis.reports.periodorgunitserviceprogressreport.action.GeneratePeriodOrgUnitServiseProgressReportAnalyserFormAction"
+        class="org.hisp.dhis.reports.periodorgunitserviceprogressreport.action.GeneratePeriodOrgUnitServiseProgressReportAnalyserFormAction"
+        scope="prototype">
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+    </bean>
+
+    <bean
+        id="org.hisp.dhis.reports.periodorgunitserviceprogressreport.action.GeneratePeriodOrgUnitServiseProgressAnalyserResultAction"
+        class="org.hisp.dhis.reports.periodorgunitserviceprogressreport.action.GeneratePeriodOrgUnitServiseProgressAnalyserResultAction"
+        scope="prototype">      
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+        <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+        <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+    </bean>	
+	
+	
+	
+	
+	
+	
+	
+	
     <!-- Meta Data Reports -->
     <bean
         id="org.hisp.dhis.reports.meta.action.GenerateMetaDataReportAnalyserFormAction"
@@ -551,7 +606,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.meta.action.GenerateMetaDataReportResultAction"
         class="org.hisp.dhis.reports.meta.action.GenerateMetaDataReportResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager" />
+        <!--<property name="statementManager" ref="statementManager" />-->
         <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService"/>
         <property name="organisationUnitgroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
@@ -559,14 +614,14 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
         <property name="validationRuleService" ref="org.hisp.dhis.validation.ValidationRuleService" />
         <!--<property name="userStore" ref="org.hisp.dhis.user.UserStore" />-->
-		<property name="userService" ref="org.hisp.dhis.user.UserService" />
+        <property name="userService" ref="org.hisp.dhis.user.UserService" />
         <property name="expressionService" ref="org.hisp.dhis.expression.ExpressionService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService"/>
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
     <!-- Advanced Reports -->
-    
+    <!--
     <bean
         id="org.hisp.dhis.reports.advanced.action.GenerateAdvancedReportsFormAction"
         class="org.hisp.dhis.reports.advanced.action.GenerateAdvancedReportsFormAction"
@@ -580,7 +635,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.advanced.action.GenerateAdvancedReportResultAction"
         scope="prototype">
         
-        <property name="statementManager" ref="statementManager"/>
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService">
         </property>
         <property name="organisationUnitService">
@@ -601,11 +655,11 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="periodService">
             <ref bean="org.hisp.dhis.period.PeriodService"/>
         </property>
-        
     </bean>
-    
+    -->
     <!-- NLEP Reports -->
     
+    <!--
     <bean id="org.hisp.dhis.reports.leprosy.action.LeprosyReportFormAction"
         class="org.hisp.dhis.reports.leprosy.action.LeprosyReportFormAction"
         scope="prototype">
@@ -620,7 +674,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.leprosy.action.LeprosyReportResultAction"
         scope="prototype">
         
-        <property name="statementManager" ref="statementManager"/>
         <property name="reportService">
             <ref bean="org.hisp.dhis.reports.util.ReportService"/>
         </property>
@@ -642,11 +695,10 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="periodService">
             <ref bean="org.hisp.dhis.period.PeriodService"/>
         </property>
-        
     </bean>
-    
+    -->
     <!-- Malaria Reports -->
-    
+    <!--
     <bean
         id="org.hisp.dhis.reports.malarya.action.GenerateMalaryaReportFormAction"
         class="org.hisp.dhis.reports.malarya.action.GenerateMalaryaReportFormAction"
@@ -662,8 +714,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.malarya.action.GenerateMalaryaReportResultAction"
         class="org.hisp.dhis.reports.malarya.action.GenerateMalaryaReportResultAction"
         scope="prototype">
-        
-        <property name="statementManager" ref="statementManager"/>
         <property name="reportService">
             <ref bean="org.hisp.dhis.reports.util.ReportService"/>
         </property>
@@ -685,10 +735,10 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="periodService">
             <ref bean="org.hisp.dhis.period.PeriodService"/>
         </property>
-        
     </bean>
-    
+    -->
     <!-- Grading Reports -->
+    <!-- 
     <bean
         id="org.hisp.dhis.reports.grading.action.GenerateGradingReportFormAction"
         class="org.hisp.dhis.reports.grading.action.GenerateGradingReportFormAction"
@@ -874,9 +924,10 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
             <ref bean="org.hisp.dhis.reports.util.ReportService"/>
         </property>
     </bean>
+    -->
     
     <!-- TwentyPoints Reports -->
-    
+    <!--
     <bean
         id="org.hisp.dhis.reports.TwentyPoint.action.GenerateTwentyPointReportsFromAction"
         class="org.hisp.dhis.reports.TwentyPoint.action.GenerateTwentyPointReportsFromAction"
@@ -925,7 +976,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="statementManager" ref="statementManager"/>
         
     </bean>
-    
+    -->
     <!-- Ranking Report -->
     
     <bean
@@ -943,7 +994,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.ranking.action.GenerateRankingReportResultAction"
         scope="prototype">
         
-        <property name="statementManager" ref="statementManager"/>
+        <!--<property name="statementManager" ref="statementManager"/>-->
         <property name="reportService">
             <ref bean="org.hisp.dhis.reports.util.ReportService"/>
         </property>
@@ -972,7 +1023,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     </bean>
     
     <!-- Yojana Reports -->
-    
+    <!-- 
     <bean
         id="org.hisp.dhis.reports.orgunitgroupsetreport.action.GenerateOrgunitGroupsetReportsFormAction"
         class="org.hisp.dhis.reports.orgunitgroupsetreport.action.GenerateOrgunitGroupsetReportsFormAction"
@@ -1023,16 +1074,16 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="reportService">
             <ref bean="org.hisp.dhis.reports.util.ReportService"/>
         </property>
-        <property name="statementManager" ref="statementManager"/>
+        
         <property name="organisationUnitGroupService">
             <ref
                 bean="org.hisp.dhis.organisationunit.OrganisationUnitGroupService"/>
         </property>
         
     </bean>
-    
+    -->
     <!--Mobile Reports-->
-    
+    <!--
     <bean
         id="org.hisp.dhis.reports.mobile.action.GenerateMobileReportAnalyserFormAction"
         class="org.hisp.dhis.reports.mobile.action.GenerateMobileReportAnalyserFormAction"
@@ -1060,10 +1111,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="userService">
             <ref bean="org.hisp.dhis.user.UserService"/>
         </property>
-        
-        
     </bean>
-    
+    -->
     <!-- Report Service -->
     <bean id="org.hisp.dhis.reports.util.ReportService"
         class="org.hisp.dhis.reports.util.ReportService" scope="prototype">
@@ -1099,13 +1148,11 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     
     <bean id="org.hisp.dhis.reports.action.AddUserAction"
         class="org.hisp.dhis.reports.action.AddUserAction" scope="prototype">
-        
-        <property name="userService">
-            <ref bean="org.hisp.dhis.user.UserService"/>
-        </property>
-<!--	<property name="userStore">
+        <!--  
+        <property name="userStore">
             <ref bean="org.hisp.dhis.user.UserStore"/>
-        </property>-->	
+        </property>
+        -->
         <property name="passwordManager">
             <ref bean="org.hisp.dhis.security.PasswordManager"/>
         </property>
@@ -1115,28 +1162,39 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="organisationUnitGroupService">
             <ref bean="org.hisp.dhis.organisationunit.OrganisationUnitGroupService"/>
         </property>
+        
+        <property name="userService">
+            <ref bean="org.hisp.dhis.user.UserService"/>
+        </property>        
+        
     </bean>
     
     <!-- Multiple User Population -->
     
     <bean id="org.hisp.dhis.reports.action.AddMultipleUserAction"
         class="org.hisp.dhis.reports.action.AddMultipleUserAction" scope="prototype">
-        
-<!--    <property name="userStore">
+        <!--  
+        <property name="userStore">
             <ref bean="org.hisp.dhis.user.UserStore"/>
-        </property>-->
-        <property name="userService">
-            <ref bean="org.hisp.dhis.user.UserService"/>
-        </property>		
-        <property name="passwordManager">
-            <ref bean="org.hisp.dhis.security.PasswordManager"/>
         </property>
+        -->
+        
         <property name="reportService">
             <ref bean="org.hisp.dhis.reports.ReportService"/>
         </property>
+        
+        <property name="passwordManager">
+            <ref bean="org.hisp.dhis.security.PasswordManager"/>
+        </property>
+        
         <property name="organisationUnitService">
             <ref bean="org.hisp.dhis.organisationunit.OrganisationUnitService"/>
         </property>
+        
+         <property name="userService">
+            <ref bean="org.hisp.dhis.user.UserService"/>
+        </property>  
+        
     </bean>
     
     <!-- AJAX Requests -->
@@ -1165,7 +1223,24 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService">
         </property>
     </bean>
-    <bean id="org.hisp.dhis.reports.action.GetProgressReportsAction"
+    
+	
+	<!-- get Program List -->	
+    <bean id="org.hisp.dhis.reports.action.GetProgramListAction"
+        class="org.hisp.dhis.reports.action.GetProgramListAction" scope="prototype">
+        <property name="organisationUnitService">
+            <ref bean="org.hisp.dhis.organisationunit.OrganisationUnitService"/>
+        </property>
+		<property name="reportService">
+            <ref bean="org.hisp.dhis.reports.ReportService"/>
+        </property>
+    </bean>		
+	
+	
+	
+	
+	
+	<bean id="org.hisp.dhis.reports.action.GetProgressReportsAction"
         class="org.hisp.dhis.reports.action.GetProgressReportsAction"
         scope="prototype">
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService">
@@ -1194,6 +1269,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     </bean>
     
     <!--physical reports -->
+    <!--
     <bean id="org.hisp.dhis.reports.physical.action.PhysicalReportFormAction"
         class="org.hisp.dhis.reports.physical.action.PhysicalReportFormAction" scope="prototype">
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />    
@@ -1202,13 +1278,13 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     
     <bean id="org.hisp.dhis.reports.physical.action.GeneratePhysicalReportResultAction"
         class="org.hisp.dhis.reports.physical.action.GeneratePhysicalReportResultAction" scope="prototype">
-        <property name="statementManager" ref="statementManager" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
     </bean>
-    
+    -->
     <!-- CS Review Reports Start 09/08/2010-->
+    <!--
     <bean
         id="org.hisp.dhis.reports.csreview.action.GenerateCSReviewReportFormAction"
         class="org.hisp.dhis.reports.csreview.action.GenerateCSReviewReportFormAction"
@@ -1220,16 +1296,17 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.csreview.action.GenerateCSReviewReportResultAction"
         class="org.hisp.dhis.reports.csreview.action.GenerateCSReviewReportResultAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager" />
+        
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
         <property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
     </bean>
-
+	-->
+	
 <!-- NBITS Reports Section -->  
     <!-- NBITS : Activity Plan Report -->
-    
+    <!--
     <bean
         id="org.hisp.dhis.reports.activeplan.action.ActivePlanReportsFormAction"
         class="org.hisp.dhis.reports.activeplan.action.ActivePlanReportsFormAction"
@@ -1241,6 +1318,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         </property>
     </bean>
     
+	
     <bean
         id="org.hisp.dhis.reports.activeplan.action.ActivePlanReportsResultAction"
         class="org.hisp.dhis.reports.activeplan.action.ActivePlanReportsResultAction"
@@ -1309,9 +1387,11 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         </property>
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
-    
+    -->
+	
     <!-- NBITS : BenificiaryInfo Report -->
     
+    <!--
     <bean
         id="org.hisp.dhis.reports.benificiaryinfo.action.BenificiaryInfoReportsFormAction"
         class="org.hisp.dhis.reports.benificiaryinfo.action.BenificiaryInfoReportsFormAction"
@@ -1359,9 +1439,10 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
             <ref bean="org.hisp.dhis.relationship.RelationshipTypeService"/>
         </property>
     </bean>
-
-<!-- Patient Information Reports 20/03/2012 -->	
+	-->
 	
+<!-- Patient Information Reports 20/03/2012 -->	
+	<!--
     <bean
         id="org.hisp.dhis.reports.benificiaryinfo.action.PatientInfoReportsFormAction"
         class="org.hisp.dhis.reports.benificiaryinfo.action.PatientInfoReportsFormAction"
@@ -1376,48 +1457,39 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.benificiaryinfo.action.GetRegistredPatientInformationAction"
         scope="prototype">
 		<property name="patientAttributeValueService" ref="org.hisp.dhis.patientattributevalue.PatientAttributeValueService" />
-		<property name="patientAttributeService"
-			ref="org.hisp.dhis.patient.PatientAttributeService" />
+		
 		<property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
-		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+		
 		<property name="patientService" ref="org.hisp.dhis.patient.PatientService" />
+		<property name="selectionManager" ref="org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager" />
     </bean>	
 
 	<bean id="org.hisp.dhis.reports.benificiaryinfo.action.GetPatientDetailsAction"
 		class="org.hisp.dhis.reports.benificiaryinfo.action.GetPatientDetailsAction" scope="prototype">
 		<property name="patientService" ref="org.hisp.dhis.patient.PatientService" />
-		<!--<property name="patientIdentifierService"
-			ref="org.hisp.dhis.patient.PatientIdentifierService" />-->
-		<!--<property name="programService" ref="org.hisp.dhis.program.ProgramService" />-->
+		
 		<property name="patientAttributeValueService"
 			ref="org.hisp.dhis.patientattributevalue.PatientAttributeValueService" />
-		<!--<property name="patientAttributeService">
-			<ref bean="org.hisp.dhis.patient.PatientAttributeService" />
-		</property>
-		<property name="patientAttributeGroupService"
-			ref="org.hisp.dhis.patient.PatientAttributeGroupService" />
-		<property name="patientIdentifierTypeService">
-			<ref bean="org.hisp.dhis.patient.PatientIdentifierTypeService" />
-		</property>-->
+		
 	</bean>	
 
 	<bean id="org.hisp.dhis.reports.benificiaryinfo.action.GetPatientReportResultAction"
 		class="org.hisp.dhis.reports.benificiaryinfo.action.GetPatientReportResultAction" scope="prototype">
-		<!--<property name="patientIdentifierService"
-			ref="org.hisp.dhis.patient.PatientIdentifierService" />-->
+		
 		<property name="programService" ref="org.hisp.dhis.program.ProgramService" />
 		<property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
 		<property name="patientService" ref="org.hisp.dhis.patient.PatientService" />
 		<property name="patientIdentifierService" ref="org.hisp.dhis.patient.PatientIdentifierService" />
 		<property name="patientAttributeValueService" ref="org.hisp.dhis.patientattributevalue.PatientAttributeValueService" />
+		<property name="patientAttributeService" ref="org.hisp.dhis.patient.PatientAttributeService" />
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>	
-	
+	-->
 	
 	
 			
     <!-- NBITS : Portal Reports -->
-    
+    <!--
     <bean id="org.hisp.dhis.reports.portal.action.PortalReportsFormAction"
         class="org.hisp.dhis.reports.portal.action.PortalReportsFormAction"
         scope="prototype">
@@ -1495,6 +1567,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="jdbcTemplate" ref="jdbcTemplate"/>        
     </bean>
 
+    
     <bean id="org.hisp.dhis.reports.portal.action.PortalReportsResult_ACS"
         class="org.hisp.dhis.reports.portal.action.PortalReportsResult_ACS"
         scope="prototype">
@@ -1508,8 +1581,10 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		<property name="dataElementCategoryOptionComboService" ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
         <property name="jdbcTemplate" ref="jdbcTemplate"/>        
     </bean>	
+-->
 
     <!-- NBITS Reports -->
+    <!--
     <bean id="org.hisp.dhis.reports.nbits.action.NBITSReportFormAction"
         class="org.hisp.dhis.reports.nbits.action.NBITSReportFormAction"
         scope="prototype">
@@ -1519,7 +1594,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         class="org.hisp.dhis.reports.nbits.action.NBITSReportResultAction"
         scope="prototype">
         <property name="statementManager" ref="statementManager" />
-        <property name="reportService" ref="org.hisp.dhis.reports.util.ReportService" />
+        
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="patientService" ref="org.hisp.dhis.patient.PatientService" />
         <property name="patientIdentifierTypeService" ref="org.hisp.dhis.patient.PatientIdentifierTypeService" />
@@ -1527,8 +1602,30 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="programService" ref="org.hisp.dhis.program.ProgramService" />
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
-    
-	
+	-->
+
+    <!-- Due Date Reports -->
+    <!--
+    <bean id="org.hisp.dhis.reports.activeplan.action.ActivePlanDueDatesReportFormAction"
+        class="org.hisp.dhis.reports.activeplan.action.ActivePlanDueDatesReportFormAction"
+        scope="prototype">
+        
+		<property name="selectionTreeManager" ref="org.hisp.dhis.oust.manager.SelectionTreeManager" />
+		<property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+    </bean>
+
+    <bean id="org.hisp.dhis.reports.activeplan.action.ActivePlanDueDatesReportResultAction"
+        class="org.hisp.dhis.reports.activeplan.action.ActivePlanDueDatesReportResultAction"
+        scope="prototype">
+		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+		<property name="programService" ref="org.hisp.dhis.program.ProgramService" />
+		<property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+		<property name="patientAttributeService" ref="org.hisp.dhis.patient.PatientAttributeService" />
+		<property name="patientAttributeValueService" ref="org.hisp.dhis.patientattributevalue.PatientAttributeValueService" />
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>		
+	-->
+
 	<!-- Linelisting web-Portal Reports -->
 	<bean
 		id="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserFormAction"
@@ -1545,7 +1642,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserResultAction"
 		scope="prototype">
 		
-		<property name="statementManager" ref="statementManager"/>
+		<!--<property name="statementManager" ref="statementManager"/>-->
 		
 		<property name="dataElementCategoryOptionComboService">
 			<ref bean="org.hisp.dhis.dataelement.DataElementCategoryService"/>
@@ -1574,8 +1671,10 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		<property name="reportService">
 			<ref bean="org.hisp.dhis.reports.ReportService"/>
 		</property>
-		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+		<!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
 	</bean>	
+	
+	
 		<!-- Cold-Chain Reports -->
 	
     <bean
@@ -1613,11 +1712,23 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         id="org.hisp.dhis.reports.ranking2.action.GenerateRanking2ReportAction"
         class="org.hisp.dhis.reports.ranking2.action.GenerateRanking2ReportAction"
         scope="prototype">
-        <property name="statementManager" ref="statementManager"/>
+        <!--<property name="statementManager" ref="statementManager"/>-->
         <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
         <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
         <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
 		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
     </bean>
-			
+	
+   <!-- ranking2 Reports for STATE -->
+   <bean
+        id="org.hisp.dhis.reports.ranking2.action.GenerateStateRanking2ReportAction"
+        class="org.hisp.dhis.reports.ranking2.action.GenerateStateRanking2ReportAction"
+        scope="prototype">
+        <property name="statementManager" ref="statementManager"/>
+        <property name="reportService" ref="org.hisp.dhis.reports.ReportService" />
+        <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+    </bean>	
+	
 </beans>

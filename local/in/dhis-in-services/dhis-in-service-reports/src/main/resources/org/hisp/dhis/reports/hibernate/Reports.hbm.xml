@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
- "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
- "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
   <class name="org.hisp.dhis.reports.Report_in" table="reportin">
@@ -31,6 +31,13 @@
       <key column="reportid"/>
 	  <many-to-many column="sourceid" class="org.hisp.dhis.organisationunit.OrganisationUnit" foreign-key="fk_reportin_organisationunit"/>
     </set>
+
+    <property name="schedulable" column="schedulable" not-null="false"/>
+    
+    <property name="scheduled" column="scheduled" not-null="false"/> 
         
+    <property name="emailable" column="emailable" not-null="false"/>    
+           
+    <property name="schedulingPolicyId" column="schedulingpolicyid" not-null="false" length="6"/>        
   </class>
 </hibernate-mapping>

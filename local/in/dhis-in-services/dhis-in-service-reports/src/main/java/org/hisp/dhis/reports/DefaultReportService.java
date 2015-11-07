@@ -1,19 +1,23 @@
 package org.hisp.dhis.reports;
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +37,7 @@ import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.datavalue.DataValueService;
+import org.hisp.dhis.expression.ExpressionService;
 import org.hisp.dhis.indicator.Indicator;
 import org.hisp.dhis.indicator.IndicatorService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -41,6 +46,8 @@ import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
+import org.hisp.dhis.program.Program;
+import org.hisp.dhis.program.ProgramService;
 import org.hisp.dhis.survey.Survey;
 import org.hisp.dhis.survey.SurveyService;
 import org.hisp.dhis.surveydatavalue.SurveyDataValue;
@@ -100,6 +107,13 @@ public class DefaultReportService
     public void setIndicatorService( IndicatorService indicatorService )
     {
         this.indicatorService = indicatorService;
+    }
+
+    private ExpressionService expressionService;
+
+    public void setExpressionService( ExpressionService expressionService )
+    {
+        this.expressionService = expressionService;
     }
 
     private PeriodService periodService;
@@ -173,6 +187,14 @@ public class DefaultReportService
         this.databaseInfoProvider = databaseInfoProvider;
     }
 
+    private ProgramService programService;
+
+    public void setProgramService( ProgramService programService )
+    {
+        this.programService = programService;
+
+    }
+
     // -------------------------------------------------------------------------
     // Report_in
     // -------------------------------------------------------------------------
@@ -220,12 +242,6 @@ public class DefaultReportService
     }
 
     @Transactional
-    public Collection<Report_in> getReportBySourceAndReportType( OrganisationUnit source, String reportType  )
-    {
-        return reportStore.getReportBySourceAndReportType( source, reportType );
-    }    
-   
-    @Transactional
     public Collection<Report_in> getReportsByPeriodAndReportType( PeriodType periodType, String reportType )
     {
         return reportStore.getReportsByPeriodAndReportType( periodType, reportType );
@@ -250,6 +266,24 @@ public class DefaultReportService
         return reportStore.getReportsByPeriodSourceAndReportType( periodType, source, reportType );
     }
 
+    // get Patients List ByOrgUnit
+    /*
+    @Transactional
+    public Collection<Patient> getPatientByOrgUnit( OrganisationUnit organisationUnit )
+    {
+        return reportStore.getPatientByOrgUnit( organisationUnit );
+    }
+    */
+    
+    // get Patients List By OrgUnit and Program
+    /*
+    @Transactional
+    public Collection<Patient> getPatientByOrgUnitAndProgram( OrganisationUnit organisationUnit, Program program )
+    {
+        return reportStore.getPatientByOrgUnitAndProgram( organisationUnit, program );
+    }
+    */
+    
     // -------------------------------------------------------------------------
     // for Report Result Action input/otput
     // -------------------------------------------------------------------------
@@ -260,70 +294,25 @@ public class DefaultReportService
     // Support Methods Defination
     // -------------------------------------------------------------------------
 
-    public String getRAFolderName()
+    // get Programs List ByOrgUnit
+    public Collection<Program> getProgramsByOrgUnit( OrganisationUnit organisationUnit )
     {
-        String raFolderName = "ra_national";
+        // System.out.println( "In side  get Programs By OrgUnit Method " );
+        List<Program> programList = new ArrayList<Program>();
 
-        try
+        // List<Program> allProgramList = new ArrayList<Program>(
+        // programService.getAllPrograms() );
+
+        for ( Program program : programService.getAllPrograms() )
         {
-            raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
-        }
-        catch ( Exception e )
-        {
-            System.out.println( "Exception : " + e.getMessage() );
-            return null;
-        }
-
-        return raFolderName;
-    }
-
-    public List<Integer> getLinelistingRecordNos( OrganisationUnit organisationUnit, Period period, String lltype )
-    {
-        List<Integer> recordNosList = new ArrayList<Integer>();
-
-        String query = "";
-
-        int dataElementid = 1020;
-
-        if ( lltype.equalsIgnoreCase( "lllivebirth-l4DECodes.xml" )
-            || lltype.equalsIgnoreCase( "lllivebirth-l5DECodes.xml" )
-            || lltype.equalsIgnoreCase( "lllivebirth-l6DECodes.xml" ) )
-        {
-            dataElementid = 1020;
-        }
-        else if ( lltype.equalsIgnoreCase( "lldeath-l4DECodes.xml" )
-            || lltype.equalsIgnoreCase( "lldeath-l5DECodes.xml" ) || lltype.equalsIgnoreCase( "lldeath-l6DECodes.xml" )
-            || lltype.equalsIgnoreCase( "monthly_SCWebPortalDECodes.xml" ) )
-        {
-            dataElementid = 1027;
-        }
-        else if ( lltype.equalsIgnoreCase( "llmaternaldeath-l4DECodes.xml" )
-            || lltype.equalsIgnoreCase( "llmaternaldeath-l5DECodes.xml" )
-            || lltype.equalsIgnoreCase( "llmaternaldeath-l6DECodes.xml" ) )
-        {
-            dataElementid = 1032;
-        }
-
-        try
-        {
-            query = "SELECT recordno FROM lldatavalue WHERE dataelementid = " + dataElementid + " AND periodid = "
-                + period.getId() + " AND sourceid = " + organisationUnit.getId();
-
-            SqlRowSet rs1 = jdbcTemplate.queryForRowSet( query );
-
-            while ( rs1.next() )
+            if ( program.getOrganisationUnits().contains( organisationUnit ) )
             {
-                recordNosList.add( rs1.getInt( 1 ) );
+                programList.add( program );
             }
-
-            Collections.sort( recordNosList );
         }
-        catch ( Exception e )
-        {
-            System.out.println( "SQL Exception : " + e.getMessage() );
-        }
-
-        return recordNosList;
+        // System.out.println( "Size of Program List is   : " +
+        // programList.size() );
+        return programList;
     }
 
     // ----------------------------------------------------------------------------------------------------
@@ -352,8 +341,24 @@ public class DefaultReportService
         try
         {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse( new File( path ) );
+            DocumentBuilder docBuilder = null;
+            try
+            {
+                docBuilder = docBuilderFactory.newDocumentBuilder();
+            }
+            catch ( ParserConfigurationException e )
+            {
+                e.printStackTrace();
+            }
+            Document doc = null;
+            try
+            {
+                doc = docBuilder.parse( new File( path ) );
+            }
+            catch ( IOException e )
+            {
+                e.printStackTrace();
+            }
 
             if ( doc == null )
             {
@@ -373,22 +378,12 @@ public class DefaultReportService
 
                 String id = configElement.getAttribute( "commonid" ).trim();
 
-                // System.out.println("\n*INFO : DhisID: "+value+" || "+"CommonID: "+id+"\n");
-
                 globalValuesMap.put( id, value );
 
             }
 
         }
-        catch ( ParserConfigurationException e )
-        {
-            e.printStackTrace();
-        }
         catch ( SAXException e )
-        {
-            e.printStackTrace();
-        }
-        catch ( IOException e )
         {
             e.printStackTrace();
         }
@@ -409,6 +404,7 @@ public class DefaultReportService
 
         Pattern p = Pattern.compile( "\\[(.*?)\\]" );
         Matcher matcher = p.matcher( expression );
+
         String localValue;
 
         while ( matcher.find() )
@@ -419,6 +415,7 @@ public class DefaultReportService
         }
 
         result = expression;
+
         return result;
     }
 
@@ -505,7 +502,148 @@ public class DefaultReportService
         return reportDesignList;
     }
 
+    public String getRAFolderName()
+    {
+        String raFolderName = "ra_national";
+
+        try
+        {
+            raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
+        }
+        catch ( Exception e )
+        {
+            System.out.println( "Exception : " + e.getMessage() );
+            return null;
+        }
+
+        return raFolderName;
+    }
+
+    public List<Integer> getLinelistingRecordNos( OrganisationUnit organisationUnit, Period period, String lltype )
+    {
+        List<Integer> recordNosList = new ArrayList<Integer>();
+
+        String query = "";
+
+        int dataElementid = 1020;
+
+        if ( lltype.equalsIgnoreCase( "lllivebirth-l4DECodes.xml" )
+            || lltype.equalsIgnoreCase( "lllivebirth-l5DECodes.xml" )
+            || lltype.equalsIgnoreCase( "lllivebirth-l6DECodes.xml" ) )
+        {
+            dataElementid = 1020;
+        }
+        else if ( lltype.equalsIgnoreCase( "lldeath-l4DECodes.xml" )
+            || lltype.equalsIgnoreCase( "lldeath-l5DECodes.xml" ) || lltype.equalsIgnoreCase( "lldeath-l6DECodes.xml" )
+            || lltype.equalsIgnoreCase( "monthly_SCWebPortalDECodes.xml" ) )
+        {
+            dataElementid = 1027;
+        }
+        else if ( lltype.equalsIgnoreCase( "llmaternaldeath-l4DECodes.xml" )
+            || lltype.equalsIgnoreCase( "llmaternaldeath-l5DECodes.xml" )
+            || lltype.equalsIgnoreCase( "llmaternaldeath-l6DECodes.xml" ) )
+        {
+            dataElementid = 1032;
+        }
+        else if ( lltype.equalsIgnoreCase( "LL_FP_Status.xml" ) )
+        {
+            dataElementid = 7271;
+        }
+        else if ( lltype.equalsIgnoreCase( "LL_Yukti_Status.xml" ) )
+        {
+            dataElementid = 7280;
+        }
+
+        try
+        {
+            query = "SELECT recordno FROM lldatavalue WHERE dataelementid = " + dataElementid + " AND periodid = "
+                + period.getId() + " AND sourceid = " + organisationUnit.getId();
+
+            SqlRowSet rs1 = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs1.next() )
+            {
+                recordNosList.add( rs1.getInt( 1 ) );
+            }
+
+            Collections.sort( recordNosList );
+        }
+        catch ( Exception e )
+        {
+            System.out.println( "SQL Exception : " + e.getMessage() );
+        }
+
+        return recordNosList;
+    }
+
     public List<Report_inDesign> getReportDesign( Report_in report )
+    {
+        List<Report_inDesign> deCodes = new ArrayList<Report_inDesign>();
+
+        String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER )
+            .getValue();
+
+        String path = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator
+            + report.getXmlTemplateName();
+
+        try
+        {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse( new File( path ) );
+            if ( doc == null )
+            {
+                System.out.println( "DECodes related XML file not found" );
+                return null;
+            }
+
+            NodeList listOfDECodes = doc.getElementsByTagName( "de-code" );
+            int totalDEcodes = listOfDECodes.getLength();
+
+            for ( int s = 0; s < totalDEcodes; s++ )
+            {
+                Element deCodeElement = (Element) listOfDECodes.item( s );
+                NodeList textDECodeList = deCodeElement.getChildNodes();
+
+                String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
+                String stype = deCodeElement.getAttribute( "stype" );
+                String ptype = deCodeElement.getAttribute( "type" );
+                int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
+                int rowno = new Integer( deCodeElement.getAttribute( "rowno" ) );
+                int colno = new Integer( deCodeElement.getAttribute( "colno" ) );
+                int rowMerge = new Integer( deCodeElement.getAttribute( "rowmerge" ) );
+                int colMerge = new Integer( deCodeElement.getAttribute( "colmerge" ) );
+
+                Report_inDesign reportDesign = new Report_inDesign( stype, ptype, sheetno, rowno, colno, rowMerge,
+                    colMerge, expression );
+
+                deCodes.add( reportDesign );
+
+            }// end of for loop with s var
+        }// try block end
+        catch ( SAXParseException err )
+        {
+            System.out.println( "** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId() );
+            System.out.println( " " + err.getMessage() );
+        }
+        catch ( SAXException e )
+        {
+            Exception x = e.getException();
+            ((x == null) ? e : x).printStackTrace();
+        }
+        catch ( Throwable t )
+        {
+            t.printStackTrace();
+        }
+        return deCodes;
+    }// getDECodes end
+
+    /*
+     * Returns Previous Month's Period object For ex:- selected period is
+     * Aug-2007 it returns the period object corresponding July-2007
+     */
+
+    public List<Report_inDesign> getReportDesignForGlobalSetting( Report_in report )
     {
         List<Report_inDesign> deCodes = new ArrayList<Report_inDesign>();
 
@@ -583,10 +721,299 @@ public class DefaultReportService
         return deCodes;
     }// getDECodes end
 
-    /*
-     * Returns Previous Month's Period object For ex:- selected period is
-     * Aug-2007 it returns the period object corresponding July-2007
-     */
+    // -------------------------------------------------------------------------
+    // Get Aggregated Result for dataelement expression for Global Setting
+    // -------------------------------------------------------------------------
+
+    public List<Report_inDesign> getReportDesignForGlobalSetting( String fileName )
+    {
+        List<Report_inDesign> reportDesignList = new ArrayList<Report_inDesign>();
+
+        String path = System.getProperty( "user.home" ) + File.separator + "dhis" + File.separator
+            + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+            + File.separator + fileName;
+        try
+        {
+            String newpath = System.getenv( "DHIS2_HOME" );
+            if ( newpath != null )
+            {
+                path = newpath + File.separator
+                    + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+                    + File.separator + fileName;
+            }
+        }
+        catch ( NullPointerException npe )
+        {
+            System.out.println( "DHIS2_HOME not set" );
+        }
+
+        try
+        {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse( new File( path ) );
+            if ( doc == null )
+            {
+                System.out.println( "There is no DECodes related XML file in the ra folder" );
+                return null;
+            }
+
+            NodeList listOfDECodes = doc.getElementsByTagName( "de-code" );
+            int totalDEcodes = listOfDECodes.getLength();
+            Map<String, String> globalValuesMap = mapGlobalValues();
+
+            for ( int s = 0; s < totalDEcodes; s++ )
+            {
+                Element deCodeElement = (Element) listOfDECodes.item( s );
+                NodeList textDECodeList = deCodeElement.getChildNodes();
+
+                String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
+
+                // ------------------------replace global
+                // values------------------------------------------------
+
+                // System.out.println(
+                // "\n*INFO :<< CHECKING CONFIG FILE SETUP(2) >>" );
+                // System.out.println( "*INFO :Global Value: " + expression );
+                expression = getGlobalExpression( expression, globalValuesMap );
+                // System.out.println( "*INFO :Local Value: " + expression );
+                // System.out.println( "*INFO :<<CHECK FINISHED>>\n" );
+
+                // ---------------------------------------------------------------------------------------------
+
+                String stype = deCodeElement.getAttribute( "stype" );
+                String ptype = deCodeElement.getAttribute( "type" );
+                int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
+                int rowno = new Integer( deCodeElement.getAttribute( "rowno" ) );
+                int colno = new Integer( deCodeElement.getAttribute( "colno" ) );
+
+                Report_inDesign report_inDesign = new Report_inDesign( stype, ptype, sheetno, rowno, colno, expression );
+                reportDesignList.add( report_inDesign );
+            }// end of for loop with s var
+        }// try block end
+        catch ( SAXParseException err )
+        {
+            System.out.println( "** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId() );
+            System.out.println( " " + err.getMessage() );
+        }
+        catch ( SAXException e )
+        {
+            Exception x = e.getException();
+            ((x == null) ? e : x).printStackTrace();
+        }
+        catch ( Throwable t )
+        {
+            t.printStackTrace();
+        }
+        return reportDesignList;
+    }
+
+    public List<Report_inDesign> getReportDesignForTracker( Report_in report )
+    {
+        List<Report_inDesign> deCodes = new ArrayList<Report_inDesign>();
+
+        String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER )
+            .getValue();
+
+        String path = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator
+            + report.getXmlTemplateName();
+
+        try
+        {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse( new File( path ) );
+            if ( doc == null )
+            {
+                System.out.println( "DECodes related XML file not found" );
+                return null;
+            }
+
+            NodeList listOfDECodes = doc.getElementsByTagName( "de-code" );
+            int totalDEcodes = listOfDECodes.getLength();
+
+            for ( int s = 0; s < totalDEcodes; s++ )
+            {
+                Element deCodeElement = (Element) listOfDECodes.item( s );
+                NodeList textDECodeList = deCodeElement.getChildNodes();
+
+                String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
+                String stype = deCodeElement.getAttribute( "stype" );
+                String ptype = deCodeElement.getAttribute( "type" );
+                int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
+                int rowno = new Integer( deCodeElement.getAttribute( "rowno" ) );
+                int colno = new Integer( deCodeElement.getAttribute( "colno" ) );
+                int rowMerge = new Integer( deCodeElement.getAttribute( "rowmerge" ) );
+                int colMerge = new Integer( deCodeElement.getAttribute( "colmerge" ) );
+
+                Report_inDesign reportDesign = new Report_inDesign( stype, ptype, sheetno, rowno, colno, rowMerge,
+                    colMerge, expression );
+
+                deCodes.add( reportDesign );
+
+            }// end of for loop with s var
+        }// try block end
+        catch ( SAXParseException err )
+        {
+            System.out.println( "** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId() );
+            System.out.println( " " + err.getMessage() );
+        }
+        catch ( SAXException e )
+        {
+            Exception x = e.getException();
+            ((x == null) ? e : x).printStackTrace();
+        }
+        catch ( Throwable t )
+        {
+            t.printStackTrace();
+        }
+        return deCodes;
+    }// getDECodes end
+
+    // -------------------------------------------------------------------------
+    // Get Aggregated Result for dataelement/attribute/tracker expression
+    // -------------------------------------------------------------------------
+
+    public List<Report_inDesign> getReportDesignForTracker( String fileName )
+    {
+        List<Report_inDesign> reportDesignList = new ArrayList<Report_inDesign>();
+
+        String path = System.getProperty( "user.home" ) + File.separator + "dhis" + File.separator
+            + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+            + File.separator + fileName;
+        try
+        {
+            String newpath = System.getenv( "DHIS2_HOME" );
+            if ( newpath != null )
+            {
+                path = newpath + File.separator
+                    + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+                    + File.separator + fileName;
+            }
+        }
+        catch ( NullPointerException npe )
+        {
+            System.out.println( "DHIS2_HOME not set" );
+        }
+
+        try
+        {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse( new File( path ) );
+            if ( doc == null )
+            {
+                System.out.println( "There is no DECodes related XML file in the ra folder" );
+                return null;
+            }
+
+            NodeList listOfDECodes = doc.getElementsByTagName( "de-code" );
+            int totalDEcodes = listOfDECodes.getLength();
+
+            for ( int s = 0; s < totalDEcodes; s++ )
+            {
+                Element deCodeElement = (Element) listOfDECodes.item( s );
+                NodeList textDECodeList = deCodeElement.getChildNodes();
+
+                String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
+                String stype = deCodeElement.getAttribute( "stype" );
+                String ptype = deCodeElement.getAttribute( "type" );
+                int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
+                int rowno = new Integer( deCodeElement.getAttribute( "rowno" ) );
+                int colno = new Integer( deCodeElement.getAttribute( "colno" ) );
+
+                Report_inDesign report_inDesign = new Report_inDesign( stype, ptype, sheetno, rowno, colno, expression );
+                reportDesignList.add( report_inDesign );
+            }// end of for loop with s var
+        }// try block end
+        catch ( SAXParseException err )
+        {
+            System.out.println( "** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId() );
+            System.out.println( " " + err.getMessage() );
+        }
+        catch ( SAXException e )
+        {
+            Exception x = e.getException();
+            ((x == null) ? e : x).printStackTrace();
+        }
+        catch ( Throwable t )
+        {
+            t.printStackTrace();
+        }
+        return reportDesignList;
+    }
+
+    public List<Report_inDesign> getReportDesignForHeader( String fileName )
+    {
+        List<Report_inDesign> deCodes = new ArrayList<Report_inDesign>();
+
+        String path = System.getProperty( "user.home" ) + File.separator + "dhis" + File.separator
+            + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+            + File.separator + fileName;
+        try
+        {
+            String newpath = System.getenv( "DHIS2_HOME" );
+            if ( newpath != null )
+            {
+                path = newpath + File.separator
+                    + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+                    + File.separator + fileName;
+            }
+        }
+        catch ( NullPointerException npe )
+        {
+            System.out.println( "DHIS2_HOME not set" );
+        }
+
+        try
+        {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse( new File( path ) );
+            if ( doc == null )
+            {
+                System.out.println( "DECodes related XML file not found" );
+                return null;
+            }
+
+            NodeList listOfDECodes = doc.getElementsByTagName( "header-info" );
+            int totalDEcodes = listOfDECodes.getLength();
+
+            for ( int s = 0; s < totalDEcodes; s++ )
+            {
+                Element deCodeElement = (Element) listOfDECodes.item( s );
+                NodeList textDECodeList = deCodeElement.getChildNodes();
+
+                String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
+                String stype = deCodeElement.getAttribute( "stype" );
+                String ptype = deCodeElement.getAttribute( "type" );
+                int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
+                int rowno = new Integer( deCodeElement.getAttribute( "rowno" ) );
+                int colno = new Integer( deCodeElement.getAttribute( "colno" ) );
+
+                Report_inDesign reportDesign = new Report_inDesign( stype, ptype, sheetno, rowno, colno, expression );
+
+                deCodes.add( reportDesign );
+
+            }// end of for loop with s var
+        }// try block end
+        catch ( SAXParseException err )
+        {
+            System.out.println( "** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId() );
+            System.out.println( " " + err.getMessage() );
+        }
+        catch ( SAXException e )
+        {
+            Exception x = e.getException();
+            ((x == null) ? e : x).printStackTrace();
+        }
+        catch ( Throwable t )
+        {
+            t.printStackTrace();
+        }
+        return deCodes;
+    }// getDECodes end
+
     public Period getPreviousPeriod( Date startDate, Date endDate )
     {
         Period period = new Period();
@@ -637,7 +1064,7 @@ public class DefaultReportService
             cal.set( year, Calendar.DECEMBER, 31 );
         }
         Date lastDay = new Date( cal.getTimeInMillis() );
-
+        // System.out.println( lastDay.toString() );
         Period newPeriod = new Period();
         newPeriod = periodService.getPeriod( firstDay, lastDay, periodType );
         return newPeriod;
@@ -706,6 +1133,7 @@ public class DefaultReportService
             tempEndDate.setTime( endDate );
         }
 
+        // System.out.print(deType+" -- ");
         calendarList.add( tempStartDate );
         calendarList.add( tempEndDate );
 
@@ -792,14 +1220,11 @@ public class DefaultReportService
 
         return null;
 
-    }
-
-    // getDataElementPeriodType end
+    } // getDataElementPeriodType end
 
     // -------------------------------------------------------------------------
     // Get Aggregated Result for dataelement expression
     // -------------------------------------------------------------------------
-
     public String getResultDataValue( String formula, Date startDate, Date endDate, OrganisationUnit organisationUnit,
         String reportModelTB )
     {
@@ -820,8 +1245,8 @@ public class DefaultReportService
                 String replaceString = matcher.group();
 
                 replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
-                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1, replaceString
-                    .length() );
+                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1,
+                    replaceString.length() );
 
                 replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
 
@@ -842,7 +1267,9 @@ public class DefaultReportService
                 {
                     Double aggregatedValue = aggregationService.getAggregatedDataValue( dataElement, optionCombo,
                         startDate, endDate, organisationUnit );
-
+                    // System.out.println( dataElement.getId() + " : " +
+                    // optionCombo.getId() + " : " + startDate + " : " + endDate
+                    // + " : " + organisationUnit + " : " + aggregatedValue);
                     if ( aggregatedValue == null )
                     {
                         replaceString = NULL_REPLACEMENT;
@@ -858,7 +1285,9 @@ public class DefaultReportService
                 {
                     deFlag1 = 1;
                     PeriodType dePeriodType = getDataElementPeriodType( dataElement );
-
+                    // List<Period> periodList = new ArrayList<Period>(
+                    // periodService.getIntersectingPeriodsByPeriodType(
+                    // dePeriodType, startDate, endDate ) );
                     List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates(
                         dePeriodType, startDate, endDate ) );
                     Period tempPeriod = new Period();
@@ -874,12 +1303,13 @@ public class DefaultReportService
                     }
 
                     //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
-                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit, optionCombo );
                     
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit, optionCombo );
+
                     if ( dataValue != null && dataValue.getValue() != null )
                     {
                         replaceString = dataValue.getValue();
-                    } 
+                    }
                     else
                     {
                         replaceString = "";
@@ -902,8 +1332,11 @@ public class DefaultReportService
                 double d = 0.0;
                 try
                 {
+
                     d = MathUtils.calculateExpression( buffer.toString() );
-                    d = Math.round(d);
+
+                    d = Math.round( d );
+
                 }
                 catch ( Exception e )
                 {
@@ -985,8 +1418,8 @@ public class DefaultReportService
                 String replaceString = matcher.group();
 
                 replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
-                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1, replaceString
-                    .length() );
+                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1,
+                    replaceString.length() );
 
                 replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
 
@@ -1007,6 +1440,9 @@ public class DefaultReportService
                 {
 
                     PeriodType dePeriodType = getDataElementPeriodType( dataElement );
+                    // List<Period> periodList = new ArrayList<Period>(
+                    // periodService.getIntersectingPeriodsByPeriodType(
+                    // dePeriodType, startDate, endDate ) );
                     List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates(
                         dePeriodType, startDate, endDate ) );
 
@@ -1021,10 +1457,10 @@ public class DefaultReportService
                         double aggregatedValue = 0.0;
                         for ( Period tempPeriod : periodList )
                         {
-                            //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement,  tempPeriod, optionCombo );
+                            //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
                             DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit, optionCombo );
 
-                            if ( dataValue != null )
+                            if ( dataValue != null && dataValue.getValue() != null )
                             {
                                 aggregatedValue += Double.parseDouble( dataValue.getValue() );
 
@@ -1038,7 +1474,9 @@ public class DefaultReportService
                 {
                     deFlag1 = 1;
                     PeriodType dePeriodType = getDataElementPeriodType( dataElement );
-
+                    // List<Period> periodList = new ArrayList<Period>(
+                    // periodService.getIntersectingPeriodsByPeriodType(
+                    // dePeriodType, startDate, endDate ) );
                     List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates(
                         dePeriodType, startDate, endDate ) );
                     Period tempPeriod = new Period();
@@ -1055,7 +1493,7 @@ public class DefaultReportService
 
                     //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
                     DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit, optionCombo );
-
+                    
                     if ( dataValue != null )
                     {
                         replaceString = dataValue.getValue();
@@ -1083,8 +1521,11 @@ public class DefaultReportService
                 double d = 0.0;
                 try
                 {
+
                     d = MathUtils.calculateExpression( buffer.toString() );
-                    d = Math.round(d);
+
+                    d = Math.round( d );
+
                 }
                 catch ( Exception e )
                 {
@@ -1100,6 +1541,7 @@ public class DefaultReportService
                 }
                 else
                 {
+
                     // This is to display financial data as it is like 2.1476838
                     resultValue = "" + d;
 
@@ -1145,7 +1587,7 @@ public class DefaultReportService
         }
     }
 
-    // Function getBooleanDataValue Start
+    // functoin getBooleanDataValue stsrt
 
     public String getBooleanDataValue( String formula, Date startDate, Date endDate, OrganisationUnit organisationUnit,
         String reportModelTB )
@@ -1164,8 +1606,8 @@ public class DefaultReportService
                 String replaceString = matcher.group();
 
                 replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
-                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1, replaceString
-                    .length() );
+                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1,
+                    replaceString.length() );
 
                 replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
 
@@ -1188,7 +1630,9 @@ public class DefaultReportService
                     deFlag1 = 1;
                     deFlag2 = 0;
                     PeriodType dePeriodType = getDataElementPeriodType( dataElement );
-
+                    // List<Period> periodList = new ArrayList<Period>(
+                    // periodService.getIntersectingPeriodsByPeriodType(
+                    // dePeriodType, startDate, endDate ) );
                     List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates(
                         dePeriodType, startDate, endDate ) );
                     Period tempPeriod = new Period();
@@ -1254,8 +1698,11 @@ public class DefaultReportService
                 double d = 0.0;
                 try
                 {
+
                     d = MathUtils.calculateExpression( buffer.toString() );
-                    d = Math.round(d);
+
+                    d = Math.round( d );
+
                 }
                 catch ( Exception e )
                 {
@@ -1289,9 +1736,9 @@ public class DefaultReportService
         }
     }
 
-    // Function getBooleanDataValue End
+    // functoin getBooleanDataValue end
 
-    // Function getStartingEndingPeriods Starts
+    // function getStartingEndingPeriods starts
 
     public List<Calendar> getStartingEndingPeriods( String deType, Period selectedPeriod )
     {
@@ -1303,7 +1750,72 @@ public class DefaultReportService
         Period previousPeriod = new Period();
         previousPeriod = getPreviousPeriod( selectedPeriod );
 
-        if ( deType.equalsIgnoreCase( "ccmcy" ) )
+        // Financial current year
+        if ( deType.equalsIgnoreCase( "fcy" ) )
+        {
+            tempStartDate.setTime( selectedPeriod.getStartDate() );
+            tempEndDate.setTime( selectedPeriod.getStartDate() );
+
+            int currentYear = tempStartDate.get( Calendar.YEAR );
+
+            if ( tempStartDate.get( Calendar.MONTH ) < Calendar.APRIL )
+            {
+                tempStartDate.set( Calendar.YEAR, currentYear - 1 );
+                tempStartDate.set( Calendar.MONTH, Calendar.APRIL );
+                tempStartDate.set( Calendar.DATE, 1 );
+
+                tempEndDate.set( Calendar.YEAR, currentYear );
+                tempEndDate.set( Calendar.MONTH, Calendar.MARCH );
+                tempEndDate.set( Calendar.DATE, 31 );
+            }
+            else
+            {
+                tempStartDate.set( Calendar.YEAR, currentYear );
+                tempStartDate.set( Calendar.MONTH, Calendar.APRIL );
+                tempStartDate.set( Calendar.DATE, 1 );
+
+                tempEndDate.set( Calendar.YEAR, currentYear + 1 );
+                tempEndDate.set( Calendar.MONTH, Calendar.MARCH );
+                tempEndDate.set( Calendar.DATE, 31 );
+            }
+
+        }
+        // Financial previous year
+        else if ( deType.equalsIgnoreCase( "fpy" ) )
+        {
+            tempStartDate.setTime( selectedPeriod.getStartDate() );
+            tempEndDate.setTime( selectedPeriod.getEndDate() );
+
+            tempStartDate.roll( Calendar.YEAR, -1 );
+            tempEndDate.roll( Calendar.YEAR, -1 );
+
+            int currentYear = tempStartDate.get( Calendar.YEAR );
+
+            if ( tempStartDate.get( Calendar.MONTH ) < Calendar.APRIL )
+            {
+                tempStartDate.set( Calendar.YEAR, currentYear - 1 );
+                tempStartDate.set( Calendar.MONTH, Calendar.APRIL );
+                tempStartDate.set( Calendar.DATE, 1 );
+
+                tempEndDate.set( Calendar.YEAR, currentYear );
+                tempEndDate.set( Calendar.MONTH, Calendar.MARCH );
+                tempEndDate.set( Calendar.DATE, 31 );
+            }
+            else
+            {
+                tempStartDate.set( Calendar.YEAR, currentYear );
+                tempStartDate.set( Calendar.MONTH, Calendar.APRIL );
+                tempStartDate.set( Calendar.DATE, 1 );
+
+                tempEndDate.set( Calendar.YEAR, currentYear + 1 );
+                tempEndDate.set( Calendar.MONTH, Calendar.MARCH );
+                tempEndDate.set( Calendar.DATE, 31 );
+            }
+
+        }
+
+        // Commutative current month and current year from April
+        else if ( deType.equalsIgnoreCase( "ccmcy" ) )
         {
             tempStartDate.setTime( selectedPeriod.getStartDate() );
             if ( tempStartDate.get( Calendar.MONTH ) < Calendar.APRIL )
@@ -1313,6 +1825,7 @@ public class DefaultReportService
             tempStartDate.set( Calendar.MONTH, Calendar.APRIL );
             tempEndDate.setTime( selectedPeriod.getEndDate() );
         }
+
         else if ( deType.equalsIgnoreCase( "cpmcy" ) )
         {
             tempStartDate.setTime( previousPeriod.getStartDate() );
@@ -1323,6 +1836,8 @@ public class DefaultReportService
             tempStartDate.set( Calendar.MONTH, Calendar.APRIL );
             tempEndDate.setTime( previousPeriod.getEndDate() );
         }
+
+        // current month previous year
         else if ( deType.equalsIgnoreCase( "cmpy" ) )
         {
             tempStartDate.setTime( selectedPeriod.getStartDate() );
@@ -1331,6 +1846,8 @@ public class DefaultReportService
             tempStartDate.roll( Calendar.YEAR, -1 );
             tempEndDate.roll( Calendar.YEAR, -1 );
         }
+
+        // Commutative current month previous year
         else if ( deType.equalsIgnoreCase( "ccmpy" ) )
         {
             tempStartDate.setTime( selectedPeriod.getStartDate() );
@@ -1345,6 +1862,7 @@ public class DefaultReportService
             }
             tempStartDate.set( Calendar.MONTH, Calendar.APRIL );
         }
+        // previous month current year
         else if ( deType.equalsIgnoreCase( "pmcy" ) )
         {
             tempStartDate.setTime( previousPeriod.getStartDate() );
@@ -1396,6 +1914,7 @@ public class DefaultReportService
             tempEndDate.set( Calendar.MONTH, Calendar.DECEMBER );
             tempEndDate.set( Calendar.DATE, 31 );
         }
+
         else if ( deType.equalsIgnoreCase( "bfq1" ) )
         {
             tempStartDate.setTime( selectedPeriod.getStartDate() );
@@ -1434,6 +1953,7 @@ public class DefaultReportService
             tempEndDate.set( Calendar.MONTH, Calendar.JUNE );
             tempEndDate.set( Calendar.DATE, 30 );
         }
+        // CMCY current month current year
         else
         {
             tempStartDate.setTime( selectedPeriod.getStartDate() );
@@ -1446,7 +1966,7 @@ public class DefaultReportService
         return calendarList;
     }
 
-    // Function getPreviousPeriod Starts
+    // function getPreviousPeriod starts
     public Period getPreviousPeriod( Period selectedPeriod )
     {
         Period period = new Period();
@@ -1521,10 +2041,14 @@ public class DefaultReportService
             if ( deFlag1 == 0 )
             {
                 double d = 0.0;
+
                 try
                 {
+
                     d = MathUtils.calculateExpression( buffer.toString() );
-                    d = Math.round(d);
+
+                    d = Math.round( d );
+
                 }
                 catch ( Exception e )
                 {
@@ -1535,6 +2059,7 @@ public class DefaultReportService
                     d = 0.0;
                 }
                 else
+
                 {
                     d = Math.round( d * Math.pow( 10, 1 ) ) / Math.pow( 10, 1 );
                     resultValue = "" + d;
@@ -1646,8 +2171,11 @@ public class DefaultReportService
                 double d = 0.0;
                 try
                 {
+
                     d = MathUtils.calculateExpression( buffer.toString() );
-                    d = Math.round(d);
+
+                    d = Math.round( d );
+
                 }
                 catch ( Exception e )
                 {
@@ -1723,7 +2251,6 @@ public class DefaultReportService
 
             NodeList listOfDECodes = doc.getElementsByTagName( "de-code" );
             int totalDEcodes = listOfDECodes.getLength();
-            Map<String, String> globalValuesMap = mapGlobalValues();
 
             for ( int s = 0; s < totalDEcodes; s++ )
             {
@@ -1731,14 +2258,6 @@ public class DefaultReportService
                 NodeList textDECodeList = deCodeElement.getChildNodes();
 
                 String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
-
-                // ------------------------replace global
-                // values------------------------------------------------
-
-                expression = getGlobalExpression( expression, globalValuesMap );
-
-                // ---------------------------------------------------------------------------------------------
-
                 String stype = deCodeElement.getAttribute( "stype" );
                 String ptype = deCodeElement.getAttribute( "type" );
                 int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
@@ -1750,10 +2269,8 @@ public class DefaultReportService
                 Report_inDesign report_inDesign = new Report_inDesign( stype, ptype, sheetno, rowno, colno, rowMerge,
                     colMerge, expression );
                 reportDesignList.add( report_inDesign );
-            }
-            // end of for loop with s var
-        }
-        // try block end
+            }// end of for loop with s var
+        }// try block end
         catch ( SAXParseException err )
         {
             System.out.println( "** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId() );
@@ -1810,7 +2327,6 @@ public class DefaultReportService
 
             NodeList listOfDECodes = doc.getElementsByTagName( "de-code" );
             int totalDEcodes = listOfDECodes.getLength();
-            Map<String, String> globalValuesMap = mapGlobalValues();
 
             for ( int s = 0; s < totalDEcodes; s++ )
             {
@@ -1818,18 +2334,6 @@ public class DefaultReportService
                 NodeList textDECodeList = deCodeElement.getChildNodes();
 
                 String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
-
-                // ------------------------replace global
-                // values------------------------------------------------
-
-                System.out.println( "\n*INFO :<< CHECKING CONFIG FILE SETUP(2) >>" );
-                System.out.println( "*INFO :Global Value: " + expression );
-                expression = getGlobalExpression( expression, globalValuesMap );
-                System.out.println( "*INFO :Local Value: " + expression );
-                System.out.println( "*INFO :<<CHECK FINISHED>>\n" );
-
-                // ---------------------------------------------------------------------------------------------
-
                 String stype = deCodeElement.getAttribute( "stype" );
                 String ptype = deCodeElement.getAttribute( "type" );
                 int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
@@ -1874,8 +2378,8 @@ public class DefaultReportService
 
                 replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
 
-                String surveyIdString = replaceString.substring( replaceString.indexOf( '.' ) + 1, replaceString
-                    .length() );
+                String surveyIdString = replaceString.substring( replaceString.indexOf( '.' ) + 1,
+                    replaceString.length() );
 
                 replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
 
@@ -1928,8 +2432,11 @@ public class DefaultReportService
                 double d = 0.0;
                 try
                 {
+
                     d = MathUtils.calculateExpression( buffer.toString() );
-                    d = Math.round(d);
+
+                    d = Math.round( d );
+
                 }
                 catch ( Exception e )
                 {
@@ -1984,8 +2491,8 @@ public class DefaultReportService
                 String replaceString = matcher.group();
 
                 replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
-                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1, replaceString
-                    .length() );
+                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1,
+                    replaceString.length() );
 
                 replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
 
@@ -2037,9 +2544,8 @@ public class DefaultReportService
                     }
 
                     //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
-                    
                     DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit, optionCombo );
-                    
+
                     if ( dataValue != null && dataValue.getValue() != null )
                     {
                         replaceString = dataValue.getValue();
@@ -2066,8 +2572,11 @@ public class DefaultReportService
                 double d = 0.0;
                 try
                 {
+
                     d = MathUtils.calculateExpression( buffer.toString() );
-                    d = Math.round(d);
+
+                    d = Math.round( d );
+
                 }
                 catch ( Exception e )
                 {
@@ -2162,9 +2671,10 @@ public class DefaultReportService
                 Integer deId = rs.getInt( 1 );
                 Integer optionComId = rs.getInt( 2 );
                 Double aggregatedValue = rs.getDouble( 3 );
+
                 if ( aggregatedValue != null )
                 {
-                    aggDeMap.put( deId + "." + optionComId, "" + aggregatedValue );
+                    aggDeMap.put( deId + "." + optionComId, "" + Math.round( aggregatedValue ) );
                 }
             }
 
@@ -2176,6 +2686,25 @@ public class DefaultReportService
         }
     }
 
+    
+    /*
+     * SELECT sag.level, sag.parent, sag.name, case when sag1.dataelementid is null then 0 else sag1.dataelementid  end AS DE,
+ case when sag1.categoryoptioncomboid is null then 0 else sag1.categoryoptioncomboid end  AS CCI,
+SUM(  case when sag1.value is null then 0 else sag1.value::integer  end ) AS total, sag1.de_uid, sag1.coc_uid 
+FROM ( SELECT os.level,os.organisationunitid AS parent,ou.name,os1.organisationunitid AS actual 
+FROM _orgunitstructure os 
+INNER JOIN organisationunit ou ON ou.organisationunitid=os.organisationunitid INNER JOIN _orgunitstructure os1 ON os.organisationunitid = 
+CASE WHEN os.level=2 THEN os1.idlevel2 WHEN os.level=3 THEN os1.idlevel3 WHEN os.level=4 THEN os1.idlevel4 WHEN os.level=5 THEN os1.idlevel5 WHEN os.level=6 THEN os1.idlevel6 END 
+WHERE os.organisationunitid IN (9541, 10176, 10181, 10177, 1345995, 10178, 10179, 10180, 10478) )sag 
+INNER JOIN ( SELECT dv.dataelementid, de.uid AS de_uid, dv.categoryoptioncomboid, coc.uid AS coc_uid, dv.value,dv.sourceid FROM datavalue dv 
+INNER JOIN period p ON p.periodid=dv.periodid 
+INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid 
+INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid 
+WHERE dv.dataelementid IN (-1,3) AND dv.periodid IN (309, 307, 296, 306, 233, 310, 261, 294))sag1 ON sag.actual = sag1.sourceid 
+GROUP BY sag.parent, sag1.dataelementid,sag1.categoryoptioncomboid ORDER BY sag.level,sag.parent
+     */
+    
+    
     public Map<String, String> getResultDataValueFromAggregateTableByPeriodAgg( String orgUnitIdsByComma,
         String dataElmentIdsByComma, String periodIdsByComma )
     {
@@ -2330,6 +2859,49 @@ public class DefaultReportService
         }
     }
 
+    public Map<String, String> getAggNonNumberDataFromDataValueTable( String orgUnitIdsByComma,
+        String dataElmentIdsByComma, String periodIdsByComma )
+    {
+        Map<String, String> aggDeMap = new HashMap<String, String>();
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
+        try
+        {
+            String query = "";
+            if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+            {
+                query = "SELECT dataelementid,categoryoptioncomboid, SUM( cast( value as numeric) ) FROM datavalue "
+                    + " WHERE dataelementid IN (" + dataElmentIdsByComma + " ) AND " + " sourceid IN ("
+                    + orgUnitIdsByComma + " ) AND " + " periodid IN (" + periodIdsByComma
+                    + ") GROUP BY dataelementid,categoryoptioncomboid";
+            }
+            else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+            {
+                query = "SELECT dataelementid,categoryoptioncomboid, GROUP_CONCAT(value) FROM datavalue "
+                    + " WHERE dataelementid IN (" + dataElmentIdsByComma + " ) AND " + " sourceid IN ("
+                    + orgUnitIdsByComma + " ) AND " + " periodid IN (" + periodIdsByComma
+                    + ") GROUP BY dataelementid,categoryoptioncomboid";
+            }
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                Integer deId = rs.getInt( 1 );
+                Integer optionComId = rs.getInt( 2 );
+                String aggregatedNonNumberValue = rs.getString( 3 );
+                if ( aggregatedNonNumberValue != null )
+                {
+                    aggDeMap.put( deId + "." + optionComId, aggregatedNonNumberValue );
+                }
+            }
+
+            return aggDeMap;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
     public Map<String, String> getAggDataFromDataValueTable( String orgUnitIdsByComma, String dataElmentIdsByComma,
         String periodIdsByComma )
     {
@@ -2351,7 +2923,9 @@ public class DefaultReportService
                     + " WHERE dataelementid IN (" + dataElmentIdsByComma + " ) AND " + " sourceid IN ("
                     + orgUnitIdsByComma + " ) AND " + " periodid IN (" + periodIdsByComma
                     + ") GROUP BY dataelementid,categoryoptioncomboid";
+
             }
+
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
 
             while ( rs.next() )
@@ -2366,6 +2940,482 @@ public class DefaultReportService
             }
 
             return aggDeMap;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
+    public Map<String, String> getBatchDataFromDataValueTable( String orgUnitIdsByComma, String dataElmentIdsByComma,
+        String periodIdsByComma )
+    {
+        Map<String, String> aggDeMap = new HashMap<String, String>();
+
+        try
+        {
+            String query = "";
+            query = "SELECT periodid, value FROM datavalue " + " WHERE dataelementid IN (" + dataElmentIdsByComma
+                + " ) AND " + " sourceid IN (" + orgUnitIdsByComma + " ) AND " + " periodid IN (" + periodIdsByComma
+                + ")";
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                Integer periodId = rs.getInt( 1 );
+                // Double aggregatedValue = rs.getDouble( 2 );
+                Integer aggregatedValue = rs.getInt( 2 );
+                if ( aggregatedValue != null )
+                {
+                    aggDeMap.put( "" + periodId, "" + aggregatedValue );
+                }
+            }
+
+            return aggDeMap;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
+    public List<Report_inDesign> getHeaderInfo( String fileName )
+    {
+        List<Report_inDesign> reportDesignList = new ArrayList<Report_inDesign>();
+
+        String path = System.getProperty( "user.home" ) + File.separator + "dhis" + File.separator
+            + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+            + File.separator + fileName;
+        try
+        {
+            String newpath = System.getenv( "DHIS2_HOME" );
+            if ( newpath != null )
+            {
+                path = newpath + File.separator
+                    + configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue()
+                    + File.separator + fileName;
+            }
+        }
+        catch ( NullPointerException npe )
+        {
+            System.out.println( "DHIS2_HOME not set" );
+        }
+
+        try
+        {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse( new File( path ) );
+            if ( doc == null )
+            {
+                System.out.println( "There is no DECodes related XML file in the ra folder" );
+                return null;
+            }
+
+            NodeList listOfDECodes = doc.getElementsByTagName( "header-info" );
+            int totalDEcodes = listOfDECodes.getLength();
+
+            for ( int s = 0; s < totalDEcodes; s++ )
+            {
+                Element deCodeElement = (Element) listOfDECodes.item( s );
+                NodeList textDECodeList = deCodeElement.getChildNodes();
+
+                String expression = ((Node) textDECodeList.item( 0 )).getNodeValue().trim();
+                String stype = deCodeElement.getAttribute( "stype" );
+                String ptype = deCodeElement.getAttribute( "type" );
+                int sheetno = new Integer( deCodeElement.getAttribute( "sheetno" ) );
+                int rowno = new Integer( deCodeElement.getAttribute( "rowno" ) );
+                int colno = new Integer( deCodeElement.getAttribute( "colno" ) );
+
+                Report_inDesign report_inDesign = new Report_inDesign( stype, ptype, sheetno, rowno, colno, expression );
+                reportDesignList.add( report_inDesign );
+            }// end of for loop with s var
+        }// try block end
+        catch ( SAXParseException err )
+        {
+            System.out.println( "** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId() );
+            System.out.println( " " + err.getMessage() );
+        }
+        catch ( SAXException e )
+        {
+            Exception x = e.getException();
+            ((x == null) ? e : x).printStackTrace();
+        }
+        catch ( Throwable t )
+        {
+            t.printStackTrace();
+        }
+        return reportDesignList;
+    }
+
+    // get text data and date from data value table
+    public String getTextDataFromDataValueTable( String orgUnitIdsByComma, String dataElmentIdsByComma,
+        String periodIdsByComma )
+    {
+        String textData = "";
+
+        try
+        {
+            String query = "";
+
+            query = "SELECT  value  FROM datavalue " + " WHERE dataelementid IN (" + dataElmentIdsByComma + " ) AND "
+                + " sourceid IN (" + orgUnitIdsByComma + " ) AND " + " periodid IN (" + periodIdsByComma + ")";
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                String textValue = rs.getString( 1 );
+
+                if ( textValue != null )
+                {
+                    // textData += "," + textValue;
+
+                    textData += textValue + ",";
+                }
+            }
+
+            return textData;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
+    // get count of dataElement from data value table
+    public Integer getDataCountFromDataValueTable( String orgUnitIdsByComma, String dataElmentIdsByComma,
+        String periodIdsByComma )
+    {
+        Integer dataCount = 0;
+
+        try
+        {
+            String query = "";
+
+            query = "SELECT COUNT( value ) FROM datavalue " + " WHERE dataelementid IN (" + dataElmentIdsByComma
+                + " ) AND " + " sourceid IN (" + orgUnitIdsByComma + " ) AND " + " periodid IN (" + periodIdsByComma
+                + ")";
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            if ( rs.next() )
+            {
+                dataCount = rs.getInt( 1 );
+            }
+
+            return dataCount;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
+    public Map<String, String> getAggDataFromDataValueTableByDeAndOrgUnitwise( String orgUnitIdsByComma,
+        String dataElmentIdsByComma, String startDate, String endDate )
+    {
+        
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
+        int ouMaxLevel = organisationUnitService.getMaxOfOrganisationUnitLevels();
+        
+        String query = "";
+        
+        Map<String, String> aggDataMap = new HashMap<String, String>();
+        try
+        {
+            if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+            {
+                query = 
+                    "SELECT sag.level, sag.parent, sag.name, case when sag1.dataelementid is null then 0 else sag1.dataelementid end AS DE, case when sag1.categoryoptioncomboid is null then 0 else sag1.categoryoptioncomboid end AS CCI,SUM( case when sag1.value is null then 0 else sag1.value::integer  end ) AS total, sag1.de_uid, sag1.coc_uid "
+                        + " FROM "
+                        + "( "
+                        + "SELECT os.level,os.organisationunitid AS parent,ou.name,os1.organisationunitid AS actual "
+                        + " FROM _orgunitstructure os "
+                        + " INNER JOIN organisationunit ou ON ou.organisationunitid=os.organisationunitid "
+                        + " INNER JOIN _orgunitstructure os1 ON os.organisationunitid = CASE ";
+
+                    for ( int i = 2; i <= ouMaxLevel; i++ )
+                    {
+                        query += " WHEN os.level=" + i + " THEN os1.idlevel" + i + " ";
+                    }
+            
+                    query += " END" + " WHERE os.organisationunitid IN ("
+                        + orgUnitIdsByComma
+                        + ") "
+                        + ")sag"
+                        + " INNER JOIN "
+                        + " ( "
+                        + " SELECT dv.dataelementid, de.uid AS de_uid, dv.categoryoptioncomboid, coc.uid AS coc_uid, dv.value,dv.sourceid "
+                        + " FROM datavalue dv " + " INNER JOIN period p ON p.periodid=dv.periodid "
+                        + " INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid "
+                        + " INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid "
+                        + " WHERE dv.dataelementid IN (" + dataElmentIdsByComma + ") " + " AND p.startdate BETWEEN '"
+                        + startDate + "' AND '" + endDate + "'" + ")sag1 " + "ON sag.actual = sag1.sourceid "
+                        + " GROUP BY sag.parent, sag1.dataelementid,sag1.categoryoptioncomboid "
+                        + " ORDER BY sag.level,sag.parent";
+
+            }
+            
+            else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+            {
+                query = 
+                    "SELECT sag.level, sag.parent, sag.name, IFNULL(sag1.dataelementid,0) AS DE,IFNULL(sag1.categoryoptioncomboid,0) AS CCI,SUM(IFNULL(sag1.value,0)) AS total, sag1.de_uid, sag1.coc_uid "
+                        + " FROM "
+                        + "( "
+                        + "SELECT os.level,os.organisationunitid AS parent,ou.name,os1.organisationunitid AS actual "
+                        + " FROM _orgunitstructure os "
+                        + " INNER JOIN organisationunit ou ON ou.organisationunitid=os.organisationunitid "
+                        + " INNER JOIN _orgunitstructure os1 ON os.organisationunitid = CASE ";
+
+                    for ( int i = 2; i <= ouMaxLevel; i++ )
+                    {
+                        query += " WHEN os.level=" + i + " THEN os1.idlevel" + i + " ";
+                    }
+
+                    query += " END" + " WHERE os.organisationunitid IN ("
+                        + orgUnitIdsByComma
+                        + ") "
+                        + ")sag"
+                        + " INNER JOIN "
+                        + " ( "
+                        + " SELECT dv.dataelementid, de.uid AS de_uid, dv.categoryoptioncomboid, coc.uid AS coc_uid, dv.value,dv.sourceid "
+                        + " FROM datavalue dv " + " INNER JOIN period p ON p.periodid=dv.periodid "
+                        + " INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid "
+                        + " INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid "
+                        + " WHERE dv.dataelementid IN (" + dataElmentIdsByComma + ") " + " AND p.startdate BETWEEN '"
+                        + startDate + "' AND '" + endDate + "'" + ")sag1 " + "ON sag.actual = sag1.sourceid "
+                        + " GROUP BY sag.parent, sag1.dataelementid,sag1.categoryoptioncomboid "
+                        + " ORDER BY sag.level,sag.parent";
+                
+                
+            }
+
+            /*
+             * 
+             * "SELECT sag.level, sag.parent, sag.name, IFNULL(sag1.dataelementid,0) AS DE,IFNULL(sag1.categoryoptioncomboid,0) AS CCI,SUM(IFNULL(sag1.value,0)) AS total "
+             * + " FROM " + "( " +
+             * "SELECT os.level,os.organisationunitid AS parent,ou.name,os1.organisationunitid AS actual "
+             * + " FROM _orgunitstructure os " +
+             * " INNER JOIN organisationunit ou ON ou.organisationunitid=os.organisationunitid "
+             * +
+             * " INNER JOIN _orgunitstructure os1 ON os.organisationunitid = CASE "
+             * ;
+             * 
+             * for( int i = 2; i <= ouMaxLevel; i++ ) { query +=
+             * " WHEN os.level="+i+" THEN os1.idlevel"+i+ " "; }
+             * 
+             * query += " END" + " WHERE os.organisationunitid IN ("+
+             * orgUnitIdsByComma +") " + ")sag" + " INNER JOIN "+ " ( " +
+             * " SELECT dv.dataelementid,dv.categoryoptioncomboid,dv.value,dv.sourceid "
+             * + " FROM datavalue dv "+
+             * " INNER JOIN period p ON p.periodid=dv.periodid "+
+             * " WHERE dv.dataelementid IN ("+ dataElmentIdsByComma +") " +
+             * " AND p.startdate BETWEEN '"+ startDate +"' AND '"+ endDate +"'"
+             * + ")sag1 " + "ON sag.actual = sag1.sourceid " +
+             * " GROUP BY sag.parent, sag1.dataelementid,sag1.categoryoptioncomboid "
+             * + " ORDER BY sag.level,sag.parent";
+             */
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                Integer ouId = rs.getInt( 2 );
+                //Integer deId = rs.getInt( 4 );
+                //Integer optionComId = rs.getInt( 5 );
+                // Integer periodId = rs.getInt( 3 );
+                Double aggregatedValue = rs.getDouble( 6 );
+                String deUID = rs.getString( 7 );
+                String optionComUID = rs.getString( 8 );
+
+                if ( aggregatedValue != null )
+                {
+                    aggDataMap.put( ouId + ":" + deUID + ":" + optionComUID, "" + aggregatedValue );
+                }
+            }
+
+            return aggDataMap;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
+    public Map<String, String> getAggDataFromDataValueTableByDeAndOrgUnitwise( String orgUnitIdsByComma,
+        String dataElmentIdsByComma, String periodIdsByComma )
+    {
+        
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
+        int ouMaxLevel = organisationUnitService.getMaxOfOrganisationUnitLevels();
+
+        Map<String, String> aggDataMap = new HashMap<String, String>();
+        
+        String query = "";
+        
+        try
+        {
+            if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+            {
+                query =
+
+                    "SELECT sag.level, sag.parent, sag.name, IFNULL(sag1.dataelementid,0) AS DE,IFNULL(sag1.categoryoptioncomboid,0) AS CCI,SUM(IFNULL(sag1.value,0)) AS total, sag1.de_uid, sag1.coc_uid "
+                        + " FROM "
+                        + "( "
+                        + "SELECT os.level,os.organisationunitid AS parent,ou.name,os1.organisationunitid AS actual "
+                        + " FROM _orgunitstructure os "
+                        + " INNER JOIN organisationunit ou ON ou.organisationunitid=os.organisationunitid "
+                        + " INNER JOIN _orgunitstructure os1 ON os.organisationunitid = CASE ";
+
+                    for ( int i = 2; i <= ouMaxLevel; i++ )
+                    {
+                        query += " WHEN os.level=" + i + " THEN os1.idlevel" + i + " ";
+                    }
+
+                    query += " END"
+                        + " WHERE os.organisationunitid IN ("
+                        + orgUnitIdsByComma
+                        + ") "
+                        + ")sag"
+                        + " INNER JOIN "
+                        + " ( "
+                        + " SELECT dv.dataelementid, de.uid AS de_uid, dv.categoryoptioncomboid, coc.uid AS coc_uid, dv.value,dv.sourceid "
+                        + " FROM datavalue dv " + " INNER JOIN period p ON p.periodid=dv.periodid "
+                        + " INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid "
+                        + " INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid "
+                        + " WHERE dv.dataelementid IN (" + dataElmentIdsByComma + ") " + " AND dv.periodid IN ("
+                        + periodIdsByComma + ")" + ")sag1 " + "ON sag.actual = sag1.sourceid "
+                        + " GROUP BY sag.level, sag.parent, sag.name, sag1.dataelementid, sag1.categoryoptioncomboid, sag1.de_uid, sag1.coc_uid "
+                        + " ORDER BY sag.level,sag.parent";
+            }
+           
+            else if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+            {
+                query =
+
+                    "SELECT sag.level, sag.parent, sag.name, case when sag1.dataelementid is null then 0 else sag1.dataelementid  end AS DE, case when sag1.categoryoptioncomboid is null then 0 else sag1.categoryoptioncomboid end  AS CCI, SUM( case when sag1.value is null then 0 else sag1.value::integer  end ) AS total, sag1.de_uid, sag1.coc_uid "
+                        + " FROM "
+                        + "( "
+                        + "SELECT os.level,os.organisationunitid AS parent,ou.name,os1.organisationunitid AS actual "
+                        + " FROM _orgunitstructure os "
+                        + " INNER JOIN organisationunit ou ON ou.organisationunitid=os.organisationunitid "
+                        + " INNER JOIN _orgunitstructure os1 ON os.organisationunitid = CASE ";
+
+                    for ( int i = 2; i <= ouMaxLevel; i++ )
+                    {
+                        query += " WHEN os.level=" + i + " THEN os1.idlevel" + i + " ";
+                    }
+
+                    query += " END"
+                        + " WHERE os.organisationunitid IN ("
+                        + orgUnitIdsByComma
+                        + ") "
+                        + ")sag"
+                        + " INNER JOIN "
+                        + " ( "
+                        + " SELECT dv.dataelementid, de.uid AS de_uid, dv.categoryoptioncomboid, coc.uid AS coc_uid, dv.value,dv.sourceid "
+                        + " FROM datavalue dv " + " INNER JOIN period p ON p.periodid=dv.periodid "
+                        + " INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid "
+                        + " INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid "
+                        + " WHERE dv.dataelementid IN (" + dataElmentIdsByComma + ") " + " AND dv.periodid IN ("
+                        + periodIdsByComma + ")" + ")sag1 " + "ON sag.actual = sag1.sourceid "
+                        + " GROUP BY sag.level, sag.parent, sag.name, sag1.dataelementid, sag1.categoryoptioncomboid, sag1.de_uid, sag1.coc_uid "
+                        + " ORDER BY sag.level,sag.parent";                
+            }
+            
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                Integer ouId = rs.getInt( 2 );
+                // Integer deId = rs.getInt( 4 );
+                // Integer optionComId = rs.getInt( 5 );
+                Double aggregatedValue = rs.getDouble( 6 );
+                String deUID = rs.getString( 7 );
+                String optionComUID = rs.getString( 8 );
+
+                if ( aggregatedValue != null )
+                {
+                    aggDataMap.put( ouId + ":" + deUID + ":" + optionComUID, "" + aggregatedValue );
+                }
+            }
+
+            return aggDataMap;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
+    public Map<String, String> getCapturedDataFromDataValueTableByDeAndOrgUnitwise( String orgUnitIdsByComma,
+        String dataElmentIdsByComma, String periodIdsByComma )
+    {
+        
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
+        String query = "";
+        
+        Map<String, String> aggDataMap = new HashMap<String, String>();
+        try
+        {
+            if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+            {
+                query = " SELECT dv.sourceid, de.uid AS de_uid, coc.uid AS coc_uid, SUM(dv.value) "
+                    + " FROM datavalue dv " + " INNER JOIN period p ON p.periodid=dv.periodid "
+                    + " INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid "
+                    + " INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid "
+                    + " WHERE " + " dv.dataelementid IN (" + dataElmentIdsByComma + ") AND " + " dv.periodid IN ("
+                    + periodIdsByComma + ") AND " + " dv.sourceid IN (" + orgUnitIdsByComma + ") "
+                    + " GROUP BY dv.sourceid, dv.dataelementid, dv.categoryoptioncomboid ";
+            }
+            
+            else if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+            {
+                /*
+                query = " SELECT dv.sourceid, de.uid AS de_uid, coc.uid AS coc_uid, SUM( cast( value as numeric) ) "
+                    + " FROM datavalue dv " + " INNER JOIN period p ON p.periodid=dv.periodid "
+                    + " INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid "
+                    + " INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid "
+                    + " WHERE " + " dv.dataelementid IN (" + dataElmentIdsByComma + ") AND " + " dv.periodid IN ("
+                    + periodIdsByComma + ") AND " + " dv.sourceid IN (" + orgUnitIdsByComma + ") "
+                    + " GROUP BY dv.sourceid, dv.dataelementid, dv.categoryoptioncomboid ";
+                
+                */
+                
+                query = " SELECT dv.sourceid, de.uid AS de_uid, coc.uid AS coc_uid, SUM( cast( value as numeric) ) "
+                    + " FROM datavalue dv " + " INNER JOIN period p ON p.periodid=dv.periodid "
+                    + " INNER JOIN dataelement de ON de.dataelementid=dv.dataelementid "
+                    + " INNER JOIN categoryoptioncombo coc ON coc.categoryoptioncomboid=dv.categoryoptioncomboid "
+                    + " WHERE " + " dv.dataelementid IN (" + dataElmentIdsByComma + ") AND " + " dv.periodid IN ("
+                    + periodIdsByComma + ") AND " + " dv.sourceid IN (" + orgUnitIdsByComma + ") "
+                    + " GROUP BY dv.sourceid, de.uid, coc.uid "; 
+                
+                //System.out.println( "Query -- " + query );
+                
+                
+            }
+            
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                Integer ouId = rs.getInt( 1 );
+                String deUID = rs.getString( 2 );
+                String optionComUID = rs.getString( 3 );
+                Double aggregatedValue = rs.getDouble( 4 );
+
+                if ( aggregatedValue != null )
+                {
+                    aggDataMap.put( ouId + ":" + deUID + ":" + optionComUID, "" + aggregatedValue );
+                    
+                    //System.out.println( ouId +  " -- " + deUID +  " -- " + optionComUID +  " -- " + aggregatedValue );
+                    
+                }
+            }
+
+            return aggDataMap;
         }
         catch ( Exception e )
         {
@@ -2527,8 +3577,8 @@ public class DefaultReportService
                 String replaceString = matcher.group();
 
                 replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
-                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1, replaceString
-                    .length() );
+                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1,
+                    replaceString.length() );
 
                 replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
 
@@ -2575,8 +3625,11 @@ public class DefaultReportService
             double d = 0.0;
             try
             {
+
                 d = MathUtils.calculateExpression( buffer.toString() );
-                d = Math.round(d);
+
+                d = Math.round( d );
+
             }
             catch ( Exception e )
             {
@@ -2652,8 +3705,8 @@ public class DefaultReportService
         String compareText = partsOfFormula[2];
 
         Collection<Period> periods = new ArrayList<Period>( periodService.getPeriodsBetweenDates( startDate, endDate ) );
-        Collection<OrganisationUnit> orgUnits = new ArrayList<OrganisationUnit>( organisationUnitService
-            .getOrganisationUnitWithChildren( organisationUnit.getId() ) );
+        Collection<OrganisationUnit> orgUnits = new ArrayList<OrganisationUnit>(
+            organisationUnitService.getOrganisationUnitWithChildren( organisationUnit.getId() ) );
 
         int recordCount = 0;
         try
@@ -2714,33 +3767,75 @@ public class DefaultReportService
 
     public String getDataelementIdsAsString( List<Indicator> indicatorList )
     {
-        String dataElmentIdsByComma = "-1";
-        for ( Indicator indicator : indicatorList )
+        Set<DataElement> dataElementList = expressionService.getDataElementsInIndicators( indicatorList );
+        Collection<Integer> dataElementIds = new ArrayList<Integer>(
+            getIdentifiers( DataElement.class, dataElementList ) );
+        String dataElmentIdsByComma = getCommaDelimitedString( dataElementIds );
+
+        if ( dataElmentIdsByComma == null )
         {
-            String formula = indicator.getNumerator() + " + " + indicator.getDenominator();
-            try
+            dataElmentIdsByComma = "-1";
+        }
+
+        /*
+         * String dataElmentIdsByComma = "-1"; for ( Indicator indicator :
+         * indicatorList ) { String formula = indicator.getNumerator() + " + " +
+         * indicator.getDenominator(); try { Pattern pattern = Pattern.compile(
+         * "(\\[\\d+\\.\\d+\\])" );
+         * 
+         * Matcher matcher = pattern.matcher( formula ); StringBuffer buffer =
+         * new StringBuffer();
+         * 
+         * while ( matcher.find() ) { String replaceString = matcher.group();
+         * 
+         * replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+         * replaceString = replaceString.substring( 0, replaceString.indexOf(
+         * '.' ) );
+         * 
+         * int dataElementId = Integer.parseInt( replaceString );
+         * dataElmentIdsByComma += "," + dataElementId; replaceString = "";
+         * matcher.appendReplacement( buffer, replaceString ); } } catch (
+         * Exception e ) {
+         * 
+         * } }
+         */
+
+        return dataElmentIdsByComma;
+    }
+
+    public String getDataelementIdsByStype( List<Report_inDesign> reportDesignList, String sType )
+    {
+        String dataElmentIdsByComma = "-1";
+        for ( Report_inDesign report_inDesign : reportDesignList )
+        {
+            if ( report_inDesign.getStype().equalsIgnoreCase( sType ) )
             {
-                Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
+                String formula = report_inDesign.getExpression();
 
-                Matcher matcher = pattern.matcher( formula );
-                StringBuffer buffer = new StringBuffer();
-
-                while ( matcher.find() )
+                try
                 {
-                    String replaceString = matcher.group();
+                    Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
 
-                    replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
-                    replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
+                    Matcher matcher = pattern.matcher( formula );
+                    StringBuffer buffer = new StringBuffer();
 
-                    int dataElementId = Integer.parseInt( replaceString );
-                    dataElmentIdsByComma += "," + dataElementId;
-                    replaceString = "";
-                    matcher.appendReplacement( buffer, replaceString );
+                    while ( matcher.find() )
+                    {
+                        String replaceString = matcher.group();
+
+                        replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+                        replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
+
+                        int dataElementId = Integer.parseInt( replaceString );
+                        dataElmentIdsByComma += "," + dataElementId;
+                        replaceString = "";
+                        matcher.appendReplacement( buffer, replaceString );
+                    }
                 }
-            }
-            catch ( Exception e )
-            {
+                catch ( Exception e )
+                {
 
+                }
             }
         }
 
@@ -2816,8 +3911,11 @@ public class DefaultReportService
             double d = 0.0;
             try
             {
+
                 d = MathUtils.calculateExpression( buffer.toString() );
-                d = Math.round(d);
+
+                d = Math.round( d );
+
             }
             catch ( Exception e )
             {
@@ -3282,7 +4380,7 @@ public class DefaultReportService
                 dataStatusPercentatge = 100;
             }
 
-            System.out.println( query + "  : " + dataStatusPercentatge );
+            // System.out.println( query + "  : " + dataStatusPercentatge );
 
             dataStatusPercentatge = Math.round( dataStatusPercentatge * Math.pow( 10, 0 ) ) / Math.pow( 10, 0 );
             if ( dataStatusPercentatge > constValue )
@@ -3294,46 +4392,301 @@ public class DefaultReportService
         return reportingOrgUnitCount;
     }
 
-    public String getDataelementIdsByStype( List<Report_inDesign> reportDesignList, String sType )
+    public String getResultDataValueForOrgUnitGroupMember( String formula, String orgUnitIdsByComma, Date startDate,
+        Date endDate, String reportModelTB )
     {
-        String dataElmentIdsByComma = "-1";
-        for ( Report_inDesign report_inDesign : reportDesignList )
+        int deFlag1 = 0;
+        int isAggregated = 0;
+
+        List<Period> tempPeriodList = new ArrayList<Period>( periodService.getIntersectingPeriods( startDate, endDate ) );
+        Collection<Integer> tempPeriodIds = new ArrayList<Integer>( getIdentifiers( Period.class, tempPeriodList ) );
+        String periodIdsByComma = getCommaDelimitedString( tempPeriodIds );
+
+        try
         {
-            if ( report_inDesign.getStype().equalsIgnoreCase( sType ) )
+            Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
+
+            Matcher matcher = pattern.matcher( formula );
+            StringBuffer buffer = new StringBuffer();
+
+            String query = "";
+            String resultValue = "";
+
+            while ( matcher.find() )
             {
-                String formula = report_inDesign.getExpression();
+                String replaceString = matcher.group();
 
-                try
+                replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+                String optionComboIdStr = replaceString.substring( replaceString.indexOf( '.' ) + 1,
+                    replaceString.length() );
+
+                replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
+
+                int dataElementId = Integer.parseInt( replaceString );
+                int optionComboId = Integer.parseInt( optionComboIdStr );
+
+                DataElement dataElement = dataElementService.getDataElement( dataElementId );
+                DataElementCategoryOptionCombo optionCombo = dataElementCategoryOptionComboService
+                    .getDataElementCategoryOptionCombo( optionComboId );
+
+                if ( dataElement == null || optionCombo == null )
                 {
-                    Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
+                    replaceString = "";
+                    matcher.appendReplacement( buffer, replaceString );
+                    continue;
+                }
 
-                    Matcher matcher = pattern.matcher( formula );
-                    StringBuffer buffer = new StringBuffer();
+                if ( dataElement.getType().equalsIgnoreCase( "int" ) )
+                {
+                    query = "SELECT SUM(value) FROM datavalue " + " WHERE dataelementid = " + dataElement.getId()
+                        + " AND " + " sourceid IN (" + orgUnitIdsByComma + " ) AND " + " periodid IN ("
+                        + periodIdsByComma + ")";
 
-                    while ( matcher.find() )
+                    SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+                    if ( rs.next() )
                     {
-                        String replaceString = matcher.group();
+                        Double aggregatedValue = rs.getDouble( 1 );
 
-                        replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
-                        replaceString = replaceString.substring( 0, replaceString.indexOf( '.' ) );
+                        if ( aggregatedValue == null )
+                        {
+                            replaceString = NULL_REPLACEMENT;
+                        }
+                        else
+                        {
+                            replaceString = String.valueOf( aggregatedValue );
+                            isAggregated = 1;
+                        }
+                    }
+                }
 
-                        int dataElementId = Integer.parseInt( replaceString );
-                        dataElmentIdsByComma += "," + dataElementId;
+                else
+                {
+                    deFlag1 = 1;
+                    PeriodType dePeriodType = getDataElementPeriodType( dataElement );
+
+                    List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates(
+                        dePeriodType, startDate, endDate ) );
+                    Period tempPeriod = new Period();
+                    if ( periodList == null || periodList.isEmpty() )
+                    {
                         replaceString = "";
                         matcher.appendReplacement( buffer, replaceString );
+                        continue;
                     }
+                    else
+                    {
+                        tempPeriod = (Period) periodList.get( 0 );
+                    }
+
+                    query = "SELECT CONCAT(value)  FROM datavalue " + " WHERE dataelementid =" + dataElement.getId()
+                        + " AND " + " sourceid IN (" + orgUnitIdsByComma + " ) AND " + " periodid = "
+                        + tempPeriod.getId() + ")";
+
+                    SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+                    if ( rs.next() )
+                    {
+                        String value = rs.getString( 1 );
+
+                        if ( value != null )
+                        {
+                            replaceString = value;
+                        }
+                        else
+                        {
+                            replaceString = "";
+                        }
+                    }
+
+                    if ( replaceString == null )
+                    {
+                        replaceString = "";
+                    }
+                }
+                matcher.appendReplacement( buffer, replaceString );
+
+                resultValue = replaceString;
+            }
+
+            matcher.appendTail( buffer );
+
+            if ( deFlag1 == 0 )
+            {
+                double d = 0.0;
+                try
+                {
+                    d = MathUtils.calculateExpression( buffer.toString() );
+                    d = Math.round( d );
                 }
                 catch ( Exception e )
                 {
-
+                    d = 0.0;
+                    resultValue = "";
                 }
+                if ( d == -1 )
+                {
+                    d = 0.0;
+                    resultValue = "";
+                }
+                else
+                {
+                    // This is to display financial data as it is like 2.1476838
+                    resultValue = "" + d;
+
+                    // These lines are to display financial data that do not
+                    // have decimals
+                    d = d * 10;
+                    if ( d % 10 == 0 )
+                    {
+                        resultValue = "" + (int) d / 10;
+                    }
+
+                    d = d / 10;
+
+                    // These line are to display non financial data that do not
+                    // require decimals
+                    if ( !(reportModelTB.equalsIgnoreCase( "STATIC-FINANCIAL" )) )
+                    {
+                        resultValue = "" + (double) d;
+                    }
+                }
+
             }
+            else
+            {
+                resultValue = buffer.toString();
+            }
+
+            if ( isAggregated == 0 )
+            {
+                resultValue = " ";
+            }
+
+            if ( resultValue.equalsIgnoreCase( "" ) )
+            {
+                resultValue = " ";
+            }
+
+            return resultValue;
         }
 
-        return dataElmentIdsByComma;
+        catch ( NumberFormatException ex )
+        {
+            throw new RuntimeException( "Illegal DataElement id", ex );
+        }
     }
 
-    public Map<String, String> getAggNonNumberDataFromDataValueTable( String orgUnitIdsByComma,
+    public Map<String, String> getResultDataFromDataValueTable( String orgUnitIdsByComma, String dataElmentIdsByComma,
+        String periodIdsByComma )
+    {
+        // System.out.println( " Inside Query Start : " + new Date() );
+
+        Map<String, String> aggDataMap = new HashMap<String, String>();
+
+        try
+        {
+            String query = "SELECT sourceid,dataelementid,categoryoptioncomboid,periodid,value FROM datavalue "
+                + " WHERE dataelementid IN (" + dataElmentIdsByComma + " ) AND " + " sourceid IN (" + orgUnitIdsByComma
+                + " ) AND " + " periodid IN (" + periodIdsByComma + ")";
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                Integer orgUnitId = rs.getInt( 1 );
+                Integer deId = rs.getInt( 2 );
+                Integer optionComId = rs.getInt( 3 );
+                // Integer periodId = rs.getInt( 4 );
+                Double aggregatedValue = rs.getDouble( 5 );
+                if ( aggregatedValue != null )
+                {
+                    aggDataMap.put( deId + "." + optionComId + ":" + orgUnitId, "" + aggregatedValue );
+                }
+            }
+
+            // System.out.println( " Inside Query End : " + new Date() );
+
+            return aggDataMap;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }
+
+    // delete Batch lock exception
+    public void deleteLockException( String orgUnitIdsByComma, String periodIdsByComma, String dataSetIdsByComma )
+    {
+        try
+        {
+            String query = "DELETE FROM lockexception WHERE organisationunitid IN (" + orgUnitIdsByComma + ")"
+                + " AND periodid IN (" + periodIdsByComma + ")" + " AND datasetid IN (" + dataSetIdsByComma + ")";
+
+            jdbcTemplate.execute( query );
+
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    // create batch lock exception
+    public void createBatchLockExceptions( String insertQuery )
+    {
+        try
+        {
+            jdbcTemplate.execute( insertQuery );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    // get Lock Exception from organisationUnitId,periodId,dataSetId
+    public Boolean getLockException( Integer organisationUnitId, Integer periodId, Integer dataSetId )
+    {
+        Boolean recordExist = false;
+
+        try
+        {
+            String query = "SELECT organisationunitid,periodid,datasetid FROM lockexception WHERE organisationunitid = "
+                + organisationUnitId + " AND " + " periodid = " + periodId + " AND datasetid = " + dataSetId;
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            if ( rs.next() )
+            {
+                recordExist = true;
+            }
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+
+        return recordExist;
+    }
+
+    // Methods for delete Lock Exception
+    @Transactional
+    public void deleteLockException( DataSet dataSet, Period period, OrganisationUnit organisationUnit )
+    {
+        reportStore.deleteLockException( dataSet, period, organisationUnit );
+    }
+
+    // Get Data value for Latest Period
+    @Transactional
+    public DataValue getLatestDataValue( DataElement dataElement, DataElementCategoryOptionCombo optionCombo,
+        OrganisationUnit organisationUnit )
+    {
+        return reportStore.getLatestDataValue( dataElement, optionCombo, organisationUnit );
+    }
+
+    // methods for getting Data from data value for GOI Monthly Report
+    public Map<String, String> getDataFromDataValueTableForGoiMonthly( String orgUnitIdsByComma,
         String dataElmentIdsByComma, String periodIdsByComma )
     {
         Map<String, String> aggDeMap = new HashMap<String, String>();
@@ -3350,21 +4703,21 @@ public class DefaultReportService
             }
             else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
             {
-                query = "SELECT dataelementid,categoryoptioncomboid, GROUP_CONCAT(value) FROM datavalue "
-                    + " WHERE dataelementid IN (" + dataElmentIdsByComma + " ) AND " + " sourceid IN ("
-                    + orgUnitIdsByComma + " ) AND " + " periodid IN (" + periodIdsByComma
-                    + ") GROUP BY dataelementid,categoryoptioncomboid";
+                query = "SELECT dataelementid,categoryoptioncomboid, SUM(value) FROM datavalue " + " WHERE "
+                    + " dataelementid IN (" + dataElmentIdsByComma + " ) AND " + " sourceid = " + orgUnitIdsByComma
+                    + " AND " + " periodid IN (" + periodIdsByComma + ") GROUP BY dataelementid,categoryoptioncomboid";
             }
+
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
 
             while ( rs.next() )
             {
                 Integer deId = rs.getInt( 1 );
                 Integer optionComId = rs.getInt( 2 );
-                String aggregatedNonNumberValue = rs.getString( 3 );
-                if ( aggregatedNonNumberValue != null )
+                Double value = rs.getDouble( 3 );
+                if ( value != null )
                 {
-                    aggDeMap.put( deId + "." + optionComId, aggregatedNonNumberValue );
+                    aggDeMap.put( deId + "." + optionComId, "" + value );
                 }
             }
 
@@ -3375,4 +4728,227 @@ public class DefaultReportService
             throw new RuntimeException( "Illegal DataElement id", e );
         }
     }
+
+    /*
+    public String getDataelementIds(List<Report_inDesign> reportDesignList)
+    {
+      String dataElmentIdsByComma = "-1";
+      for (Report_inDesign report_inDesign : reportDesignList)
+      {
+        String formula = report_inDesign.getExpression();
+        try
+        {
+          Pattern pattern = Pattern.compile("(\\[\\d+\\.\\d+\\])");
+
+          Matcher matcher = pattern.matcher(formula);
+          StringBuffer buffer = new StringBuffer();
+
+          while (matcher.find())
+          {
+            String replaceString = matcher.group();
+
+            replaceString = replaceString.replaceAll("[\\[\\]]", "");
+            replaceString = replaceString.substring(0, replaceString.indexOf(46));
+
+            int dataElementId = Integer.parseInt(replaceString);
+            dataElmentIdsByComma = dataElmentIdsByComma + "," + dataElementId;
+            replaceString = "";
+            matcher.appendReplacement(buffer, replaceString);
+          }
+        }
+        catch (Exception e)
+        {
+        }
+
+      }
+
+      return dataElmentIdsByComma;
+    }    
+    */
+    
+    //@SuppressWarnings( "unchecked" )
+    public List<Integer> getDataElementIds(List<Report_inDesign> reportDesignList)
+    {
+      List<Integer> dataElmentIdsList = new ArrayList<Integer>();
+      for (Report_inDesign report_inDesign : reportDesignList)
+      {
+        String formula = report_inDesign.getExpression();
+        try
+        {
+          Pattern pattern = Pattern.compile("(\\[\\d+\\.\\d+\\])");
+
+          Matcher matcher = pattern.matcher(formula);
+          StringBuffer buffer = new StringBuffer();
+
+          while (matcher.find())
+          {
+            String replaceString = matcher.group();
+
+            replaceString = replaceString.replaceAll("[\\[\\]]", "");
+            replaceString = replaceString.substring(0, replaceString.indexOf(46));
+
+            int dataElementId = Integer.parseInt(replaceString);
+            dataElmentIdsList.add(Integer.valueOf(dataElementId));
+            replaceString = "";
+            matcher.appendReplacement(buffer, replaceString);
+          }
+        }
+        catch (Exception e)
+        {
+        }
+      }
+      return dataElmentIdsList;
+    }    
+    // New Line Listing Report Related methods
+    
+    //--------------------------------------------------------------------------------
+    // get Program Stage Instance Ids
+    //--------------------------------------------------------------------------------
+    public Set<Integer> getProgramStageInstanceIds( Integer programId, Integer programStageId, Integer organisationUnitId, Period period )
+    {
+        Set<Integer> programStageInstanceIds = new HashSet<Integer>();
+        
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            String query = "SELECT  programstageinstanceid FROM programstageinstance  " +
+                            " INNER JOIN programinstance on programinstance.programinstanceid = programstageinstance.programinstanceid " +  
+                            " WHERE " +  
+                                " programinstance.programid = "+ programId +"  AND " + 
+                                " programstageinstance.programstageid = " + programStageId + " AND " + 
+                                " programstageinstance.organisationunitid = "+ organisationUnitId + " AND " +  
+                                " programstageinstance.executiondate between '"+ simpleDateFormat.format( period.getStartDate() ) + "'" + " AND '" + simpleDateFormat.format( period.getEndDate() ) + "'"; 
+           
+            
+            /*
+            SELECT  programstageinstanceid FROM programstageinstance 
+            INNER JOIN programinstance on programinstance.programinstanceid = programstageinstance.programinstanceid
+            WHERE  programinstance.programid = 465 AND 
+                   programstageinstance.programstageid = 466 AND  
+                   programstageinstance.organisationunitid = 50 AND    
+                   programstageinstance.executiondate between '2015-07-01' and '2015-07-31';
+            */
+            
+            
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+
+            while ( rs.next() )
+            {
+                Integer programStageInstanceId = rs.getInt( 1 );
+               
+                
+                if ( programStageInstanceId != null  )
+                {
+                    programStageInstanceIds.add( programStageInstanceId );
+                }
+            }
+            
+            return programStageInstanceIds;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal Program Stage Instance Id ", e );
+        }
+    }    
+
+    // get LineListing data with programStageInstanceId and dataElements from tracker Data Value
+    public Map<String, String> getTrackedEntityDataValue( Integer programId, Integer programStageId, String orgUnitIdsByComma, String dataElementIdsByComma, Period period )
+    {
+        Map<String, String> trackedEntityDataValueMap = new HashMap<String, String>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        
+        try
+        {
+            
+            String query = "SELECT  programstageinstance.organisationunitid,trackedentitydatavalue.programstageinstanceid,dataelementid, value FROM trackedentitydatavalue  " +
+                           " INNER JOIN programstageinstance ON programstageinstance.programstageinstanceid = trackedentitydatavalue.programstageinstanceid " +  
+                           " INNER JOIN programinstance on programinstance.programinstanceid = programstageinstance.programinstanceid " +      
+                           " WHERE " +  
+                           " programinstance.programid = "+ programId +"  AND " + 
+                           " programstageinstance.programstageid = " + programStageId + " AND " + 
+                           " programstageinstance.organisationunitid IN ( "+ orgUnitIdsByComma + " ) AND " + 
+                           " trackedentitydatavalue.dataelementid IN ( "+ dataElementIdsByComma + " ) AND " + 
+                           " programstageinstance.executiondate between '"+ simpleDateFormat.format( period.getStartDate() ) + "'" + " AND '" + simpleDateFormat.format( period.getEndDate() ) + "'"; 
+            
+            /*
+            SELECT  programstageinstance.organisationunitid,trackedentitydatavalue.programstageinstanceid,dataelementid, value FROM trackedentitydatavalue 
+            INNER JOIN programstageinstance ON programstageinstance.programstageinstanceid = trackedentitydatavalue.programstageinstanceid
+            INNER JOIN programinstance on programinstance.programinstanceid = programstageinstance.programinstanceid
+            WHERE  
+                 programinstance.programid = 465 AND 
+                 programstageinstance.programstageid = 466 AND  
+                 programstageinstance.organisationunitid IN (49,50) AND   
+                 trackedentitydatavalue.dataelementid IN ( 468,469,470,471,472,473 ) AND 
+                 programstageinstance.executiondate between '2015-08-01' and '2015-08-31';           
+            */
+            
+                        
+            //System.out.println( " SQUERY ======  :" + query );
+            
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+                
+            while ( rs.next() )
+            {
+                Integer orgUnitId = rs.getInt( 1 );
+                Integer programStageInstanceId = rs.getInt( 2 );
+                Integer dataElementId = rs.getInt( 3 );
+                String trackedDataValue = rs.getString( 4 );
+                
+                if ( trackedDataValue!= null  )
+                {
+                    String mapKey = orgUnitId + ":" + programStageInstanceId + ":" + dataElementId;
+                    
+                    //System.out.println("Map Key : \t" + mapKey + "Map Value : \t" + trackedDataValue );
+                    trackedEntityDataValueMap.put( mapKey,  trackedDataValue );
+                }
+            }
+            
+                //System.out.println( " Size of tracked Entity DataValue Map  inside service is ======  :" + trackedEntityDataValueMap.size() ); 
+                
+            return trackedEntityDataValueMap;
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Illegal DataElement id", e );
+        }
+    }    
+        
+    
+    
+    @Transactional
+    public Collection<Report_in> getAllNonSchedulableRports()
+    {
+        return reportStore.getAllNonSchedulableRports();
+    }
+
+    @Transactional
+    public Collection<Report_in> getAllNonScheduledRports()
+    {
+        return reportStore.getAllNonScheduledRports();
+    }
+
+    @Transactional
+    public Collection<Report_in> getAllSchedulableReports()
+    {
+        return reportStore.getAllSchedulableReports();
+    }
+
+    @Transactional
+    public Collection<Report_in> getAllSchedulabledEmailableReports()
+    {
+        return reportStore.getAllSchedulabledEmailableReports();
+    }
+
+    @Transactional
+    public Collection<Report_in> getAllSchedulabledNonEmailableReports()
+    {
+        return reportStore.getAllSchedulabledNonEmailableReports();
+    }
+
+    @Transactional
+    public Collection<Report_in> getAllScheduledReports()
+    {
+        return reportStore.getAllScheduledReports();
+    }
+
 }

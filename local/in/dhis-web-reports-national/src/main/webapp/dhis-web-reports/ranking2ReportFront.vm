@@ -40,7 +40,7 @@
         <input type="hidden" name="ouIDTB" id="ouIDTB" />
         <input type="hidden" name="reportTypeNameTB" id="reportTypeNameTB" value="$reportTypeName" />		
 	</div>
-    <table align="center" style=" border-collapse: collapse; margin-top: 0;" cellpadding="0" cellspacing="6" border=0>                      
+     <table align="center" style=" border-collapse: collapse; margin-top: 0;" cellpadding="0" cellspacing="0" width="730" border=0>                    
         <tr>
             <td class="NormalB">
 				1. $i18n.getString( "organisationunit" ) :<br />
@@ -103,11 +103,30 @@
             <td>&nbsp;</td>
         </tr>
         <tr>
-			<td>&nbsp;</td>
+			<td><input type="submit" id= "generate1" name="generate1" value='$i18n.getString( "generate_report_facility_wise" )' style="width:200px" disabled="disabled" onclick="callAction('STATE')"/></td>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" id= "generate" name="generate" value='$i18n.getString( "generate_report" )' style="width:200px" />
+				<input type="submit" id= "generate" name="generate" value='$i18n.getString( "generate_report_individual" )' style="width:200px" disabled="disabled" onclick="callAction('DISTRICT')"/>
             </td>
 		</tr>
     </table>
 </form>
+
+<script>	
+function callAction( actionName )
+{
+	if( formValidations() )
+	{        
+		if( actionName == "DISTRICT" )
+		{
+			document.reportForm.action = "generateRanking2Report.action";
+			document.reportForm.submit();
+		}
+		else
+		{
+			document.reportForm.action = "generateStateRanking2Report.action";
+			document.reportForm.submit();
+		}
+	}
+}	
+</script>

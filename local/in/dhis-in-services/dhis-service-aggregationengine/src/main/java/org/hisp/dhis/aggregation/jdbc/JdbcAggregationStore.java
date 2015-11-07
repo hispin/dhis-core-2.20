@@ -28,6 +28,8 @@ package org.hisp.dhis.aggregation.jdbc;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import static org.hisp.dhis.commons.util.TextUtils.getCommaDelimitedString;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,7 +41,6 @@ import org.hisp.dhis.aggregation.AggregationStore;
 import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.period.Period;
 
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
 
 /**
  * @author Lars Helge Overland
@@ -67,6 +68,8 @@ public class JdbcAggregationStore
     {
         if ( sourceIds != null && sourceIds.size() > 0 && periodIds != null && periodIds.size() > 0 )
         {
+            //String allIds = TextUtils.join(",", periodIds);// for string type list
+            
             final StatementHolder holder = statementManager.getHolder();
             
             final String categoryOptionComboCriteria = optionComboId != null ? "AND categoryoptioncomboid = " + optionComboId + " " : "";

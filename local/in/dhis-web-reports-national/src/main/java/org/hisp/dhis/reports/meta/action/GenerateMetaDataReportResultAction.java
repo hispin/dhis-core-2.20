@@ -23,7 +23,6 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-import org.amplecode.quick.StatementManager;
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.config.Configuration_IN;
 import org.hisp.dhis.dataelement.DataElement;
@@ -86,13 +85,14 @@ public class GenerateMetaDataReportResultAction
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
+    /*
     private StatementManager statementManager;
 
     public void setStatementManager( StatementManager statementManager )
     {
         this.statementManager = statementManager;
     }
-
+    */
     private DataElementService dataElementService;
 
     public void setDataElementService( DataElementService dataElementService )
@@ -156,7 +156,6 @@ public class GenerateMetaDataReportResultAction
         this.userService = userService;
     }
     
-
     private ReportService reportService;
 
     public void setReportService( ReportService reportService )
@@ -211,7 +210,7 @@ public class GenerateMetaDataReportResultAction
     public String execute()
         throws Exception
     {
-        statementManager.initialise();
+        //statementManager.initialise();
 
         raFolderName = reportService.getRAFolderName();
 
@@ -270,7 +269,8 @@ public class GenerateMetaDataReportResultAction
         {
             generateDataSetMemberReport();
         }
-        statementManager.destroy();
+        
+        //statementManager.destroy();
 
         System.out.println( "MetaDataReport Generation End Time is : " + new Date() );
 
@@ -296,7 +296,8 @@ public class GenerateMetaDataReportResultAction
             organisationUnitgroupService.getAllOrganisationUnitGroups() );
         int countOrgUnitGroup = orgUnitGroupList.size();
 
-        List<DataElement> dataelement = new ArrayList<DataElement>( dataElementService.getAllActiveDataElements() );
+        //List<DataElement> dataelement = new ArrayList<DataElement>( dataElementService.getAllActiveDataElements() );
+        List<DataElement> dataelement = new ArrayList<DataElement>( dataElementService.getAllDataElements() );
         int countdatelement = dataelement.size();
 
         List<DataElementGroup> dataElementGroupList = new ArrayList<DataElementGroup>( dataElementService
@@ -513,7 +514,7 @@ public class GenerateMetaDataReportResultAction
                 {
                     sheet0.addCell( new Number( colStart, rowStart, dataElement.getId(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 1, rowStart, dataElement.getName(), wCellformat ) );
-                    sheet0.addCell( new Label( colStart + 2, rowStart, dataElement.getAlternativeName(), wCellformat ) );
+                    sheet0.addCell( new Label( colStart + 2, rowStart, dataElement.getName(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 3, rowStart, dataElement.getAggregationOperator(),
                         wCellformat ) );
                     sheet0.addCell( new Label( colStart + 4, rowStart, dataElement.getDescription(), wCellformat ) );
@@ -525,7 +526,8 @@ public class GenerateMetaDataReportResultAction
                     String domainType = new String();
                     if ( dataElement.getDomainType() != null )
                     {
-                        domainType = dataElement.getDomainType();
+                        domainType = dataElement.getDomainType().name();
+                        //domainType = dataElement.getDomainTypeNullSafe();
                     }
                     else
                     {
@@ -682,7 +684,7 @@ public class GenerateMetaDataReportResultAction
                     {
                         sheet0.addCell( new Number( colStart, rowStart, dataElement.getId(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 1, rowStart, dataElement.getName(), wCellformat ) );
-                        sheet0.addCell( new Label( colStart + 2, rowStart, dataElement.getAlternativeName(),
+                        sheet0.addCell( new Label( colStart + 2, rowStart, dataElement.getName(),
                             wCellformat ) );
                         sheet0.addCell( new Label( colStart + 3, rowStart, dataElement.getAggregationOperator(),
                             wCellformat ) );
@@ -695,7 +697,8 @@ public class GenerateMetaDataReportResultAction
                         String domainType = new String();
                         if ( dataElement.getDomainType() != null )
                         {
-                            domainType = dataElement.getDomainType();
+                            domainType = dataElement.getDomainType().getValue();
+                            //domainType = dataElement.getDomainTypeNullSafe();
                         }
                         else
                         {
@@ -1389,7 +1392,7 @@ public class GenerateMetaDataReportResultAction
                 {
                     sheet0.addCell( new Number( colStart, rowStart, indicator.getId(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 1, rowStart, indicator.getName(), wCellformat ) );
-                    sheet0.addCell( new Label( colStart + 2, rowStart, indicator.getAlternativeName(), wCellformat ) );
+                    sheet0.addCell( new Label( colStart + 2, rowStart, indicator.getName(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 3, rowStart, indicator.getCode(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 4, rowStart, expressionService
                         .getExpressionDescription( indicator.getNumerator() ), wCellformat ) );
@@ -1538,7 +1541,7 @@ public class GenerateMetaDataReportResultAction
                         sheet0.addCell( new Number( colStart, rowStart, indicator.getId(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 1, rowStart, indicator.getName(), wCellformat ) );
                         sheet0
-                            .addCell( new Label( colStart + 2, rowStart, indicator.getAlternativeName(), wCellformat ) );
+                            .addCell( new Label( colStart + 2, rowStart, indicator.getName(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 3, rowStart, indicator.getCode(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 4, rowStart, expressionService
                             .getExpressionDescription( indicator.getNumerator() ), wCellformat ) );
@@ -1653,7 +1656,7 @@ public class GenerateMetaDataReportResultAction
                     sheet0.addCell( new Label( colStart + 1, rowStart, dataSet.getName(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 2, rowStart, dataSet.getShortName(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 3, rowStart, dataSet.getCode(), wCellformat ) );
-                    sheet0.addCell( new Label( colStart + 4, rowStart, dataSet.getAlternativeName(), wCellformat ) );
+                    sheet0.addCell( new Label( colStart + 4, rowStart, dataSet.getName(), wCellformat ) );
                     sheet0
                         .addCell( new Label( colStart + 5, rowStart, dataSet.getPeriodType().getName(), wCellformat ) );
                 }
@@ -1754,7 +1757,9 @@ public class GenerateMetaDataReportResultAction
                         .getMathematicalOperator(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 4, rowStart, validationRule.getOperator().toString(),
                         wCellformat ) );
-                    sheet0.addCell( new Label( colStart + 5, rowStart, validationRule.getType(), wCellformat ) );
+                    
+                    //sheet0.addCell( new Label( colStart + 5, rowStart, validationRule.getType(), wCellformat ) );
+                    sheet0.addCell( new Label( colStart + 5, rowStart, validationRule.getRuleType(), wCellformat ) );
                     sheet0.addCell( new Label( colStart + 6, rowStart, validationRule.getLeftSide().getDescription(),
                         wCellformat ) );
                     sheet0.addCell( new Label( colStart + 7, rowStart, validationRule.getRightSide().getDescription(),
@@ -1889,7 +1894,8 @@ public class GenerateMetaDataReportResultAction
                             .getMathematicalOperator(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 4, rowStart, validationRule.getOperator().toString(),
                             wCellformat ) );
-                        sheet0.addCell( new Label( colStart + 5, rowStart, validationRule.getType(), wCellformat ) );
+                        //sheet0.addCell( new Label( colStart + 5, rowStart, validationRule.getType(), wCellformat ) );
+                        sheet0.addCell( new Label( colStart + 5, rowStart, validationRule.getRuleType(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 6, rowStart, validationRule.getLeftSide()
                             .getDescription(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 7, rowStart, validationRule.getRightSide()
@@ -2168,7 +2174,7 @@ public class GenerateMetaDataReportResultAction
                     {
                         sheet0.addCell( new Number( colStart, rowStart, dataElement.getId(), wCellformat ) );
                         sheet0.addCell( new Label( colStart + 1, rowStart, dataElement.getName(), wCellformat ) );
-                        sheet0.addCell( new Label( colStart + 2, rowStart, dataElement.getAlternativeName(),
+                        sheet0.addCell( new Label( colStart + 2, rowStart, dataElement.getName(),
                             wCellformat ) );
                         sheet0.addCell( new Label( colStart + 3, rowStart, dataElement.getAggregationOperator(),
                             wCellformat ) );
@@ -2181,7 +2187,9 @@ public class GenerateMetaDataReportResultAction
                         String domainType = new String();
                         if ( dataElement.getDomainType() != null )
                         {
-                            domainType = dataElement.getDomainType();
+                            domainType = dataElement.getDomainType().name();
+                            //domainType = dataElement.getDomainTypeNullSafe();
+                            
                         }
                         else
                         {

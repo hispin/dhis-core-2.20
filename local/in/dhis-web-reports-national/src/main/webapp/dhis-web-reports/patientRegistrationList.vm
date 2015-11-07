@@ -62,9 +62,6 @@
     <td>
       <table class="listTable" id="patientList" width='100%'>               
           <col width="30"/>
-			#foreach( $attribute in $patientAttributes )
-				<col/>
-			#end
           <col/>
           <col/>
           <col/>
@@ -72,25 +69,24 @@
 		  #if($mapPatientOrgunit.size()!=0)
           <col/>
 		  #end
+		  <col/>
           <col width="200"/>    
 		  
 		  <thead>
-			<tr>
+			<tr bgcolor="#285C91">
 				<th>#</th>
-				#foreach( $attribute in $patientAttributes )
-					<th id="patientAttributeName">$attribute.name</th>
-				#end
 				<th>$i18n.getString( "full_name" )</th>          
-				<th>$i18n.getString( "gender" )</th>
+				<th class="{sorter: false}">$i18n.getString( "gender" )</th>
 				<th>$i18n.getString( "date_of_birth" )</th> 
 				<th class="{sorter: false}">$i18n.getString( "age" )</th>
 				#if($mapPatientOrgunit.size()!=0)
-				<th>$i18n.getString( "hierachy_orgunit" )</th>
+					<th>$i18n.getString( "hierachy_orgunit" )</th>
 				#end
 				##if($mapPatientPrograms.size()!=0)
 				<th class="{sorter: false}">$i18n.getString( "enrolled_in_program" )</th>
 				##end
-				<th colspan="3" align="center" class="{sorter: false}">$i18n.getString( "operations" )</th>
+				<!--<th colspan="3" align="center" class="{sorter: false}">$i18n.getString( "operations" )</th>-->
+				<th style="text-align:center" class="{sorter: false}">$i18n.getString( "operations" )</th>
 				<!--<th class="{sorter: false}">&nbsp;</th>
 				<th class="{sorter: false}">$i18n.getString( "operations" )</th>-->
 			  </tr>
@@ -106,17 +102,6 @@
 					$nr
 				</td>
 				
-				#foreach( $attribute in $patientAttributes )
-					#set ( $key = $patient.id + '-' + $attribute.id )
-					<td>
-						#if( $attribute.valueType == 'YES/NO')
-							$i18n.getString( $mapPatientPatientAttr.get($key) )
-						#else
-							$mapPatientPatientAttr.get($key)
-						#end
-					</td>
-				#end
-					
 				<td>$!patient.getFullName()</td>
 				
 				<td>$i18n.getString($!patient.gender)</td>
@@ -146,25 +131,27 @@
 						#end
     				</select></td>				
 				#end				
-				
+				<td>
 				#if( $patient.getPrograms().size() !=0 )
-				  <td>
-					<input type="button" id='generateButton' value="$i18n.getString( 'discharge' )" onclick="javascript:generatePatientReport( event, '$patient.id' )" title='$i18n.getString( "discharge" )'></td>
-					<td><input type="button" id='generateButton' value="$i18n.getString( 'followup' )" onclick="javascript:generatePatientFollowUpReport( event, '$patient.id' )" title='$i18n.getString( "followup" )'>
+					<input type="button" id='generateButton' value="$i18n.getString( 'discharge' )" onclick="javascript:generatePatientReport( event, '$patient.id' )" title='$i18n.getString( "discharge" )'>
+					<input type="button" id='generateButton' value="$i18n.getString( 'followup' )" onclick="javascript:generatePatientFollowUpReport( event, '$patient.id' )" title='$i18n.getString( "followup" )'>
 				   <!-- <a  href="#" onclick="javascript:generatePatientReport( event, '$patient.id' )" title='$i18n.getString( "generate" )' target="_blank">$i18n.getString( "generate" )</a>-->
 				  <!--<a id="exportToExcel" name="exportToExcel" href="#" onclick="javascript:generatePatientReport( event, '$patient.id' )" title='$i18n.getString( "generate" )' target="_blank"><img src="images/GenerateButton.gif" alt='$i18n.getString( "generate" )'></a>-->
-				  </td>
+				  
+				
 				#else
-				  <td>	
-				  <input type="button" id='generateButton' value="$i18n.getString( 'discharge' )" onclick="javascript:generatePatientReport( event, '$patient.id' )" disabled="disabled" title='$i18n.getString( "discharge" )'></td>
-				  <td><input type="button" id='generateButton' value="$i18n.getString( 'followup' )" onclick="javascript:generatePatientFollowUpReport( event, '$patient.id' )" disabled="disabled" title='$i18n.getString( "followup" )'>
+				  
+				  <input type="button" id='generateButton' value="$i18n.getString( 'discharge' )" onclick="javascript:generatePatientReport( event, '$patient.id' )" disabled="disabled" title='$i18n.getString( "discharge" )'>
+				  <input type="button" id='generateButton' value="$i18n.getString( 'followup' )" onclick="javascript:generatePatientFollowUpReport( event, '$patient.id' )" disabled="disabled" title='$i18n.getString( "followup" )'>
 				  <!--<a  href="#" onclick="javascript:generatePatientReport( event, '$patient.id' )" title='$i18n.getString( "generate" )' disabled="disabled" target="_blank">$i18n.getString( "generate" )</a>-->
 				  <!--<a id="exportToExcel" name="exportToExcel" href="#" onclick="javascript:generatePatientReport( event, '$patient.id' )" title='$i18n.getString( "generate" )' target="_blank" style='display:none'><img src="images/GenerateButton.gif" alt='$i18n.getString( "generate" )'></a>-->	  
-				  </td>
+				  
 				#end  
 				
-				<td>
+				
 				<a href="javascript:showPatientDetails( '$patient.id' )" title='$i18n.getString( "show_details" )'><img src="../images/information.png" alt='$i18n.getString( "show_details" )'></a>
+				
+				
 				<!--
 				#if( $patient.getPrograms().size() !=0 )
 				  <input type="button" id='generateButton' value="$i18n.getString( 'generate' )" onclick="javascript:generatePatientReport( event, '$patient.id' )" title='$i18n.getString( "generate" )'>
@@ -176,9 +163,6 @@
 				<!--
 				#end  
 				  <!--<input type="button" id='generateButton' value="$i18n.getString( 'generate' )" onclick='generatePatientReport( '$patient.id' );'>-->
-				
-
-				
 				</td>
 				
 			</tr>
@@ -204,9 +188,10 @@
 #end
 </form>
 
-<div id="detailsInfo">
-</div>
+<div id="detailsInfo"></div>
+
 <script type="text/javascript">
+	
 	jQuery(document).ready(function(){	
 		tableSorter( 'patientList' );
 	});

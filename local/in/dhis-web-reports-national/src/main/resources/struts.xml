@@ -16,34 +16,18 @@
             <param name="menu">/dhis-web-reports/menu.vm</param>
         </action>
 
-        <action name="globalconfig"
-                class="org.hisp.dhis.reports.reportmanagement.action.GenerateGlobalConfigAction">
-            <result name="success" type="velocity">/main.vm</result>
-            <param name="page">/dhis-web-reports/showGlobalConfigForm.vm</param>
-            <param name="menu">/dhis-web-reports/menu.vm</param>
-        </action>
-
-        <action name="showglobalconfig"
-                class="org.hisp.dhis.reports.reportmanagement.action.ShowGlobalConfigForm">
-            <result name="success" type="velocity">/main.vm</result>
-            <param name="page">/dhis-web-reports/showGlobalConfigForm.vm</param>
-            <param name="menu">/dhis-web-reports/menu.vm</param>
-        </action>
-
-        <action name="downloadnewra"
-                class="org.hisp.dhis.reports.reportmanagement.action.DownloadRAFolderAction">
-            <result name="success" type="redirect">index.action</result>
-            <result name="download" type="stream">
-                <param name="contentType">application/zip</param>
+		<!-- Export Xls File -->
+        <action name="exportExcelFile"
+            class="org.hisp.dhis.reports.action.ExcelExportResultAction">
+            <result name="success" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
                 <param name="inputName">inputStream</param>
                 <param name="contentDisposition">filename="${fileName}"</param>
                 <param name="bufferSize">1024</param>
             </result>
-            <param name="menu">/dhis-web-reports/menu.vm</param>
-        </action>
+        </action>   
 
         <!-- Reports Management -->
-
         <action name="reportManagement"
             class="org.hisp.dhis.reports.reportmanagement.action.ReportsListAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -185,6 +169,7 @@
         </action>
 
 <!-- IDSP REPORT -->
+		<!-- 
         <action name="idspReportAnalyser"
             class="org.hisp.dhis.reports.idsp.action.GenerateIDSPReportAnalyserFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -204,8 +189,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-		        
+		-->        
         <!-- ED Reports -->
+        <!--
         <action name="edReportForm"
             class="org.hisp.dhis.reports.ed.action.EDReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -222,8 +208,6 @@
 			<param name="javascripts">javascript/reports.js,javascript/date.js</param>
 			<param name="onExceptionReturn">plainTextError</param>
 		</action>
-		
-		
 		
 		
         <action name="generateEDReport"
@@ -244,8 +228,10 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-
+		-->
+		
 		<!-- MD Reports -->
+		<!--
         <action name="mdReportAnalyser"
             class="org.hisp.dhis.reports.md.action.MDReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -256,7 +242,7 @@
             <param name="requiredAuthorities">F_MDREPORT_GENERATE</param>
 			<interceptor-ref name="organisationUnitTreeStack"/>
         </action>
-		<!--	
+		
         <action name="generateMDReport"
             class="org.hisp.dhis.reports.md.action.GenerateMDReportAnalyserResultAction">
             <result name="success" type="stream">
@@ -266,7 +252,7 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-		-->
+		
         <action name="generateMDReport"
             class="org.hisp.dhis.reports.md.action.MDReportResultAction">
             <result name="success" type="stream">
@@ -276,13 +262,15 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-		
+
         <action name="getOrgUnitDetailsForMDReport"
             class="org.hisp.dhis.reports.md.action.GetOrgUnitsAction">
             <result name="success" type="velocity-xml">/dhis-web-reports/responseOrgunit_md.vm</result>
             <param name="onExceptionReturn">plainTextError</param>
-        </action>		
-		     
+        </action>
+		-->	
+
+		       
         <!-- Auto Reports -->
         <action name="autoReportAnalyser"
             class="org.hisp.dhis.reports.auto.action.GenerateAutoReportAnalyserFormAction">
@@ -346,6 +334,7 @@
         -->
         
         <!--Aggregation Report -->
+        <!--
         <action name="aggregationReportAnalyser"
             class="org.hisp.dhis.reports.aggregation.action.GenerateAggregationReportAnalyserFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -365,8 +354,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+        -->
         <!-- Feedback Reports -->
+        <!--
         <action name="feedbackReportAnalyser"
             class="org.hisp.dhis.reports.feedback.action.GenerateFeedbackReportAnalyserFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -386,7 +376,7 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+        -->
         <!-- Upward Reports -->
         <action name="upwardReportAnalyser"
             class="org.hisp.dhis.reports.upward.action.GenerateUpwardReportAnalyserFormAction">
@@ -407,7 +397,53 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+
+
+        <!-- GOI Monthly Reports -->
+        <action name="goiMonthlyReportAnalyser"
+            class="org.hisp.dhis.reports.goimonthly.action.GenerateGOIMonthlyReportAnalyserFormAction">
+            <result name="success" type="velocity">/main.vm</result>
+            <param name="page">/dhis-web-reports/goiMonthlyReportAnalysisFront.vm</param>
+            <param name="menu">/dhis-web-reports/menuWithTreeForGOIMonthlyReport.vm</param>
+            <param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reportManagement.js,javascript/hashtable.js</param>
+            <param name="stylesheets">css/StylesForTags.css</param>
+            <param name="requiredAuthorities">F_REPORT_GOI</param>
+            <interceptor-ref name="organisationUnitTreeStack"/>
+        </action>
+        <action name="generateGOIMonthlyReport"
+            class="org.hisp.dhis.reports.goimonthly.action.GenerateGOIMonthlyReportAnalyserResultAction">
+            <result name="success" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>
+
+        <!-- ProgramWise OrgUnitProgress Reports -->
+        <action name="programWiseOrgUnitProgressReportAnalyser"
+            class="org.hisp.dhis.reports.programWiseOrgUnitProgress.action.GenerateProgramWiseOrgUnitProgressReportAnalyserFormAction">
+            <result name="success" type="velocity">/main.vm</result>
+            <param name="page">/dhis-web-reports/programWiseOrgUnitProgressReportAnalysisFront.vm</param>
+            <param name="menu">/dhis-web-reports/menuWithTreeForProgramWiseOrgUnitProgressReports.vm</param>
+            <param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reportManagement.js,javascript/hashtable.js</param>
+            <param name="stylesheets">css/StylesForTags.css</param>
+            <param name="requiredAuthorities">F_REPORT_ORGUNITWISE_PROGRESS</param>
+            <interceptor-ref name="organisationUnitTreeStack"/>
+        </action>
+        <action name="generateProgramWiseOrgUnitProgressReport"
+            class="org.hisp.dhis.reports.programWiseOrgUnitProgress.action.GenerateProgramWiseOrgUnitProgressReportAnalyserResultAction">
+            <result name="success" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>		
+		
+		
+		
+		        
         <!-- DataSet Lock Reports -->
         <action name="dataSetLockReportAnalyser"
             class="org.hisp.dhis.reports.datasetlock.action.GenerateDataSetLockReportAnalyserFormAction">
@@ -449,7 +485,8 @@
             <result name="success" type="velocity">/main.vm</result>
             <param name="page">/dhis-web-reports/linelstingReportAnalyserFront.vm</param>
             <param name="menu">/dhis-web-reports/menuWithTreeForLineListingReport.vm</param>
-            <param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reportManagement.js,javascript/hashtable.js</param>
+            <param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,javascript/reportManagement.js,javascript/hashtable.js</param>
+            <!--<param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reportManagement.js,javascript/hashtable.js</param>-->
             <param name="stylesheets">css/StylesForTags.css</param>
             <param name="requiredAuthorities">F_REPORT_LINELIST</param>
             <interceptor-ref name="organisationUnitTreeStack"/>
@@ -506,6 +543,36 @@
             </result>
         </action>
         
+		
+		<!-- Period OrgUnit and Service Progress Reports --> 	
+		
+        <action name="periodOrgUnitServiceProgressReportAnalyser"
+            class="org.hisp.dhis.reports.periodorgunitserviceprogressreport.action.GeneratePeriodOrgUnitServiseProgressReportAnalyserFormAction">
+            <result name="success" type="velocity">/main.vm</result>
+            <param name="page">/dhis-web-reports/periodOrgUnitServiceProgressReportAnalysisFront.vm</param>
+            <param name="menu">/dhis-web-reports/menuWithTreeForPeriodOrgUnitServiseProgressReport.vm</param>
+            <param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reportManagement.js,javascript/hashtable.js,javascript/date.js</param>
+            <param name="stylesheets">css/StylesForTags.css</param>
+            <param name="requiredAuthorities">F_REPORT_PERIODWISE_PROGRESS</param>
+            <interceptor-ref name="organisationUnitTreeStack"/>
+        </action>		
+		
+
+		
+        <action name="generatePeriodOrgUnitServiceProgressReport"
+            class="org.hisp.dhis.reports.periodorgunitserviceprogressreport.action.GeneratePeriodOrgUnitServiseProgressAnalyserResultAction">
+            <result name="success" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>		
+		
+				
+		
+		
+		
         <!-- Meta Data Reports -->
         <action name="metaDataReportAnalyser" class="org.hisp.dhis.reports.meta.action.GenerateMetaDataReportAnalyserFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -527,6 +594,7 @@
         </action>
         
         <!-- Advanced Reports -->
+        <!--
         <action name="advancedReportAnalyser"
             class="org.hisp.dhis.reports.advanced.action.GenerateAdvancedReportsFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -548,8 +616,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+        -->
         <!-- NLEP Reports -->
+        <!-- 
         <action name="nlepForm"
             class="org.hisp.dhis.reports.leprosy.action.LeprosyReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -568,8 +637,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-
+		-->
         <!-- Malaria Reports -->
+        <!--
         <action name="malaryaForm"
             class="org.hisp.dhis.reports.malarya.action.GenerateMalaryaReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -588,8 +658,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+        -->
         <!-- Grading Reports -->
+        <!-- 
         <action name="gradingReportAnalyser"
             class="org.hisp.dhis.reports.grading.action.GenerateGradingReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -644,8 +715,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+        -->
         <!-- Twenty Point Reports -->
+        <!--
         <action name="TwentyPointReportsAnalyser"
             class="org.hisp.dhis.reports.TwentyPoint.action.GenerateTwentyPointReportsFromAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -668,8 +740,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+        -->
         <!-- Yojana Reports -->
+        <!--
         <action name="specialReportForm"
             class="org.hisp.dhis.reports.orgunitgroupsetreport.action.GenerateOrgunitGroupsetReportsFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -690,7 +763,7 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-        
+        -->
         <!-- Ranking Report -->
         <action name="rankingReportForm"
             class="org.hisp.dhis.reports.ranking.action.GenarateRankingReportFormAction">
@@ -735,6 +808,7 @@
         </action>
         
         <!-- Quarterly PhysicalOutput Reports -->
+        <!--
         <action name="quarterlyPhysicalReport" 
             class="org.hisp.dhis.reports.physical.action.PhysicalReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -754,8 +828,9 @@
                 <param name="bufferSize">1024</param> 
             </result>
         </action>
-        
+        -->
         <!--Mobile Report-->
+        <!--
         <action name="mobileReportAnalyser"
             class="org.hisp.dhis.reports.mobile.action.GenerateMobileReportAnalyserFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -774,8 +849,10 @@
                 <param name="contentDisposition">filename="${fileName}"</param>
                 <param name="bufferSize">1024</param>S </result>
         </action>
+        -->
         
         <!-- CS Review Report -->
+        <!-- 
         <action name="csReviewReportForm"
             class="org.hisp.dhis.reports.csreview.action.GenerateCSReviewReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -794,7 +871,8 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-
+		-->
+		
 		<!-- Linelisting Web-Portal Reports -->
 		<action name="linelistingWebPortalReportAnalyser"
 			class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserFormAction">
@@ -838,8 +916,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>		
-<!-- NBITS Reports Section -->        
+		<!-- NBITS Reports Section -->        
         <!-- ActivityPlan Reports -->
+        <!--
         <action name="activePlanReportsAnalyser"
             class="org.hisp.dhis.reports.activeplan.action.ActivePlanReportsFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -859,6 +938,7 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
+        
         <action name="activePlanFeedbackReportsAnalyser"
             class="org.hisp.dhis.reports.activeplan.action.ActivePlanFeedBackFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -868,6 +948,7 @@
             <param name="stylesheets">css/StylesForTags.css</param>
             <interceptor-ref name="organisationUnitTreeStack"/>
         </action>
+        -->
         <action name="generateActivePlanFeedbackReport"
             class="org.hisp.dhis.reports.activeplan.action.ActivePlanFeedBackResultAction">
             <result name="success" type="stream">
@@ -879,6 +960,7 @@
         </action>
         
         <!-- BenificiaryInfo Reports -->
+        <!--
         <action name="benificiaryInfoReportsAnalyser"
             class="org.hisp.dhis.reports.benificiaryinfo.action.BenificiaryInfoReportsFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -898,9 +980,9 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-
+		-->
 <!-- Patient Information Reports 20/03/2012 -->		
-		
+		<!--
         <action name="patientInfoReportsAnalyser"
             class="org.hisp.dhis.reports.benificiaryinfo.action.PatientInfoReportsFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -937,10 +1019,11 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>		
-		
+		-->
 		
 		       
         <!-- Portal Reports -->
+        <!--
         <action name="portalReportsAnalyser"
             class="org.hisp.dhis.reports.portal.action.PortalReportsFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -951,6 +1034,7 @@
             <param name="requiredAuthorities">F_REPORT_NBITS_PORTAL</param>
             <interceptor-ref name="organisationUnitTreeStack"/>
         </action>
+        -->
 <!--
         <action name="generatePortalReport"
             class="org.hisp.dhis.reports.portal.action.PortalReportsResultAction">
@@ -973,7 +1057,7 @@
             </result>
         </action>
 -->	
-		
+		<!--
         <action name="generatePortalReport"
             class="org.hisp.dhis.reports.portal.action.PortalReportsResult_ACS">
             <result name="success" type="stream">
@@ -983,8 +1067,10 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
+		-->
 		
         <!-- NBITS Reports -->
+        <!--
         <action name="nbitsReportsAnalyser"
             class="org.hisp.dhis.reports.nbits.action.NBITSReportFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -1004,9 +1090,36 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
-
+		-->
+		
+        <!-- Due Date Reports -->
+        <!-- 
+        <action name="activePlanDueDatesReportAnalyserForm"
+            class="org.hisp.dhis.reports.activeplan.action.ActivePlanDueDatesReportFormAction">
+            <result name="success" type="velocity">/main.vm</result>
+				<param name="page">/dhis-web-reports/activePlanDueDateForm.vm</param>
+			    <param name="menu">/dhis-web-reports/menuWithTreeForActivePlanDueDate.vm</param>
+				<param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,javascript/reports.js,javascript/hashtable.js</param>
+				<param name="stylesheets">css/StylesForTags.css</param>
+            <interceptor-ref name="organisationUnitTreeStack"/>
+        </action>		
+		
+        <action name="generateActivePlanDueDateReportResult"
+            class="org.hisp.dhis.reports.activeplan.action.ActivePlanDueDatesReportResultAction">
+            <result name="success" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>		
+		-->
+		
+		
+		
+		
         <!--District Feedback-->
-
+		<!--
         <action name="districtFeedbackReportAnalyser"
                 class="org.hisp.dhis.reports.districtfeedback.action.GenerateAggregationDistrictFeedbackReportAnalyserFormAction">
             <result name="success" type="velocity">/main.vm</result>
@@ -1025,8 +1138,8 @@
                 <param name="contentDisposition">filename="${fileName}"</param>
                 <param name="bufferSize">1024</param>
             </result>
-        </action>		
-		
+        </action>
+		-->
         <!-- ranking2 Reports -->
         <action name="ranking2ReportForm"
             class="org.hisp.dhis.reports.ranking2.action.Ranking2ReportFormAction">
@@ -1046,8 +1159,19 @@
                 <param name="inputName">inputStream</param>
                 <param name="contentDisposition">filename="${fileName}"</param>
                 <param name="bufferSize">1024</param></result>            
-        </action>		
+        </action>
 		
+	   <!-- ranking2 Reports for STATE -->
+       <action name="generateStateRanking2Report"
+            class="org.hisp.dhis.reports.ranking2.action.GenerateStateRanking2ReportAction">
+             <result name="success" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">filename="${fileName}"</param>
+                <param name="bufferSize">1024</param></result>            
+        </action>		
+		     
+
         <!-- AJAX Requests -->
         <action name="getDataElements"
             class="org.hisp.dhis.reports.action.GetDataElementsAction">
@@ -1068,6 +1192,16 @@
             <param name="onExceptionReturn">plainTextError</param>
         </action>
         
+		
+		<!-- get Program List -->		
+       <action name="getProgramList"
+            class="org.hisp.dhis.reports.action.GetProgramListAction">
+            <result name="success" type="velocity-xml">/dhis-web-reports/responseProgramList.vm</result>
+				<param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reports,javascript/reportManagement.js,javascript/hashtable.js</param>
+				<param name="onExceptionReturn">plainTextError</param>
+        </action>				
+		
+		
         <action name="getProgressReports"
             class="org.hisp.dhis.reports.action.GetProgressReportsAction">
             <result name="success" type="velocity-xml">/dhis-web-reports/responseReport.vm</result>
@@ -1087,18 +1221,5 @@
             <param name="onExceptionReturn">plainTextError</param>
         </action>
 
-		<!-- Daily Food Situation Reports -->
-    <action name="dailyFoodReportAnalyser" class="org.hisp.dhis.reports.action.NoAction">
-        <result name="success" type="velocity">/main.vm</result>
-        <param name="menu">/dhis-web-reports/menu.vm</param>
-        <param name="page">/dhis-web-reports/dailyFoodSituationForm.vm</param>        
-    </action>
-		
-	<action name="generateDailyFoodReport" class="org.hisp.dhis.reports.dailyfood.action.GenerateDailyFoodReportAction">
-        <result name="success" type="velocity">/main.vm</result>
-        <param name="menu">/dhis-web-reports/menu.vm</param>
-        <param name="page">/dhis-web-reports/welcome.vm</param>        
-    </action>
-		
     </package>
 </struts>

@@ -3,10 +3,16 @@ package org.hisp.dhis.reports.hibernate;
 import java.util.Collection;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hisp.dhis.dataelement.DataElement;
+import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
+import org.hisp.dhis.dataset.DataSet;
+import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodStore;
 import org.hisp.dhis.period.PeriodType;
 import org.hisp.dhis.reports.ReportStore;
@@ -106,23 +112,6 @@ public class HibernateReportStore
     }
 
     @SuppressWarnings( "unchecked" )
-    public Collection<Report_in> getReportBySourceAndReportType( OrganisationUnit source, String reportType )
-    {
-        Session session = sessionFactory.getCurrentSession();
-
-        Criteria criteria = session.createCriteria( Report_in.class );
-        criteria.createAlias( "sources", "s" );
-        criteria.add( Restrictions.eq( "s.id", source.getId() ) );
-        
-        criteria.add( Restrictions.eq( "reportType", reportType ) );
-
-        return criteria.list();
-    }
-    
-    
-    
-    
-    @SuppressWarnings( "unchecked" )
     public Collection<Report_in> getReportsByPeriodAndReportType( PeriodType periodType, String reportType )
     {
         Session session = sessionFactory.getCurrentSession();
@@ -181,4 +170,160 @@ public class HibernateReportStore
 
         return criteria.list();
     }
+	
+    
+    
+    /*
+    String hql = "select p from Patient p where p.organisationUnit = :organisationUnit order by p.id DESC";
+
+    Query query = getQuery( hql );
+    query.setEntity( "organisationUnit", organisationUnit );
+
+    if ( min != null && max != null )
+    {
+        query.setFirstResult( min ).setMaxResults( max );
+    }
+    return query.list();
+    */
+    
+    
+    /*
+    @SuppressWarnings( "unchecked" )
+    public Collection<Patient> getPatientByOrgUnit( OrganisationUnit organisationUnit )
+    {
+        Session session = sessionFactory.getCurrentSession();
+        
+        Criteria criteria = session.createCriteria( Patient.class );
+        
+        criteria.add( Restrictions.eq( "organisationUnit", organisationUnit ) );
+        
+         //criteria.addOrder( Order.desc( "id" ) );
+        
+        //Criteria criteria = getCriteria( Restrictions.eq( "organisationUnit", organisationUnit ) ).createAlias( "programs", "program" ).add( Restrictions.eq( "program.id", program.getId() ) );
+        return criteria.list();
+       
+    }
+    
+    
+    @SuppressWarnings( "unchecked" )
+    public Collection<Patient> getPatientByOrgUnitAndProgram( OrganisationUnit organisationUnit, Program program )
+    {
+        Session session = sessionFactory.getCurrentSession();
+        
+        Criteria criteria = session.createCriteria( Patient.class );
+        criteria.add( Restrictions.eq( "organisationUnit", organisationUnit ) );
+        
+        criteria.createAlias( "programs", "program" );
+        
+        criteria.add(Restrictions.eq( "program.id", program.getId() ) );
+        
+        return criteria.list();
+    }    
+    
+*/    
+    // Get Data value for Latest Period
+    public DataValue getLatestDataValue( DataElement dataElement, DataElementCategoryOptionCombo optionCombo, OrganisationUnit organisationUnit )
+    {
+        final String hsql = "SELECT v FROM DataValue v, Period p WHERE  v.dataElement =:dataElement "
+            + " AND v.period=p AND v.optionCombo=:optionCombo AND v.source=:source ORDER BY p.endDate DESC";
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery( hsql );
+
+        query.setParameter( "dataElement", dataElement );
+        query.setParameter( "optionCombo", optionCombo );
+        query.setParameter( "source", organisationUnit );
+        
+        query.setFirstResult( 0 );
+        query.setMaxResults( 1 );
+
+        return (DataValue) query.uniqueResult();
+    }
+
+    // Methods for delete Lock Exception
+    public void deleteLockException( DataSet dataSet, Period period, OrganisationUnit organisationUnit )
+    {
+        final String hql = "delete from LockException where dataSet=:dataSet and period=:period and organisationUnit=:organisationUnit";
+        
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery( hql );
+        
+        //Query query = getQuery( hql );
+        query.setParameter( "dataSet", dataSet );
+        query.setParameter( "period", period );
+        query.setParameter( "organisationUnit", organisationUnit );
+
+        query.executeUpdate();
+    }    
+    
+    @SuppressWarnings( "unchecked" )
+    public Collection<Report_in> getAllSchedulableReports()
+    {
+      Session session = sessionFactory.getCurrentSession();
+
+      Criteria criteria = session.createCriteria(Report_in.class);
+      criteria.add(Restrictions.eq("schedulable", Boolean.valueOf(true)));
+
+      return criteria.list();
+    }
+    
+    @SuppressWarnings( "unchecked" )
+    public Collection<Report_in> getAllScheduledReports()
+    {
+      Session session = sessionFactory.getCurrentSession();
+
+      Criteria criteria = session.createCriteria(Report_in.class);
+      criteria.add(Restrictions.eq("schedulable", Boolean.valueOf(true)));
+      criteria.add(Restrictions.eq("scheduled", Boolean.valueOf(true)));
+
+      return criteria.list();
+    }
+    
+    @SuppressWarnings( "unchecked" )
+    public Collection<Report_in> getAllNonSchedulableRports()
+    {
+      Session session = sessionFactory.getCurrentSession();
+
+      Criteria criteria = session.createCriteria(Report_in.class);
+      criteria.add(Restrictions.eq("schedulable", Boolean.valueOf(false)));
+
+      return criteria.list();
+    }
+    
+    @SuppressWarnings( "unchecked" )
+    public Collection<Report_in> getAllNonScheduledRports()
+    {
+      Session session = sessionFactory.getCurrentSession();
+
+      Criteria criteria = session.createCriteria(Report_in.class);
+      criteria.add(Restrictions.eq("schedulable", Boolean.valueOf(true)));
+      criteria.add(Restrictions.eq("scheduled", Boolean.valueOf(false)));
+
+      return criteria.list();
+    }
+    
+    @SuppressWarnings( "unchecked" )
+    public Collection<Report_in> getAllSchedulabledEmailableReports()
+    {
+      Session session = sessionFactory.getCurrentSession();
+
+      Criteria criteria = session.createCriteria(Report_in.class);
+      criteria.add(Restrictions.eq("schedulable", Boolean.valueOf(true)));
+
+      return criteria.list();
+    }
+    
+    @SuppressWarnings( "unchecked" )
+    public Collection<Report_in> getAllSchedulabledNonEmailableReports()
+    {
+      Session session = sessionFactory.getCurrentSession();
+
+      Criteria criteria = session.createCriteria(Report_in.class);
+      criteria.add(Restrictions.eq("schedulable", Boolean.valueOf(true)));
+      criteria.add(Restrictions.eq("scheduled", Boolean.valueOf(false)));
+
+      return criteria.list();
+    }    
+       
 }

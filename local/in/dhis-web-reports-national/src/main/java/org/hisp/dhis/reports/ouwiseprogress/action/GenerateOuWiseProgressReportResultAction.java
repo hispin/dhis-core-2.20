@@ -1,8 +1,8 @@
 
 package org.hisp.dhis.reports.ouwiseprogress.action;
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -35,9 +35,10 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-import org.amplecode.quick.StatementManager;
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.config.Configuration_IN;
+import org.hisp.dhis.dataset.DataSet;
+import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.i18n.I18nFormat;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -66,13 +67,13 @@ public class GenerateOuWiseProgressReportResultAction
 
     private final String USECAPTUREDDATA = "usecaptureddata";
     
-    private StatementManager statementManager;
+    /*private StatementManager statementManager;
 
     public void setStatementManager( StatementManager statementManager )
     {
         this.statementManager = statementManager;
     }
-
+*/
     private ReportService reportService;
 
     public void setReportService( ReportService reportService )
@@ -100,7 +101,14 @@ public class GenerateOuWiseProgressReportResultAction
     {
         this.organisationUnitGroupService = organisationUnitGroupService;
     }
+    
+    private DataSetService dataSetService;
 
+    public void setDataSetService( DataSetService dataSetService )
+    {
+        this.dataSetService = dataSetService;
+    }
+    
 /*
     private DataSetService dataSetService;
     
@@ -199,6 +207,10 @@ public class GenerateOuWiseProgressReportResultAction
 
     private String raFolderName;
     
+    private SimpleDateFormat dateTimeFormat;
+    
+    private PeriodType selPeriodType;
+    
     // -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
@@ -206,12 +218,14 @@ public class GenerateOuWiseProgressReportResultAction
     public String execute()
         throws Exception
     {
-        statementManager.initialise();
+        //statementManager.initialise();
 
         // Initialization
         raFolderName = reportService.getRAFolderName();
         simpleDateFormat = new SimpleDateFormat( "MMM-yy" );
         SimpleDateFormat dayFormat = new SimpleDateFormat( "yyyy-MM-dd" );
+        dateTimeFormat = new SimpleDateFormat( "EEEE, dd MMMM yyyy HH:mm:ss zzzz" );
+        //dateTimeFormat = new SimpleDateFormat( "EEEE, dd MMMM yyyy HH:mm:ss" );
 
         String colArray[] = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
                                 "AA","AB","AC","AD","AE","AF","AG","AH","AI","AJ","AK","AL","AM","AN","AO","AP","AQ","AR","AS","AT","AU","AV","AW","AX","AY","AZ",
@@ -231,13 +245,13 @@ public class GenerateOuWiseProgressReportResultAction
         selectedOrgUnit = organisationUnitService.getOrganisationUnit( ouIDTB );
         int selectedOrgUnitLevel = organisationUnitService.getLevelOfOrganisationUnit( ouIDTB );
 
-                System.out.println( selectedOrgUnit.getName()+ " : " + selReportObj.getName()+" : Report Generation Start Time is : " + new Date() );
-                
+	System.out.println( selectedOrgUnit.getName()+ " : " + selReportObj.getName()+" : Report Generation Start Time is : " + new Date() );
+		
         if ( reportModelTB.equalsIgnoreCase( "PROGRESSIVE-ORGUNIT" ) )
         {            
             if( orgUnitGroup != 0 )
             {
-                orgUnitList = getChildOrgUnitTree( selectedOrgUnit );
+		orgUnitList = getChildOrgUnitTree( selectedOrgUnit );
                 OrganisationUnitGroup ouGroup = organisationUnitGroupService.getOrganisationUnitGroup( orgUnitGroup );
             
                 if( ouGroup != null )
@@ -257,7 +271,6 @@ public class GenerateOuWiseProgressReportResultAction
             {
                 orgUnitList.add( selectedOrgUnit );
             }
-            
             /*
             if( orgUnitList == null || orgUnitList.size() == 0 )
             {
@@ -265,9 +278,7 @@ public class GenerateOuWiseProgressReportResultAction
             }
             */
         }
-
         
-
         String inputTemplatePath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "template" + File.separator + reportFileNameTB;
         //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
         
@@ -289,18 +300,59 @@ public class GenerateOuWiseProgressReportResultAction
         wCellformat.setVerticalAlignment( VerticalAlignment.CENTRE );
         wCellformat.setWrap( true );
 
-
         // Period Info
         sDate = format.parseDate( startDate );
         eDate = format.parseDate( endDate );
         
-        PeriodType selPeriodType = selReportObj.getPeriodType();
-        List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( selPeriodType, sDate, eDate ) );
+        List<Period> periodList = new ArrayList<Period>();
+
+        //PeriodType selPeriodType = selReportObj.getPeriodType();
+        
+        DataSet dataSet = new DataSet();
+        
+        String dataSetIDs = selReportObj.getDataSetIds();
+        
+       // System.out.println( "-- dataSetIDs outside --" + dataSetIDs );
+        
+        if( dataSetIDs != null && !dataSetIDs.equalsIgnoreCase( "" ))
+        {
+            //System.out.println( "-- dataSetIDs inside --" + dataSetIDs );
+            
+            String[] tempDataSetIDs = dataSetIDs.split( "," );
+            
+            String firstDsId = tempDataSetIDs[0];
+            
+            dataSet = dataSetService.getDataSet( Integer.parseInt( firstDsId ) );
+            
+            //System.out.println( "-- dataSet id is --" + dataSet.getId() + " -- Name is "  + dataSet.getName());
+             
+            if ( dataSet.getPeriodType().getName().equalsIgnoreCase( "Forteen" ) )
+            {
+                selPeriodType = periodService.getPeriodTypeByName( "Forteen" );
+                
+                periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( selPeriodType, sDate, eDate ) );
+            }
+            
+            else
+            {
+                selPeriodType = selReportObj.getPeriodType();
+                periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( selPeriodType, sDate, eDate ) ); // 31/10/2012
+            }
+        }
+        
+        else
+        {
+            selPeriodType = selReportObj.getPeriodType();
+            //periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( selPeriodType, sDate, eDate ) ); // 31/10/2012
+            
+            periodList = new ArrayList<Period>( periodService.getIntersectingPeriods( sDate, eDate ) );
+        }
+        
         //List<Period> periodList = new ArrayList<Period>( periodService.getIntersectingPeriods( sDate, eDate ) );        
         Collection<Integer> periodIds = new ArrayList<Integer>( getIdentifiers(Period.class, periodList ) );        
         String periodIdsByComma = getCommaDelimitedString( periodIds );
         
-        //System.out.println( "periodIdsByComma :"+ periodIdsByComma );
+        //System.out.println(  dataSetIDs + " -- " + selPeriodType.getName() + " -- periodIdsByComma : " + periodIdsByComma );
         
         // Getting DataValues
         List<Report_inDesign> reportDesignList = reportService.getReportDesign( deCodesXMLFileName );
@@ -315,7 +367,10 @@ public class GenerateOuWiseProgressReportResultAction
         while ( it.hasNext() )
         {
             OrganisationUnit currentOrgUnit = (OrganisationUnit) it.next();
-
+            List<OrganisationUnit> childOrgUnitTree = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( currentOrgUnit.getId() ) );
+            List<Integer> childOrgUnitTreeIds = new ArrayList<Integer>( getIdentifiers( OrganisationUnit.class, childOrgUnitTree ) );
+            String childOrgUnitsByComma = getCommaDelimitedString( childOrgUnitTreeIds );
+            
             Map<String, String> aggDeMap = new HashMap<String, String>();
             if( aggData.equalsIgnoreCase( USEEXISTINGAGGDATA ) )
             {
@@ -323,9 +378,9 @@ public class GenerateOuWiseProgressReportResultAction
             }
             else if( aggData.equalsIgnoreCase( GENERATEAGGDATA ) )
             {
-                List<OrganisationUnit> childOrgUnitTree = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( currentOrgUnit.getId() ) );
-                List<Integer> childOrgUnitTreeIds = new ArrayList<Integer>( getIdentifiers( OrganisationUnit.class, childOrgUnitTree ) );
-                String childOrgUnitsByComma = getCommaDelimitedString( childOrgUnitTreeIds );
+                //List<OrganisationUnit> childOrgUnitTree = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( currentOrgUnit.getId() ) );
+                //List<Integer> childOrgUnitTreeIds = new ArrayList<Integer>( getIdentifiers( OrganisationUnit.class, childOrgUnitTree ) );
+                //String childOrgUnitsByComma = getCommaDelimitedString( childOrgUnitTreeIds );
 
                 aggDeMap.putAll( reportService.getAggDataFromDataValueTable( childOrgUnitsByComma, dataElmentIdsByComma, periodIdsByComma ) );
             }
@@ -385,6 +440,10 @@ public class GenerateOuWiseProgressReportResultAction
                     tempStr = simpleDateFormat.format( eDate );
                     tempStrForSelectedFacility = simpleDateFormat.format( eDate );
                 }
+                else if ( deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) )
+                {
+                    tempStr = dateTimeFormat.format( new Date() );
+                }
                 else if ( deCodeString.equalsIgnoreCase( "NA" ) )
                 {
                     tempStr = " ";
@@ -412,6 +471,26 @@ public class GenerateOuWiseProgressReportResultAction
                             tempStrForSelectedFacility = getAggVal( deCodeString, aggDeMapForselectedFacility );
                         }
                     }
+                    else if ( sType.equalsIgnoreCase( "dataelement-count" ) )
+                    {
+                        String deIdsByComma = "-1";
+                        
+                        for( int i = 0; i < deCodeString.split( "," ).length; i++ )
+                        {
+                            deIdsByComma += "," + deCodeString.split( "," )[i];
+                        }
+                        
+                        if( aggData.equalsIgnoreCase( USECAPTUREDDATA ) )
+                        {
+                            tempStr = ""+reportService.getDataCountFromDataValueTable( ""+currentOrgUnit.getId(), deIdsByComma, periodIdsByComma );
+                        }
+                        else
+                        {
+                            tempStr = ""+reportService.getDataCountFromDataValueTable( childOrgUnitsByComma, deIdsByComma, periodIdsByComma );
+                        }
+                        
+                        //System.out.println( " sType " + sType + " -- tempStr : " + tempStr );
+                    }
                     else if ( sType.equalsIgnoreCase( "formula" ) )
                     {
                         tempStr = deCodeString;
@@ -426,8 +505,7 @@ public class GenerateOuWiseProgressReportResultAction
                 if ( reportModelTB.equalsIgnoreCase( "PROGRESSIVE-ORGUNIT" ) )
                 {
                     if( deCodeString.equalsIgnoreCase( "FACILITY" ) || deCodeString.equalsIgnoreCase( "FACILITYP" ) || deCodeString.equalsIgnoreCase( "FACILITYPP" ) 
-                        || deCodeString.equalsIgnoreCase( "MONTH-FROM" ) || deCodeString.equalsIgnoreCase( "MONTH-TO" ) 
-                        || deCodeString.equalsIgnoreCase( "DATE-FROM" ) || deCodeString.equalsIgnoreCase( "DATE-TO" ) )
+                        || deCodeString.equalsIgnoreCase( "MONTH-FROM" ) || deCodeString.equalsIgnoreCase( "MONTH-TO" ) || deCodeString.equalsIgnoreCase( "DATE-FROM" ) || deCodeString.equalsIgnoreCase( "DATE-TO" ) || deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) )
                     {
                     }
                     else
@@ -455,9 +533,8 @@ public class GenerateOuWiseProgressReportResultAction
                             if( orgUnitCount == orgUnitList.size()-1 && selectedOrgUnitLevel != 2 )
                             {
                                 //sheet0.addCell( new Number( tempColNo, tempRowNo, Double.parseDouble( tempStrForSelectedFacility ), getCellFormat2() ) );
-                                if( deCodeString.equalsIgnoreCase( "FACILITY" ) || deCodeString.equalsIgnoreCase( "FACILITYP" ) || deCodeString.equalsIgnoreCase( "FACILITYPP" ) 
-                                    || deCodeString.equalsIgnoreCase( "MONTH-FROM" ) || deCodeString.equalsIgnoreCase( "MONTH-TO" ) 
-                                    || deCodeString.equalsIgnoreCase( "DATE-FROM" ) || deCodeString.equalsIgnoreCase( "DATE-TO" ) )
+                                if( deCodeString.equalsIgnoreCase( "FACILITY" ) || deCodeString.equalsIgnoreCase( "FACILITYP" ) || deCodeString.equalsIgnoreCase( "FACILITYPP" ) || deCodeString.equalsIgnoreCase( "MONTH-FROM" ) || deCodeString.equalsIgnoreCase( "MONTH-TO" ) 
+                                    || deCodeString.equalsIgnoreCase( "DATE-FROM" ) || deCodeString.equalsIgnoreCase( "DATE-TO" ) || deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) )
                                 {
                                     continue;
                                 }
@@ -480,9 +557,8 @@ public class GenerateOuWiseProgressReportResultAction
                         if( orgUnitCount == orgUnitList.size()-1 && selectedOrgUnitLevel != 2 )
                         {
                             //sheet0.addCell( new Label( tempColNo, tempRowNo, tempStrForSelectedFacility, getCellFormat2() ) );
-                            if( deCodeString.equalsIgnoreCase( "FACILITY" ) || deCodeString.equalsIgnoreCase( "FACILITYP" ) || deCodeString.equalsIgnoreCase( "FACILITYPP" ) 
-                                || deCodeString.equalsIgnoreCase( "MONTH-FROM" ) || deCodeString.equalsIgnoreCase( "MONTH-TO" ) 
-                                || deCodeString.equalsIgnoreCase( "DATE-FROM" ) || deCodeString.equalsIgnoreCase( "DATE-TO" ) )
+                            if( deCodeString.equalsIgnoreCase( "FACILITY" ) || deCodeString.equalsIgnoreCase( "FACILITYP" ) || deCodeString.equalsIgnoreCase( "FACILITYPP" ) || deCodeString.equalsIgnoreCase( "MONTH-FROM" ) || deCodeString.equalsIgnoreCase( "MONTH-TO" ) 
+                                || deCodeString.equalsIgnoreCase( "DATE-FROM" ) || deCodeString.equalsIgnoreCase( "DATE-TO" ) || deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) )
                             {
                                 continue;
                             }
@@ -530,6 +606,7 @@ public class GenerateOuWiseProgressReportResultAction
                     deCodeString.equalsIgnoreCase( "MONTH-FROM" ) || 
                     deCodeString.equalsIgnoreCase( "MONTH-TO" ) ||
                     deCodeString.equalsIgnoreCase( "DATE-FROM" ) ||
+                    deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) || 
                     deCodeString.equalsIgnoreCase( "DATE-TO" ) )
                 {
                     continue;
@@ -574,7 +651,7 @@ public class GenerateOuWiseProgressReportResultAction
 
         outputReportFile.deleteOnExit();
 
-        statementManager.destroy();
+        //statementManager.destroy();
 
         return SUCCESS;
     }
@@ -679,5 +756,7 @@ public class GenerateOuWiseProgressReportResultAction
         return orgUnitTree;
     }
     // getChildOrgUnitTree end
+    
+    
     
 }

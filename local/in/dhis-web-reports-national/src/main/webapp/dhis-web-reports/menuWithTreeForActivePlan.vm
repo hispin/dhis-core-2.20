@@ -2,10 +2,10 @@
 <a href="index.action"><h2>Report Analyser</h2></a>
 
 <ul>
-    <li>NameBased Reports</li>
+    <li>Tracker Reports</li>
     <ul>
     	<li>
-            NBITS ActivityPlan
+            Tracker Activity Plan
         </li>
     </ul>
 </ul>

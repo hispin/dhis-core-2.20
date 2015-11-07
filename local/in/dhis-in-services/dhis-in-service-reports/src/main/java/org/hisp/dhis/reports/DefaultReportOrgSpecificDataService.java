@@ -174,6 +174,7 @@ public class DefaultReportOrgSpecificDataService
                 expValue = Math.round( expValue );
 
             }
+
             catch ( Exception e )
             {
 
@@ -236,7 +237,8 @@ public class DefaultReportOrgSpecificDataService
                 int colno = new Integer( deFeedElement.getAttribute( "colno" ) );
                 String expression = new String( deFeedElement.getAttribute( "expression" ) );
 
-                List<OrganisationUnit> orgUnitList = new ArrayList<OrganisationUnit>( District.getChildren() );
+                List<OrganisationUnit> orgUnitList = new ArrayList<OrganisationUnit>( organisationUnitService
+                    .getOrganisationUnitWithChildren( District.getId() ) );
 
                 if ( organisationUnitGroupService == null )
                 {
@@ -245,7 +247,8 @@ public class DefaultReportOrgSpecificDataService
 
                 List<OrganisationUnit> orgUnitGroupList = new ArrayList<OrganisationUnit>( organisationUnitGroupService
                     .getOrganisationUnitGroup( oucode ).getMembers() );
-                orgUnitList.retainAll( orgUnitGroupList );
+
+                orgUnitGroupList.retainAll( orgUnitList );
 
                 Collection<Period> IntermediatePeriods = periodService.getPeriodsBetweenDates( sDate, eDate );
 
@@ -268,7 +271,9 @@ public class DefaultReportOrgSpecificDataService
                     {
                         for ( Period period : IntermediatePeriods )
                         {
+
                             PeriodIDsByComma = PeriodIDsByComma.concat( "," + period.getId() );
+
                         }
                     }
 

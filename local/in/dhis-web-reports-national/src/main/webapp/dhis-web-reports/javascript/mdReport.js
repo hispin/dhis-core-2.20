@@ -1,4 +1,6 @@
  
+
+
 // form validation for MD report
 function formValidationsForMDReport()
 {
@@ -59,6 +61,7 @@ function formValidationsForMDReport()
     
     return true;
 }
+
 //filter available data elements list
 function filterAvailableDataElements()
 {
@@ -157,11 +160,13 @@ function getorgUnitLevels( ouLevel, maxOULevel )
 
 	for( i= i+1; i <= maxOULevel; i++ )
 	{
-		ouLevelId.options[j] = new Option("Level - "+i,i,false,false);
+		
+		//ouLevelId.options[j] = new Option("Level - "+i,i,false,false);
+		ouLevelId.options[j] = new Option( orgUnitLevelNames.get( i ),i,false,false);
 		
 		j++;
 	}
-
+	
 	if( j == 0 )
 	{
 		document.getElementById( "ViewReport" ).disabled = true;

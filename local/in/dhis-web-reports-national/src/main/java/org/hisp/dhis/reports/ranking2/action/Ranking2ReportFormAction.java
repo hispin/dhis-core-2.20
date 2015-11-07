@@ -3,18 +3,20 @@ package org.hisp.dhis.reports.ranking2.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
-import org.hisp.dhis.reports.ReportType;
 
 import com.opensymphony.xwork2.Action;
+import java.util.Collection;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
+import org.hisp.dhis.report.Report;
+import org.hisp.dhis.reports.ReportType;
 
 public class Ranking2ReportFormAction implements Action
 {

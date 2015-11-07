@@ -41,7 +41,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitHierarchy;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
-import org.hisp.dhis.system.util.ConversionUtils;
+import org.hisp.dhis.util.ConversionUtils;
 
 /**
  * @author Lars Helge Overland
@@ -127,6 +127,7 @@ public class MemoryAggregationCache
         }
         
         periodIds = ConversionUtils.getIdentifiers( Period.class, periodService.getIntersectingPeriods( startDate, endDate ) );
+        //periodIds = getIdentifiers( Period.class, periodService.getIntersectingPeriods( startDate, endDate ) );
                 
         intersectingPeriodsCache.put( key, periodIds );
         

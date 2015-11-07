@@ -382,8 +382,8 @@ public class ReportService
                         tempPeriod = (Period) periodList.get( 0 );
                     }
 
-                    DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod,
-                        optionCombo );
+                    //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
 
                     if ( dataValue != null )
                     {
@@ -527,8 +527,8 @@ public class ReportService
                         double aggregatedValue = 0.0;
                         for ( Period tempPeriod : periodList )
                         {
-                            DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement,
-                                tempPeriod, optionCombo );
+                            //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                            DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
 
                             if ( dataValue != null )
                             {
@@ -562,8 +562,8 @@ public class ReportService
                         tempPeriod = (Period) periodList.get( 0 );
                     }
 
-                    DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod,
-                        optionCombo );
+                    //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
 
                     if ( dataValue != null )
                     {
@@ -705,8 +705,8 @@ public class ReportService
                         tempPeriod = (Period) periodList.get( 0 );
                     }
 
-                    DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod,
-                        optionCombo );
+                    //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
 
                     if ( dataValue != null )
                     {

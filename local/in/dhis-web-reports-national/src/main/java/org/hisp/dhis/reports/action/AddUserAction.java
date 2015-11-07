@@ -125,7 +125,8 @@ public class AddUserAction
                 UserCredentials userCredentials = new UserCredentials();
                 userCredentials.setUser( user );
                 userCredentials.setUsername( username );
-                userCredentials.setPassword( passwordManager.encodePassword( username, rawPassword ) );
+                //userCredentials.setPassword( passwordManager.encodePassword( username, rawPassword ) );
+                userCredentials.setPassword( passwordManager.encode( rawPassword ) );
 
                 //Hard Coded with the Subcenter UserRole Id
                 UserAuthorityGroup group = userService.getUserAuthorityGroup( 8 );

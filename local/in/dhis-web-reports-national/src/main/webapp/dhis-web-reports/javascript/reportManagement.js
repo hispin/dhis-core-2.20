@@ -273,19 +273,54 @@ function getPeriodsForCumulative()
     {
         var ouId = document.reportForm.ouIDTB.value;
         var reportTypeName = document.reportForm.reportTypeNameTB.value;
-  
-        getReports(ouId, reportTypeName);
-        document.reportForm.generate.disabled=false;
+        
+        if ( periodTypeId == "Forteen" )
+        {
+        	getPeriods();
+        	getReports(ouId, reportTypeName);
+            document.reportForm.generate.disabled=false;
+            
+            jQuery("#startDate").val("");
+            jQuery("#endDate").val("");
+        	hideById('dateSelectTR');
+        	showById('forteenPeriodTR');
+        }
+        
+       else
+       {
+    	   getReports(ouId, reportTypeName);
+           document.reportForm.generate.disabled=false;
+           
+           showById('dateSelectTR');
+           hideById('forteenPeriodTR');
+       }
+        
     }
+   
+   /*
+    else if ( periodTypeId == "Forteen" )
+    {
+    	alert( periodTypeId );
+    	getPeriods();
+    	getReports(ouId, reportTypeName);
+        document.reportForm.generate.disabled=false;
+        
+    	hideById('startDateTD');
+    	hideById('endDateTD');
+    	showById('forteenPeriodTR');
+    }
+    */
     else
     {
-    
         document.reportForm.generate.disabled=true;
         clearList( reportsList );
         jQuery("#startDate").val("");
         jQuery("#endDate").val("");
         document.reportForm.startDate = "";
         document.reportForm.endDate = " ";
+        
+        showById('dateSelectTR');
+        hideById('forteenPeriodTR');
     }
 
 	var ouId = document.getElementById('ouIDTB').value;
@@ -322,7 +357,8 @@ function getReportsReceived(xmlObject)
 {
 	var reportsList = document.getElementById("reportList");
 	var orgUnitName = document.getElementById("ouNameTB");
-
+	var ouLavel = "";
+	
 	clearList(reportsList);
 
 	var reports = xmlObject.getElementsByTagName("report");
@@ -331,11 +367,31 @@ function getReportsReceived(xmlObject)
 		var id = reports[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 		var name = reports[i].getElementsByTagName("name")[0].firstChild.nodeValue;
 		var ouName = reports[i].getElementsByTagName("ouName")[0].firstChild.nodeValue;
-
+		ouLavel = reports[i].getElementsByTagName("ouLavel")[0].firstChild.nodeValue;
+		
 		orgUnitName.value = ouName;
 		
 		$("#reportList").append("<option value='"+ id +"'>" + name + "</option>");
 	}
+	
+	document.reportForm.generate.disabled=false;
+	
+	if ( ouLavel == 2 )
+	{
+		document.reportForm.generate1.disabled=false;
+		document.reportForm.generate.disabled=true;
+	}
+	else if ( ouLavel == 3 )
+	{
+		document.reportForm.generate1.disabled=true;
+		document.reportForm.generate.disabled=false;
+	}
+	else
+	{
+		document.reportForm.generate1.disabled=true;
+		document.reportForm.generate.disabled=true;
+	}
+	//alert( ouLavel );
 }
 
 //----------------------------------------------------------------------

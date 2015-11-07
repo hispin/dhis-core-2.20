@@ -1,6 +1,6 @@
 package org.hisp.dhis.reports.routine.action;
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -31,7 +31,6 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-import org.amplecode.quick.StatementManager;
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.config.Configuration_IN;
 import org.hisp.dhis.i18n.I18nFormat;
@@ -55,14 +54,14 @@ public class GenerateRoutineReportAnalyserResultAction
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
-    
+    /*
     private StatementManager statementManager;
 
     public void setStatementManager( StatementManager statementManager )
     {
         this.statementManager = statementManager;
     }
-
+*/
     private OrganisationUnitGroupService organisationUnitGroupService;
 
     public void setOrganisationUnitGroupService( OrganisationUnitGroupService organisationUnitGroupService )
@@ -192,7 +191,7 @@ public class GenerateRoutineReportAnalyserResultAction
     public String execute()
         throws Exception
     {
-        statementManager.initialise();
+        //statementManager.initialise();
 
         // Initialization
         raFolderName = reportService.getRAFolderName();
@@ -203,6 +202,7 @@ public class GenerateRoutineReportAnalyserResultAction
         simpleYearFormat = new SimpleDateFormat( "yy" );
         dailyFormat = new SimpleDateFormat( "yyyy-MM-dd" );
         dateFormat = new SimpleDateFormat( "dd-MM-yyyy" );
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat( "EEEE, dd MMMM yyyy HH:mm:ss zzzz" );
         String deCodesXMLFileName = "";
         String parentUnit = "";
 
@@ -350,7 +350,7 @@ public class GenerateRoutineReportAnalyserResultAction
                 else if ( deCodeString.equalsIgnoreCase( "PERIOD" ) || deCodeString.equalsIgnoreCase( "PERIOD-NOREPEAT" ) )
                 {
                     tempStr = simpleDateFormat.format( sDate );
-                }
+                }                
                 else if ( deCodeString.equalsIgnoreCase( "PERIOD-MONTH" ) )
                 {
                     tempStr = monthFormat.format( sDate );
@@ -770,6 +770,10 @@ public class GenerateRoutineReportAnalyserResultAction
                 else if ( deCodeString.equalsIgnoreCase( "NA" ) )
                 {
                     tempStr = " ";
+                }
+                else if ( deCodeString.equalsIgnoreCase( "CURRENTDATETIME" ) )
+                {
+                    tempStr = dateTimeFormat.format( new Date() );
                 }
                 else
                 {
@@ -1251,7 +1255,7 @@ public class GenerateRoutineReportAnalyserResultAction
 
         outputReportFile.deleteOnExit();
 
-        statementManager.destroy();
+        //statementManager.destroy();
 
         return SUCCESS;
     }
