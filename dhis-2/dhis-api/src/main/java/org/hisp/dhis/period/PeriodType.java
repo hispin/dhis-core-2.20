@@ -120,6 +120,7 @@ public abstract class PeriodType
         {
             add( new DailyPeriodType() );
             add( new WeeklyPeriodType() );
+            add( new ForteenPeriodType() );
             add( new MonthlyPeriodType() );
             add( new BiMonthlyPeriodType() );
             add( new QuarterlyPeriodType() );

@@ -26,6 +26,7 @@
     <subclass name="org.hisp.dhis.period.FinancialAprilPeriodType" discriminator-value="FinancialApril" />
     <subclass name="org.hisp.dhis.period.FinancialJulyPeriodType" discriminator-value="FinancialJuly" />
     <subclass name="org.hisp.dhis.period.FinancialOctoberPeriodType" discriminator-value="FinancialOct" />
+    <subclass name="org.hisp.dhis.period.ForteenPeriodType" discriminator-value="Forteen" />
 
   </class>
 </hibernate-mapping>
