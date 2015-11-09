@@ -43,19 +43,24 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.program.ProgramInstance;
 import org.hisp.dhis.program.ProgramInstanceService;
+import org.hisp.dhis.program.ProgramStage;
+import org.hisp.dhis.program.ProgramStageInstance;
+import org.hisp.dhis.program.ProgramStageInstanceService;
 import org.hisp.dhis.sms.SmsSender;
 import org.hisp.dhis.sms.command.SMSCommand;
 import org.hisp.dhis.sms.command.SMSCommandService;
 import org.hisp.dhis.sms.command.code.SMSCode;
 import org.hisp.dhis.sms.incoming.IncomingSms;
 import org.hisp.dhis.sms.incoming.IncomingSmsListener;
+import org.hisp.dhis.sms.incoming.IncomingSmsService;
+import org.hisp.dhis.sms.incoming.SmsMessageStatus;
 import org.hisp.dhis.sms.parse.ParserType;
 import org.hisp.dhis.sms.parse.SMSParserException;
 import org.hisp.dhis.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.trackedentity.TrackedEntityInstanceService;
-import org.hisp.dhis.trackedentity.TrackedEntityService;
 import org.hisp.dhis.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.hisp.dhis.user.User;
 import org.hisp.dhis.user.UserService;
@@ -64,7 +69,7 @@ public class TrackedEntityRegistrationSMSListener
     implements IncomingSmsListener
 {
     private static final String defaultPattern = "([a-zA-Z]+)\\s*(\\d+)";
-    
+
     private SMSCommandService smsCommandService;
 
     public void setSmsCommandService( SMSCommandService smsCommandService )
@@ -77,13 +82,6 @@ public class TrackedEntityRegistrationSMSListener
     public void setUserService( UserService userService )
     {
         this.userService = userService;
-    }
-
-    private TrackedEntityService trackedEntityService;
-
-    public void setTrackedEntityService( TrackedEntityService trackedEntityService )
-    {
-        this.trackedEntityService = trackedEntityService;
     }
 
     private TrackedEntityInstanceService trackedEntityInstanceService;
@@ -101,12 +99,26 @@ public class TrackedEntityRegistrationSMSListener
     }
 
     private SmsSender smsSender;
-    
+
     public void setSmsSender( SmsSender smsSender )
     {
         this.smsSender = smsSender;
     }
-    
+
+    private ProgramStageInstanceService programStageInstanceService;
+
+    public void setProgramStageInstanceService( ProgramStageInstanceService programStageInstanceService )
+    {
+        this.programStageInstanceService = programStageInstanceService;
+    }
+
+    private IncomingSmsService incomingSmsService;
+
+    public void setIncomingSmsService( IncomingSmsService incomingSmsService )
+    {
+        this.incomingSmsService = incomingSmsService;
+    }
+
     // -------------------------------------------------------------------------
     // IncomingSmsListener implementation
     // -------------------------------------------------------------------------
@@ -150,10 +162,10 @@ public class TrackedEntityRegistrationSMSListener
 
         SMSCommand smsCommand = smsCommandService.getSMSCommand( commandString,
             ParserType.TRACKED_ENTITY_REGISTRATION_PARSER );
-        
+
         Map<String, String> parsedMessage = this.parse( message, smsCommand );
 
-        Date date = lookForDate( message );
+        Date incidentDate = lookForDate( message );
         String senderPhoneNumber = StringUtils.replace( sms.getOriginator(), "+", "" );
         Collection<OrganisationUnit> orgUnits = getOrganisationUnitsByPhoneNumber( senderPhoneNumber );
 
@@ -173,7 +185,7 @@ public class TrackedEntityRegistrationSMSListener
 
         TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
         trackedEntityInstance.setOrganisationUnit( orgUnit );
-        trackedEntityInstance.setTrackedEntity( trackedEntityService.getTrackedEntityByName( "Person" ) );
+        trackedEntityInstance.setTrackedEntity( smsCommand.getProgram().getTrackedEntity() );
         Set<TrackedEntityAttributeValue> patientAttributeValues = new HashSet<>();
 
         for ( SMSCode code : smsCommand.getCodes() )
@@ -185,7 +197,6 @@ public class TrackedEntityRegistrationSMSListener
                 patientAttributeValues.add( trackedEntityAttributeValue );
             }
         }
-        
 
         int trackedEntityInstanceId = 0;
         if ( patientAttributeValues.size() > 0 )
@@ -194,9 +205,36 @@ public class TrackedEntityRegistrationSMSListener
                 null, null, patientAttributeValues );
         }
 
-        programInstanceService.enrollTrackedEntityInstance( trackedEntityInstanceService.getTrackedEntityInstance( trackedEntityInstanceId ), smsCommand.getProgram(), new Date(), date, orgUnit );
-        smsSender.sendMessage( "Register new User successfully", senderPhoneNumber );
+        // Create ProgramInstance
+        ProgramInstance programInstance = programInstanceService.enrollTrackedEntityInstance(
+            trackedEntityInstanceService.getTrackedEntityInstance( trackedEntityInstanceId ), smsCommand.getProgram(),
+            new Date(), incidentDate, orgUnit );
+
+        // Create ProgramStageInstance
+        for ( ProgramStage programStage : smsCommand.getProgram().getProgramStages() )
+        {
+            if ( programStage.getAutoGenerateEvent() )
+            {
+                ProgramStageInstance programStageInstance = programStageInstanceService.createProgramStageInstance( programInstance, programStage, new Date(),
+                    incidentDate, orgUnit );
+                programInstance.getProgramStageInstances().add( programStageInstance );
+            }
+        }
         
+        programInstanceService.updateProgramInstance( programInstance );
+
+        sms.setParsed( true );
+        sms.setStatus( SmsMessageStatus.PROCESSED );
+        incomingSmsService.update( sms );
+
+        if ( smsCommand.getSuccessMessage() != null && !StringUtils.isEmpty( smsCommand.getSuccessMessage() ) )
+        {
+            smsSender.sendMessage( smsCommand.getSuccessMessage(), senderPhoneNumber );
+        }
+        else
+        {
+            smsSender.sendMessage( "Register new tracked entity instance successfully", senderPhoneNumber );
+        }
     }
 
     private TrackedEntityAttributeValue createTrackedEntityAttributeValue( Map<String, String> parsedMessage,
@@ -233,7 +271,7 @@ public class TrackedEntityRegistrationSMSListener
         if ( orgUnit == null && orgUnits.size() > 1 )
         {
             String messageListingOrgUnits = smsCommand.getMoreThanOneOrgUnitMessage();
-            
+
             for ( Iterator<OrganisationUnit> i = orgUnits.iterator(); i.hasNext(); )
             {
                 OrganisationUnit o = i.next();
@@ -243,7 +281,7 @@ public class TrackedEntityRegistrationSMSListener
                     messageListingOrgUnits += ",";
                 }
             }
-            
+
             throw new SMSParserException( messageListingOrgUnits );
         }
 
@@ -274,30 +312,20 @@ public class TrackedEntityRegistrationSMSListener
 
         Date date = null;
         String dateString = message.trim().split( " " )[0];
-        SimpleDateFormat format = new SimpleDateFormat( "ddMM" );
+        SimpleDateFormat format = new SimpleDateFormat( "ddMMyyyy" );
 
         try
         {
             Calendar cal = Calendar.getInstance();
             date = format.parse( dateString );
+            
             cal.setTime( date );
-            int year = Calendar.getInstance().get( Calendar.YEAR );
-            int month = Calendar.getInstance().get( Calendar.MONTH );
-            
-            if ( cal.get( Calendar.MONTH ) < month )
-            {
-                cal.set( Calendar.YEAR, year );
-            }
-            else
-            {
-                cal.set( Calendar.YEAR, year - 1 );
-            }
-            
+            cal.add(Calendar.DATE, 1);
             date = cal.getTime();
         }
         catch ( Exception e )
         {
-            // no date found
+            e.printStackTrace();
         }
 
         return date;
@@ -307,14 +335,14 @@ public class TrackedEntityRegistrationSMSListener
     {
         HashMap<String, String> output = new HashMap<>();
         Pattern pattern = Pattern.compile( defaultPattern );
-        
+
         if ( !StringUtils.isBlank( smsCommand.getSeparator() ) )
         {
             String x = "(\\w+)\\s*\\" + smsCommand.getSeparator().trim() + "\\s*([\\w ]+)\\s*(\\"
                 + smsCommand.getSeparator().trim() + "|$)*\\s*";
             pattern = Pattern.compile( x );
         }
-        
+
         Matcher m = pattern.matcher( message );
         while ( m.find() )
         {
