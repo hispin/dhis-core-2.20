@@ -30,7 +30,6 @@ package org.hisp.dhis.sms.listener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -313,15 +312,9 @@ public class TrackedEntityRegistrationSMSListener
         Date date = null;
         String dateString = message.trim().split( " " )[0];
         SimpleDateFormat format = new SimpleDateFormat( "ddMMyyyy" );
-
         try
         {
-            Calendar cal = Calendar.getInstance();
             date = format.parse( dateString );
-            
-            cal.setTime( date );
-            cal.add(Calendar.DATE, 1);
-            date = cal.getTime();
         }
         catch ( Exception e )
         {
