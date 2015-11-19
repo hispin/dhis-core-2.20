@@ -170,9 +170,28 @@ public class ViewDataEntryFormAction
         dataSet = dataSetService.getDataSet( dataSetId );
 
         dataEntryForm = dataSet.getDataEntryForm();
-
-        dataEntryValue = dataEntryForm != null ? dataEntryFormService.prepareDataEntryFormForEdit( dataEntryForm, dataSet, i18n ) : "";
-
+              
+        if( dataEntryForm.getHtmlCode() != null  )
+        {
+            if( dataEntryForm.getHtmlCode().equalsIgnoreCase( " " ) || dataEntryForm.getHtmlCode().equalsIgnoreCase( "" ))
+            {
+                dataEntryValue = "";
+            }
+            else
+            {
+                dataEntryValue = dataEntryFormService.prepareDataEntryFormForEdit( dataEntryForm, dataSet, i18n );
+            }
+            
+        }
+        
+        else
+        {
+            dataEntryValue = "";
+        }
+        
+        
+        //dataEntryValue = dataEntryForm != null ? dataEntryFormService.prepareDataEntryFormForEdit( dataEntryForm, dataSet, i18n ) : "";
+        
         autoSave = (Boolean) userSettingService.getUserSetting( UserSettingService.AUTO_SAVE_DATA_ENTRY_FORM, false );
         
         dataElementList = new ArrayList<>( dataSet.getDataElements() );
