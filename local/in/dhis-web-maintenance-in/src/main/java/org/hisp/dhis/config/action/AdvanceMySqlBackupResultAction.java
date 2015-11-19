@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.hisp.dhis.system.database.DatabaseInfo;
 import org.hisp.dhis.config.ConfigurationService;
 import org.hisp.dhis.config.Configuration_IN;
 import org.hisp.dhis.system.database.DatabaseInfoProvider;
@@ -124,19 +125,48 @@ public class AdvanceMySqlBackupResultAction implements Action
         
         try
         {
-            if( password == null || password.trim().equals( "" ) )
+            DatabaseInfo dataBaseInfo = provider.getDatabaseInfo();
+            
+            if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
             {
-                backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName + " "+ temTables +" -r "+backupFilePath;
+                if( password == null || password.trim().equals( "" ) )
+                {
+                    backupCommand = mySqlPath + "pg_dump -U "+ userName +" "+ dbName + " "+ temTables +" -r "+backupFilePath;
+                    
+                    //backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
+                }
+                else
+                {
+                    backupCommand = mySqlPath + "pg_dump -U "+ userName +" -p"+ password +" "+ dbName + " "+ temTables +" -r "+backupFilePath;
+                    
+                    //backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                }
                 
-                //backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
+                System.out.println(" POSTGRES SQL Backup Command is :" + backupCommand );
+                                
+                //pg_dump -U postgres  ccei_laos_06_02_2014 > C:\Users\HISP\Desktop\deskTop\CCEM\ccei_laos\06_02_2014_db_backup\ccei_laos_06Feb2014.sql
+
             }
-            else
+            
+            else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
             {
-                backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName + " "+ temTables +" -r "+backupFilePath;
+                if( password == null || password.trim().equals( "" ) )
+                {
+                    backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName + " "+ temTables +" -r "+backupFilePath;
+                    
+                    //backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
+                }
+                else
+                {
+                    backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName + " "+ temTables +" -r "+backupFilePath;
+                    
+                    //backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                }
                 
-                //backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                System.out.println(" MY SQL Backup Command is :" + backupCommand );
             }
-            //System.out.println(" Backup Command is :" + backupCommand );
+                        
+            System.out.println(" Final Backup Command is :" + backupCommand );
             
             Runtime rt = Runtime.getRuntime();
             
@@ -158,7 +188,7 @@ public class AdvanceMySqlBackupResultAction implements Action
         }
         catch ( Exception e )
         {
-            System.out.println("Exception : "+e.getMessage());
+            System.out.println("Exception : "+e.getMessage() );
             
             statusMessage = "Not able to take Backup, Please check MySQL configuration and SQL file path.";
         }

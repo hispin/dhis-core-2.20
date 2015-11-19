@@ -20,6 +20,7 @@
 		<result name="success" type="velocity">/main.vm</result>
         <param name="page">/dhis-web-maintenance-in/configurationForm.vm</param>
         <param name="menu">/dhis-web-maintenance-in/menu.vm</param>
+        <param name="requiredAuthorities">F_CONFIGURATION_IN</param>
     </action>
 
     <action name="configurationResult" class="org.hisp.dhis.config.action.ConfigurationResultAction">

@@ -41,7 +41,9 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 <!-- Advance MySQL Backup -->
   <bean id="org.hisp.dhis.config.action.AdvanceMySqlBackupFormAction" class="org.hisp.dhis.config.action.AdvanceMySqlBackupFormAction"
     scope="prototype">
-	  <property name="jdbcTemplate" ref="jdbcTemplate"/>	
+	  <property name="jdbcTemplate" ref="jdbcTemplate"/>
+	  <property name="databaseInfoProvider" ref="databaseInfoProvider" />
+	  
   </bean>
 
   <bean id="org.hisp.dhis.config.action.AdvanceMySqlBackupResultAction" class="org.hisp.dhis.config.action.AdvanceMySqlBackupResultAction"

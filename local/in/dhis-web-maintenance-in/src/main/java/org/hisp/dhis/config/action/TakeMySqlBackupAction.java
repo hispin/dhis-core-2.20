@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.hisp.dhis.config.ConfigurationService;
 import org.hisp.dhis.config.Configuration_IN;
+import org.hisp.dhis.system.database.DatabaseInfo;
 import org.hisp.dhis.system.database.DatabaseInfoProvider;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -82,6 +83,21 @@ public class TakeMySqlBackupAction
         Date curDate = new Date();                
         curDateTime.setTime( curDate );
         
+        /*
+        DatabaseInfo dataBaseInfo = provider.getDatabaseInfo();
+        if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+        {
+            
+        }
+        
+        else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+        {
+            
+        }
+        */
+        
+        //"C:/PROGRA~1/PostgreSQL/9.2/bin/"
+        
         simpleDateFormat = new SimpleDateFormat( "ddMMMyyyy-HHmmssSSS" );
                 
         String tempFolderName = simpleDateFormat.format( curDate );
@@ -101,16 +117,46 @@ public class TakeMySqlBackupAction
         
         try
         {
-            if( password == null || password.trim().equals( "" ) )
+            
+            DatabaseInfo dataBaseInfo = provider.getDatabaseInfo();
+            
+            if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
             {
-                backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
-            }
-            else
-            {
-                backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                if( password == null || password.trim().equals( "" ) )
+                {
+                    backupCommand = mySqlPath + "pg_dump -U "+ userName +" "+ dbName +" -r "+backupFilePath;
+                    
+                    //backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
+                }
+                else
+                {
+                    //backupCommand = mySqlPath + "pg_dump -U "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                    
+                    backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                }
+                
+                System.out.println(" POSTGRES SQL Backup Command is :" + backupCommand );
+                                
+                //pg_dump -U postgres  ccei_laos_06_02_2014 > C:\Users\HISP\Desktop\deskTop\CCEM\ccei_laos\06_02_2014_db_backup\ccei_laos_06Feb2014.sql
             }
             
-            System.out.println(" Backup Command is :" + backupCommand );
+            else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+            {
+                if( password == null || password.trim().equals( "" ) )
+                {
+                    backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
+                }
+                else
+                {
+                    backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
+                    
+                    //backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                }
+                
+            }
+
+            System.out.println(" Final Backup Command is :" + backupCommand );
+            
             Runtime rt = Runtime.getRuntime();
             
             Process process = rt.exec( backupCommand );
@@ -134,9 +180,10 @@ public class TakeMySqlBackupAction
             
             statusMessage = "Not able to take Backup, Please check MySQL configuration and SQL file path.";
         }
-        System.out.println(" Backup Path is :" + backupFilePath );
-        return SUCCESS;
         
+        System.out.println(" Backup Path is :" + backupFilePath );
+        
+        return SUCCESS;
         
     }
     

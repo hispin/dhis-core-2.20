@@ -25,9 +25,12 @@ function clearFolder( folderId )
 
 function clearFolderRecieved( messageElement )
 {
-	var message = messageElement.firstChild.nodeValue;
-
-    document.getElementById( 'message' ).innerHTML = message;
+	messageElement = messageElement.getElementsByTagName( "message" )[0];
+	
+	//var message = messageElement.firstChild.nodeValue;
+	//alert( messageElement );
+	//alert( messageElement.firstChild.nodeValue );
+    document.getElementById( 'message' ).innerHTML = messageElement.firstChild.nodeValue;
     document.getElementById( 'message' ).style.display = 'block';
 }
 

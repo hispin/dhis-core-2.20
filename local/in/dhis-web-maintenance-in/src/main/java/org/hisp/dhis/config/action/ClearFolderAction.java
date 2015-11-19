@@ -230,7 +230,10 @@ public class ClearFolderAction implements Action
                 return "download";
             }
         }
-
+        
+        
+        //System.out.println( "statusMessage -- " + statusMessage );
+        
         return SUCCESS;
     }
     
