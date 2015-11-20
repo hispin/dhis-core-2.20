@@ -37,6 +37,13 @@ import org.hisp.dhis.common.BaseIdentifiableObject;
 import org.hisp.dhis.common.IdentifiableObject;
 import org.hisp.dhis.common.IdentifiableObjectManager;
 import org.hisp.dhis.common.IdentifiableProperty;
+import org.hisp.dhis.commons.timer.SystemTimer;
+import org.hisp.dhis.commons.timer.Timer;
+import org.hisp.dhis.dataelement.DataElementCategory;
+import org.hisp.dhis.dataelement.DataElementCategoryCombo;
+import org.hisp.dhis.dataelement.DataElementCategoryOption;
+import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
+import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.PeriodStore;
@@ -44,8 +51,6 @@ import org.hisp.dhis.period.PeriodType;
 import org.hisp.dhis.schema.Schema;
 import org.hisp.dhis.schema.SchemaService;
 import org.hisp.dhis.system.deletion.DeletionManager;
-import org.hisp.dhis.commons.timer.SystemTimer;
-import org.hisp.dhis.commons.timer.Timer;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.User;
 import org.hisp.dhis.user.UserCredentials;
@@ -97,6 +102,9 @@ public class DefaultObjectBridge
 
     @Autowired
     private CurrentUserService currentUserService;
+
+    @Autowired
+    private DataElementCategoryService dataElementCategoryService;
 
     //-------------------------------------------------------------------------------------------------------
     // Internal and Semi-Public maps
@@ -451,6 +459,30 @@ public class DefaultObjectBridge
     private <T> Set<T> _findMatches( T object )
     {
         Set<T> objects = new HashSet<>();
+
+        if ( DataElementCategoryOption.class.isInstance( object ) && ((DataElementCategoryOption) object).isDefault() )
+        {
+            objects.add( (T) dataElementCategoryService.getDataElementCategoryOptionByName( DataElementCategoryOption.DEFAULT_NAME ) );
+            return objects;
+        }
+
+        if ( DataElementCategory.class.isInstance( object ) && ((DataElementCategory) object).isDefault() )
+        {
+            objects.add( (T) dataElementCategoryService.getDataElementCategoryByName( DataElementCategory.DEFAULT_NAME ) );
+            return objects;
+        }
+
+        if ( DataElementCategoryCombo.class.isInstance( object ) && ((DataElementCategoryCombo) object).isDefault() )
+        {
+            objects.add( (T) dataElementCategoryService.getDefaultDataElementCategoryCombo() );
+            return objects;
+        }
+
+        if ( DataElementCategoryOptionCombo.class.isInstance( object ) && ((DataElementCategoryOptionCombo) object).isDefault() )
+        {
+            objects.add( (T) dataElementCategoryService.getDefaultDataElementCategoryOptionCombo() );
+            return objects;
+        }
 
         if ( PeriodType.class.isInstance( object ) )
         {
