@@ -965,5 +965,8 @@ div#orgUnitTree {
     font-size: 14pt;
     color: #585D61;
     border-bottom: 1px solid #e3e3e3;
+    white-space:normal;
+    word-wrap: break-word;
+    //maxlength:10;
     //text-align: center;
 }
