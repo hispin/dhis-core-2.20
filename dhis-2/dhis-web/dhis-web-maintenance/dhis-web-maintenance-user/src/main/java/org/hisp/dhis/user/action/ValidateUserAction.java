@@ -109,9 +109,9 @@ public class ValidateUserAction
     public String execute()
         throws Exception
     {
-        if ( username != null )
+        if ( username.trim() != null )
         {
-            UserCredentials match = userService.getUserCredentialsByUsername( username );
+            UserCredentials match = userService.getUserCredentialsByUsername( username.trim() );
 
             if ( match != null && (id == null || match.getId() != id) )
             {
