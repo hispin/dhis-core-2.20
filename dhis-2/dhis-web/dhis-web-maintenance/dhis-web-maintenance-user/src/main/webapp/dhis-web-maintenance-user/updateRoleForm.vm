@@ -54,7 +54,7 @@
 
 		<tr>
 			<td><label for="description">$i18n.getString( "description" )</label></td>
-			<td colspan="3"><input type="text" id="description" name="description" value="$!encoder.htmlEncode( $userAuthorityGroup.description )"></td>
+			<td colspan="3"><input type="text" id="description" name="description" maxlength="250" value="$!encoder.htmlEncode( $userAuthorityGroup.description )"></td>
 		</tr>
 
 		<tr>
