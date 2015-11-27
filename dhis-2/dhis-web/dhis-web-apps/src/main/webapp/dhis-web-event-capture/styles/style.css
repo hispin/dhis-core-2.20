@@ -961,6 +961,11 @@ div#orgUnitTree {
     z-index: 2000 !important;
 }
 
+.wrap-text {
+    word-wrap: break-word;
+ 
+}
+
 .section-label{
     font-size: 14pt;
     color: #585D61;
