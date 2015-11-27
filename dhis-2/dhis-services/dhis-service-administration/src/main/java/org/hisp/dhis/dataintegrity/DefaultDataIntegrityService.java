@@ -310,7 +310,7 @@ public class DefaultDataIntegrityService
             if ( dataSet.hasDataEntryForm() )
             {
                 Set<DataElementOperand> operands = dataEntryFormService.getOperandsInDataEntryForm( dataSet );
-                
+                //System.out.println( dataSet.getName() + "-----" + operands.size() );
                 if ( operands != null )
                 {
                     if ( operands.size() > 2000 )
