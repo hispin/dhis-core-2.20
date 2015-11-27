@@ -34,7 +34,7 @@
 	</tr>	
 	 
 	<tr>
-		<td><label for="description">$i18n.getString( "description" ) <em title="$i18n.getString( "required" )" class="required">*</em></label></td>
+		<td><label for="description">$i18n.getString( "description" ) #*<em title="$i18n.getString( "required" )" class="required">*</em>*#</label></td>
 		<td><textarea id="description" name="description">$!encoder.htmlEncode( $!dataElementGroupSet.description )</textarea></td>
 	</tr>
 
