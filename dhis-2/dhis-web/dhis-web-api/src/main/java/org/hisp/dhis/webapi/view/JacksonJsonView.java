@@ -31,7 +31,6 @@ package org.hisp.dhis.webapi.view;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.hisp.dhis.webapi.utils.ContextUtils;
 import org.hisp.dhis.dxf2.common.JacksonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.AbstractView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,9 +60,6 @@ public class JacksonJsonView
     private String callbackParameter = "callback";
 
     private String paddingFunction = "callback";
-
-    @Autowired
-    private ContextUtils contextUtils;
 
     public JacksonJsonView()
     {

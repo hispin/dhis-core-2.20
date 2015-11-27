@@ -276,6 +276,7 @@ public class TableAlteror
         executeSql( "ALTER TABLE programrule ALTER condition TYPE text" );
         executeSql( "ALTER TABLE programruleaction ALTER content TYPE text" );
         executeSql( "ALTER TABLE programruleaction ALTER data TYPE text" );
+        executeSql( "ALTER TABLE trackedentitycomment ALTER commenttext TYPE text" );
 
 
         executeSql( "ALTER TABLE minmaxdataelement RENAME minvalue TO minimumvalue" );
@@ -806,6 +807,7 @@ public class TableAlteror
         executeSql( "alter table datavalue alter column value type varchar(50000)" );
         executeSql( "alter table datavalue alter column comment type varchar(50000)" );
         executeSql( "alter table datavalueaudit alter column value type varchar(50000)" );
+        executeSql( "alter table trackedentitydatavalue alter column value type varchar(50000)" );
 
         executeSql( "update datavalueaudit set attributeoptioncomboid = " + defaultOptionComboId + " where attributeoptioncomboid is null" );
         executeSql( "alter table datavalueaudit alter column attributeoptioncomboid set not null;" );

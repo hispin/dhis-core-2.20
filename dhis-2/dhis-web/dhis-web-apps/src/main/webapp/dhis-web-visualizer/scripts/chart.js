@@ -4212,8 +4212,7 @@ Ext.onReady(function() {
 				web = ns.core.web,
                 type = 'json',
                 headerMap = {
-                    json: 'application/json',
-                    jsonp: 'application/javascript'
+                    json: 'application/json'
                 },
                 headers = {
                     'Content-Type': headerMap[type],
@@ -4275,12 +4274,7 @@ Ext.onReady(function() {
                 config.success = success;
                 config.failure = failure;
 
-                if (type === 'jsonp') {
-                    Ext.data.JsonP.request(config);
-                }
-                else {
-                    Ext.Ajax.request(config);
-                }
+                ns.ajax(config, ns);
 			};
 
 			web.chart.getData = function(layout, isUpdateGui) {

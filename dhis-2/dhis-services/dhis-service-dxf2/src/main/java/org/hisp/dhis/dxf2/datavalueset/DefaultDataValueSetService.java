@@ -29,7 +29,6 @@ package org.hisp.dhis.dxf2.datavalueset;
  */
 
 import static org.apache.commons.lang3.StringUtils.trimToNull;
-import static org.hisp.dhis.common.IdentifiableObjectUtils.getUids;
 import static org.hisp.dhis.common.IdentifiableProperty.UUID;
 import static org.hisp.dhis.system.notification.NotificationLevel.ERROR;
 import static org.hisp.dhis.system.notification.NotificationLevel.INFO;
@@ -42,7 +41,6 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,7 +61,6 @@ import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataset.CompleteDataSetRegistration;
 import org.hisp.dhis.dataset.CompleteDataSetRegistrationService;
 import org.hisp.dhis.dataset.DataSet;
-import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.dxf2.common.IdSchemes;
 import org.hisp.dhis.dxf2.common.ImportOptions;
@@ -115,9 +112,6 @@ public class DefaultDataValueSetService
 
     @Autowired
     private DataElementCategoryService categoryService;
-
-    @Autowired
-    private DataSetService dataSetService;
 
     @Autowired
     private OrganisationUnitService organisationUnitService;
@@ -172,7 +166,7 @@ public class DefaultDataValueSetService
         
         if ( periods != null && !periods.isEmpty() )
         {
-            params.getPeriods().addAll( periodService.reloadIsoPeriods( new ArrayList<String>( periods ) ) );
+            params.getPeriods().addAll( periodService.reloadIsoPeriods( new ArrayList<>( periods ) ) );
         }
         else if ( startDate != null && endDate != null )
         {
@@ -183,13 +177,6 @@ public class DefaultDataValueSetService
         if ( organisationUnits != null )
         {
             params.getOrganisationUnits().addAll( identifiableObjectManager.getByUid( OrganisationUnit.class, organisationUnits ) );
-            params.setRequestOrganisationUnits();
-            
-            if ( includeChildren )
-            {
-                params.getOrganisationUnits().addAll( new HashSet<OrganisationUnit>( 
-                    organisationUnitService.getOrganisationUnitsWithChildren( getUids( params.getOrganisationUnits() ) ) ) );
-            }
         }
 
         params.setIncludeChildren( includeChildren );
@@ -224,8 +211,8 @@ public class DefaultDataValueSetService
         {
             violation = "Start date must be before end date";
         }
-        
-        if ( params.getRequestOrganisationUnits().isEmpty() )
+
+        if ( params.getOrganisationUnits().isEmpty() )
         {
             violation = "At least one valid organisation unit must be specified";
         }
@@ -246,7 +233,7 @@ public class DefaultDataValueSetService
     @Override
     public void decideAccess( DataExportParams params )
     {
-        for ( OrganisationUnit unit : params.getRequestOrganisationUnits() )
+        for ( OrganisationUnit unit : params.getOrganisationUnits() )
         {
             if ( !organisationUnitService.isInUserHierarchy( unit ) )
             {

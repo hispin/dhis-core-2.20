@@ -28,10 +28,8 @@ package org.hisp.dhis.webapi.view;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import org.hisp.dhis.webapi.utils.ContextUtils;
 import org.hisp.dhis.dxf2.common.JacksonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.AbstractView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,9 +49,6 @@ public class JacksonXmlView
     private static String CONTENT_TYPE_APPLICATION_XML_GZIP = "application/xml+gzip";
 
     private boolean withCompression = false;
-
-    @Autowired
-    private ContextUtils contextUtils;
 
     public JacksonXmlView()
     {
