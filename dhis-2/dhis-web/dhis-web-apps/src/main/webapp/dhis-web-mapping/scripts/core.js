@@ -3652,10 +3652,10 @@ Ext.onReady( function() {
                         return;
                     }
 
-                    if (!config.filters) {
-                        console.log('Please select a valid period', config.filters);
-                        return;
-                    }
+                    //if (!config.filters) {
+                        //console.log('Please select a valid period', config.filters);
+                        //return;
+                    //}
 
                     if (Ext.Array.contains([gis.layer.thematic1.id, gis.layer.thematic2.id, gis.layer.thematic3.id, gis.layer.thematic4.id], config.layer)) {
                         if (!config.columns) {

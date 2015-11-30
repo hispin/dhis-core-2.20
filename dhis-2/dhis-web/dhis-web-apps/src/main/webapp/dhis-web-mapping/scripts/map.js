@@ -3749,7 +3749,7 @@ Ext.onReady(function() {
 			}
 
             // display property
-            paramString += '&displayProperty=' + gis.init.userAccount.settings.keyAnalysisDisplayProperty.toUpperCase();            
+            paramString += '&displayProperty=' + gis.init.userAccount.settings.keyAnalysisDisplayProperty.toUpperCase();
 
             if (Ext.isArray(view.userOrgUnit) && view.userOrgUnit.length) {
                 paramString += '&userOrgUnit=';
@@ -3798,7 +3798,7 @@ Ext.onReady(function() {
 
 					valueMap[id] = value;
 				}
-                
+
 				for (var i = 0; i < features.length; i++) {
 					var feature = features[i],
 						id = feature.attributes.id;
@@ -3902,7 +3902,7 @@ Ext.onReady(function() {
                     minSize: view.radiusLow,
                     maxSize: view.radiusHigh
                 };
-                
+
                 layer.core.view = view;
                 layer.core.colorInterpolation = colors;
                 layer.core.applyClassification(options);
@@ -4847,7 +4847,7 @@ Ext.onReady(function() {
 
             api.layout.Layout = function(config, applyConfig, forceApplyConfig) {
                 config = Ext.apply(config, applyConfig);
-                
+
                 var layout = {},
                     getValidatedDimensionArray,
                     validateSpecialCases;
@@ -4961,10 +4961,10 @@ Ext.onReady(function() {
                     config.rows = getValidatedDimensionArray(config.rows);
                     config.filters = getValidatedDimensionArray(config.filters);
 
-                    if (!config.rows) {
-                        console.log('Organisation unit dimension is invalid', config.rows);
-                        return;
-                    }
+                    //if (!config.rows) {
+                        //console.log('Organisation unit dimension is invalid', config.rows);
+                        //return;
+                    //}
 
                     if (Ext.Array.contains([gis.layer.thematic1.id, gis.layer.thematic2.id, gis.layer.thematic3.id, gis.layer.thematic4.id], config.layer)) {
                         if (!config.columns) {
@@ -7343,7 +7343,7 @@ Ext.onReady(function() {
         };
 
         initialize = function() {
-            var el = Ext.get(config.el);            
+            var el = Ext.get(config.el);
 
             if (!validateConfig()) {
                 return;
@@ -7487,7 +7487,7 @@ Ext.onReady(function() {
                     }
                 };
 
-                Ext.Loader.injectScriptElement('//maps.googleapis.com/maps/api/js?callback=GIS_GM_fn',
+                Ext.Loader.injectScriptElement('//maps.googleapis.com/maps/api/js?v=3.22&callback=GIS_GM_fn',
                     function() {
                         console.log("GM available (online)");
                     },
