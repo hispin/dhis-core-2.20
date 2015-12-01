@@ -14,8 +14,8 @@
   function showDataElementCategoryDetails( context ) {
     jQuery.post('getDataElementCategory.action', { id: context.id },
       function( json ) {
-
-        setInnerHTML('nameField', json.dataElementCategory.name);
+         document.getElementById('nameField').textContent = json.dataElementCategory.name;
+        //setInnerHTML('nameField', json.dataElementCategory.name);
         setInnerHTML('categoryOptionsCountField', json.dataElementCategory.categoryOptionCount);
 		setInnerHTML('idField', json.dataElementCategory.uid);
         

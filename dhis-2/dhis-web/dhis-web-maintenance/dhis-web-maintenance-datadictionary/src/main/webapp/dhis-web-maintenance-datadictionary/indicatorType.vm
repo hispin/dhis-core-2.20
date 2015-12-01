@@ -10,7 +10,8 @@
 
 	function showIndicatorTypeDetails( context ) {
     jQuery.get( 'getIndicatorType.action', { id: context.id }, function( json ) {
-      setInnerHTML( 'nameField', json.indicatorType.name );
+	   document.getElementById('nameField').textContent = json.indicatorType.name;
+     // setInnerHTML( 'nameField', json.indicatorType.name );
       setInnerHTML( 'factorField', json.indicatorType.factor );
 	  setInnerHTML( 'idField', json.indicatorType.uid );
 
