@@ -226,6 +226,12 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     <property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
   </bean>
 
+  <bean id="org.hisp.dhis.dd.action.indicatorgroup.ValidateIndicatorGroupAction" class="org.hisp.dhis.dd.action.indicatorgroup.ValidateIndicatorGroupAction"
+    scope="prototype">
+    <property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
+  </bean>
+
+
   <!-- Indicator Group Set -->
 
   <bean id="org.hisp.dhis.dd.action.indicatorgroupset.AddIndicatorGroupSetAction" class="org.hisp.dhis.dd.action.indicatorgroupset.AddIndicatorGroupSetAction"

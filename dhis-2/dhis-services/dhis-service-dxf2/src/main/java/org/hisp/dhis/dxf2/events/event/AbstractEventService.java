@@ -617,6 +617,12 @@ public abstract class AbstractEventService
         {
             executionDate = DateUtils.parseDate( event.getEventDate() );
             programStageInstance.setExecutionDate( executionDate );
+            /*
+            if( programStageInstance.getExecutionDate() == null )
+            {
+                programStageInstance.setExecutionDate( executionDate );
+            }
+            */
         }
 
         Date dueDate = new Date();
