@@ -34,6 +34,9 @@
     <module>dhis-service-reporting</module>
     <!-- Level 6 -->
     <module>dhis-service-importexport</module>
+	
+	<module>dhis-service-loginattempt</module>
+	
   </modules>
   
   <dependencies>

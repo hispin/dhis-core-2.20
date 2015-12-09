@@ -44,6 +44,12 @@
       <artifactId>dhis-support-system</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.hisp.dhis</groupId>
+      <artifactId>dhis-service-loginattempt</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- Web -->
 
     <dependency>
