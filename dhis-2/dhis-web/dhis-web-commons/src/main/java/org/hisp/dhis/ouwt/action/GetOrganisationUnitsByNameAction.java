@@ -32,13 +32,12 @@ import com.opensymphony.xwork2.Action;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitQueryParams;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager;
+import org.hisp.dhis.user.CurrentUserService;
+import org.hisp.dhis.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Chau Thu Tran
@@ -56,7 +55,7 @@ public class GetOrganisationUnitsByNameAction
     private OrganisationUnitService organisationUnitService;
     
     @Autowired
-    private OrganisationUnitSelectionManager selectionManager;
+    private CurrentUserService currentUserService;
 
     // -------------------------------------------------------------------------
     // Input
@@ -90,11 +89,16 @@ public class GetOrganisationUnitsByNameAction
     {
         term = term.toLowerCase();
 
-        Set<OrganisationUnit> parents = new HashSet<OrganisationUnit>( selectionManager.getSelectedOrganisationUnits() );
-        
+        User user = currentUserService.getCurrentUser();
+
         OrganisationUnitQueryParams params = new OrganisationUnitQueryParams();
+        
+        if ( user != null && user.hasOrganisationUnit() )
+        {
+            params.setParents( user.getOrganisationUnits() );
+        }        
+        
         params.setQuery( term );
-        params.setParents( parents );
         params.setMax( MAX );
         
         organisationUnits = organisationUnitService.getOrganisationUnitsByQuery( params );
