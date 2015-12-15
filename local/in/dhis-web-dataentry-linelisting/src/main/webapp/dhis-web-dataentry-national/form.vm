@@ -2,7 +2,6 @@
 
 #parse( "/dhis-web-dataentry-national/select.vm" )
 
-
 #if($selDSName.equals($llbirth))
 	#parse( "/dhis-web-dataentry-national/llbirthForm.vm" )
 #elseif($selDSName.equals($lldeath))
@@ -19,6 +18,12 @@
 	#parse( "/dhis-web-dataentry-national/llidspl.vm" )
 #elseif($selDSName.equals($llcoldchain))
     #parse( "/dhis-web-dataentry-national/llcoldchain.vm" )	
+#elseif($selDSName.equals($llFamilyPlaning))
+    #parse( "/dhis-web-dataentry-national/llFamilyPlaning.vm" )
+#elseif($selDSName.equals($llYuktiStatus))
+    #parse( "/dhis-web-dataentry-national/llYuktiStatus.vm" )
+#elseif($selDSName.equals($llUltrasound))
+    #parse( "/dhis-web-dataentry-national/llUltrasound.vm" )	    	    
 	
 #else
   <h3>No Dataentry form available for selected DataSet/DataSet not assign to selected Organisation Unit</h3>

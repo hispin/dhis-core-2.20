@@ -62,13 +62,13 @@
     	oCell.innerHTML = "<select name='entryfield' id='value[1036].value:value["+nextRecordNo+"].value' onchange='validateLLMDDeliveryAtField(1036,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE'>---</option><option value='HOME'>HOME</option><option value='SC'>SUBCENTER</option><option value='PHC'>PHC</option><option value='CHC'>CHC</option><option value='MC'>DH/SDH/MEDICAL COLLEGE</option></select>";
     	*/	    	        	
     	oCell = newRow.insertCell(6);
-    	oCell.innerHTML = "<select name='entryfield' id='value[1037].value:value["+nextRecordNo+"].value' onchange='validateLLMDDeliveryByField(1037,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='UNTRAINED'>UNTRAINED</option><option value='TRAINED'>TRAINED</option><option value='ANM'>ANM</option><option value='NURSE'>NURSE</option><option value='DOCTOR'>DOCTOR</option><option value='OTHER'>OTHERS</option></select>";    	    	
+    	oCell.innerHTML = "<select name='entryfield' id='value[1037].value:value["+nextRecordNo+"].value' onchange='validateLLMDDeliveryByField(1037,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='UNTRAINED'>UNTRAINED</option><option value='TRAINED'>TRAINED</option><option value='ANM'>ANM</option><option value='NURSE'>NURSE</option><option value='DOCTOR'>DOCTOR</option><option value='OTHERS'>OTHERS</option></select>";    	    	
 
     	oCell = newRow.insertCell(7);
-    	oCell.innerHTML = "<select name='entryfield' id='value[1038].value:value["+nextRecordNo+"].value' onchange='validateLLMDCauseField(1038,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='ABORTION'>M01-Abortion</option><option value='OPL'>M02-Obstructed/prolonged labour</option><option value='FITS'>M03-Severe hypertension/fits</option><option value='BBCD'>M04-Bleeding</option><option value='HFBD'>M05-High fever</option><option value='MDNK'>M06-Other Causes (including causes not known)</option><!--<option value='FITS'>FITS</option><option value='SH'>SEVERE HYPERTENSION</option><option value='BBCD'>BLEEDING BEFORE CHILD DELIVERY</option><option value='BACD'>BLEEDING AFTER CHILD DELIVERY</option><option value='HFBD'>HIGH FEVER BEFORE DELIVERY</option><option value='HFAD'>HIGH FEVER AFTER DELIVERY</option><option value='ANAEMIA'>Anaemia as cause of Direct/Associated with other Medical Disease</option><option value='SEVEREANAEMIA'>Severe Anaemia (<7gm)</option><option value='MODERATEANAEMIA'>Moderate Anaemia (>7gm <11gm)</option><option value='OTHERS'>ANY OTHERS</option><option value='NK'>NOT KNOWN</option><option value='MDNK'>Other Causes (including cause not known)</option>--></select>";    	    	
+    	oCell.innerHTML = "<select name='entryfield' id='value[1038].value:value["+nextRecordNo+"].value' onchange='validateLLMDCauseField(1038,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='ABORTION'>M01-ABORTION</option><option value='OPL'>M02-OBSTRUCTED/PROLONGED LABOUR</option><option value='FITS'>M03-SEVERE HYPERTENSION/FITS</option><option value='BBCD'>M04-BLEEDING</option><option value='HFBD'>M05-HIGH FEVER</option><option value='MDNK'>M06-OTHER CAUSES (INCLUDING CAUSE NOT KNOWN)</option><!--<option value='FITS'>FITS</option><option value='SH'>SEVERE HYPERTENSION</option><option value='BBCD'>BLEEDING BEFORE CHILD DELIVERY</option><option value='BACD'>BLEEDING AFTER CHILD DELIVERY</option><option value='HFBD'>HIGH FEVER BEFORE DELIVERY</option><option value='HFAD'>HIGH FEVER AFTER DELIVERY</option><option value='ANAEMIA'>Anaemia as cause of Direct/Associated with other Medical Disease</option><option value='SEVEREANAEMIA'>Severe Anaemia (<7gm)</option><option value='MODERATEANAEMIA'>Moderate Anaemia (>7gm <11gm)</option><option value='OTHERS'>ANY OTHERS</option><option value='NK'>NOT KNOWN</option><option value='MDNK'>Other Causes (including cause not known)</option>--></select>";    	    	
 
     	oCell = newRow.insertCell(8);
-    	oCell.innerHTML = "<select name='entryfield' id='value[1039].value:value["+nextRecordNo+"].value' onchange='validateLLMDAuditedField(1039,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='Y'>YES</option><option value='N'>NO</option><option value='NOTKNOWN'>NOT KNOWN</option></select>";
+    	oCell.innerHTML = "<select name='entryfield' id='value[1039].value:value["+nextRecordNo+"].value' onchange='validateLLMDAuditedField(1039,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='Y'>YES</option><option value='N'>NO</option><option value='NK'>NOT KNOWN</option></select>";
     	
         oCell = newRow.insertCell(9);
         oCell.innerHTML = "<div id='"+nextRecordNo+"' style='display: none;'><a href='javascript:removeLLRecord( "+ nextRecordNo+" )' title='remove'><img src='../images/delete.png' alt='remove'></a></div>";
@@ -109,7 +109,7 @@
 					<option value="NONE" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>---</option>
 					<option value="Y" #if($llDataValue.getValue() && $llDataValue.getValue()=="Y") selected #end>YES</option>
 					<option value="N" #if($llDataValue.getValue() && $llDataValue.getValue()=="N") selected #end>NO</option>
-					<option value="NOTKNOWN" #if($llDataValue.getValue() && $llDataValue.getValue()=="NOTKNOWN") selected #end>NOT KNOWN</option>
+					<option value="NK" #if($llDataValue.getValue() && $llDataValue.getValue()=="NK") selected #end>NOT KNOWN</option>
 				</select>
 			</td>
 			<td #if( $locked ) style="display:none" #end>
@@ -147,20 +147,20 @@
 					<option value="ANM" #if($llDataValue.getValue() && $llDataValue.getValue()=="ANM") selected #end>ANM</option>
 					<option value="NURSE" #if($llDataValue.getValue() && $llDataValue.getValue()=="NURSE") selected #end>NURSE</option>
 					<option value="DOCTOR" #if($llDataValue.getValue() && $llDataValue.getValue()=="DOCTOR") selected #end>DOCTOR</option>
-					<option value="OTHER" #if($llDataValue.getValue() && $llDataValue.getValue()=="OTHER") selected #end>OTHERS</option>
+					<option value="OTHERS" #if($llDataValue.getValue() && $llDataValue.getValue()=="OTHERS") selected #end>OTHERS</option>
 				</select>
 			</td>
 		#elseif($count1 == 7)
 			<td>
 				<select name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" onchange="validateLLMDCauseField($llDataValue.getDataElement().getId(),$llDataValue.getRecordNo())" onkeypress="return keyPress(event, this)" style="width:100% text-align:center" #if( $locked ) disabled="disabled"#end>
-					<!--<option value="MDNK" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>OTHER CAUSES</option>-->
-					<option value="NONE" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>---</option>
-					<option value="ABORTION" #if($llDataValue.getValue() && $llDataValue.getValue()=="ABORTION") selected #end>M01-Abortion</option>
-					<option value="OPL" #if($llDataValue.getValue() && $llDataValue.getValue()=="OPL") selected #end>M02-Obstructed/prolonged labour</option>
-					<option value="FITS" #if($llDataValue.getValue() && $llDataValue.getValue()=="FITS") selected #end>M03-Severe hypertension/fits</option>
-					<option value="BBCD" #if($llDataValue.getValue() && $llDataValue.getValue()=="BBCD") selected #end>M04-Bleeding</option>
-					<option value="HFBD" #if($llDataValue.getValue() && $llDataValue.getValue()=="HFBD") selected #end>M05-High fever</option>
-					<option value="MDNK" #if($llDataValue.getValue() && $llDataValue.getValue()=="MDNK") selected #end>M06-Other Causes (including causes not known)</option>
+					<option value="MDNK" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>OTHER CAUSES</option>
+					
+					<option value="ABORTION" #if($llDataValue.getValue() && $llDataValue.getValue()=="ABORTION") selected #end>M01-ABORTION</option>
+					<option value="OPL" #if($llDataValue.getValue() && $llDataValue.getValue()=="OPL") selected #end>M02-OBSTRUCTED/PROLONGED LABOUR</option>
+					<option value="FITS" #if($llDataValue.getValue() && $llDataValue.getValue()=="FITS") selected #end>M03-SEVERE HYPERTENSION/FITS</option>
+					<option value="BBCD" #if($llDataValue.getValue() && $llDataValue.getValue()=="BBCD") selected #end>M04-BLEEDING</option>
+					<option value="HFBD" #if($llDataValue.getValue() && $llDataValue.getValue()=="HFBD") selected #end>M05-HIGH FEVER</option>
+					<option value="MDNK" #if($llDataValue.getValue() && $llDataValue.getValue()=="MDNK") selected #end>M06-OTHER CAUSES (INCLUDING CAUSE NOT KNOWN)</option>
 					<!--
 					<option value="ABORTION" #if($llDataValue.getValue() && $llDataValue.getValue()=="ABORTION") selected #end>ABORTION</option>
 					<option value="OPL" #if($llDataValue.getValue() && $llDataValue.getValue()=="OPL") selected #end>OBSTRUCTED/PROLONGED LABOUR</option>
@@ -229,18 +229,18 @@
 			<option value="ANM">ANM</option>
 			<option value="NURSE">NURSE</option>
 			<option value="DOCTOR">DOCTOR</option>
-			<option value="OTHER">OTHERS</option>
+			<option value="OTHERS">OTHERS</option>
 		</select>	
 	</td>
 	<td>
 		<select name="entryfield" id="value[1038].value:value[$recordNo].value" onchange="validateLLMDCauseField(1038,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
 			<option value="NONE" SELECTED>---</option>
-			<option value="ABORTION">M01-Abortion</option>
-			<option value="OPL">M02-Obstructed/prolonged labour</option>
-			<option value="FITS">M03-Severe hypertension/fits</option>
-			<option value="BBCD">M04-Bleeding</option>
-			<option value="HFBD">M05-High fever</option>
-			<option value="MDNK">M06-Other Causes (including causes not known)</option>
+			<option value="ABORTION">M01-ABORTION</option>
+			<option value="OPL">M02-OBSTRUCTED/PROLONGED LABOUR</option>
+			<option value="FITS">M03-SEVERE HYPERTENSION/FITS</option>
+			<option value="BBCD">M04-BLEEDING</option>
+			<option value="HFBD">M05-HIGH FEVER</option>
+			<option value="MDNK">M06-OTHER CAUSES (INCLUDING CAUSE NOT KNOWN)</option>
 			
 			<!--
 			<option value="FITS">FITS</option>
@@ -269,7 +269,7 @@
 			<option value="NONE" SELECTED>---</option>
 			<option value="Y">YES</option>
 			<option value="N">NO</option>
-			<option value="NOTKNOWN">NOT KNOWN</option>		
+			<option value="NK">NOT KNOWN</option>		
 		</select>	
 	</td>
     <td>

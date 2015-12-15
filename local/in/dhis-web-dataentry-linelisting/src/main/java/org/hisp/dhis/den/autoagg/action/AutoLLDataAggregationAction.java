@@ -25,6 +25,8 @@ import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
+import org.hisp.dhis.user.CurrentUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Action;
 
@@ -84,6 +86,9 @@ public class AutoLLDataAggregationAction implements Action
         this.dataSetService = dataSetService;
     }
     
+    @Autowired
+    private CurrentUserService currentUserService;
+    
     // -------------------------------------------------------------------------
     // Input & Output
     // -------------------------------------------------------------------------
@@ -102,13 +107,22 @@ public class AutoLLDataAggregationAction implements Action
         eDateLB = dateLB;
     }
 
+    /*
     private Integer selOrgUnitId;
     
     public void setSelOrgUnitId( Integer selOrgUnitId )
     {
         this.selOrgUnitId = selOrgUnitId;
     }
+    */
     
+    private String selOrgUnitId;
+    
+    public void setSelOrgUnitId( String selOrgUnitId )
+    {
+        this.selOrgUnitId = selOrgUnitId;
+    }
+
     private String resultStatus;
 
     public String getResultStatus()
@@ -128,7 +142,7 @@ public class AutoLLDataAggregationAction implements Action
     
     private List<Period> periodList;
     
-    private String storedBy = "llagg";
+    private String storedBy = "";
     
     
     // -------------------------------------------------------------------------
@@ -145,6 +159,8 @@ public class AutoLLDataAggregationAction implements Action
         lldeValueMap = new HashMap<String, String>();
                 
         resultStatus = " ";
+        
+        storedBy = currentUserService.getCurrentUsername();
         
         // Orgunit
         
@@ -167,9 +183,17 @@ public class AutoLLDataAggregationAction implements Action
         
         List<DataSet> llDataSets = new ArrayList<DataSet>();
         
-        llDataSets.add( dataSetService.getDataSetByName( LLDataSets.LL_BIRTHS ) );
-        llDataSets.add( dataSetService.getDataSetByName( LLDataSets.LL_DEATHS ) );
-        llDataSets.add( dataSetService.getDataSetByName( LLDataSets.LL_MATERNAL_DEATHS ) );
+        /*
+        llDataSets.add( dataSetService.getDataSetByName( LLDataSets.LL_BIRTHS ).get( 0 ) );
+        llDataSets.add( dataSetService.getDataSetByName( LLDataSets.LL_DEATHS ).get( 0 ) );
+        llDataSets.add( dataSetService.getDataSetByName( LLDataSets.LL_MATERNAL_DEATHS ).get( 0 ) );
+        */
+        
+        
+        llDataSets.addAll( dataSetService.getDataSetByName( LLDataSets.LL_BIRTHS ) );
+        llDataSets.addAll( dataSetService.getDataSetByName( LLDataSets.LL_DEATHS ));
+        llDataSets.addAll( dataSetService.getDataSetByName( LLDataSets.LL_MATERNAL_DEATHS ) );
+        
         
         System.out.println( "Aggregation Start Time is : \t" + new Date() );
         
@@ -229,6 +253,9 @@ public class AutoLLDataAggregationAction implements Action
                     for ( String aggde : aggDeList )
                     {
                         String aggDeVal = lldeValueMap.get( aggde );
+                        
+                        //System.out.println( "Agg dataElement Id -- " + aggde + " Aggregate Value : --- " + aggDeVal );
+                        
                         //if( Integer.parseInt( aggDeVal ) > 0 )
                         {
                             flag = 2;
@@ -281,23 +308,38 @@ public class AutoLLDataAggregationAction implements Action
         int optionComboId = Integer.parseInt( partsOfdeString[1] );
 
         DataElement dataElement = dataElementService.getDataElement( dataElementId );
-        DataElementCategoryOptionCombo optionCombo = dataElementCategoryService
-            .getDataElementCategoryOptionCombo( optionComboId );
-
+        DataElementCategoryOptionCombo optionCombo = dataElementCategoryService.getDataElementCategoryOptionCombo( optionComboId );
+        //DataElementCategoryOptionCombo attributeOptionCombo =.getDefaultDataElementCategoryCombo();
+        
+        
         if ( dataElement == null || optionCombo == null )
         {
 
         }
         else
         {
-            DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, optionCombo );
+            //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, optionCombo );
+            //DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo, attributeOptionCombo );
+            DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
+            
             if ( dataValue == null )
             {
                 if ( value != null )
                 {
-                    dataValue = new DataValue( dataElement, period, organisationUnit, value, storedBy, new Date(),
-                        null, optionCombo );
-
+                    //dataValue = new DataValue( dataElement, period, organisationUnit, value, storedBy, new Date(), null, optionCombo );
+                    //dataValue = new DataValue( dataElement, period, organisationUnit, optionCombo, null , value, storedBy, new Date(), null  );
+                    
+                    dataValue = new DataValue();
+                    
+                    dataValue.setPeriod(period);
+                    dataValue.setDataElement(dataElement);
+                    dataValue.setSource(organisationUnit);
+                    dataValue.setCategoryOptionCombo(optionCombo);
+                    
+                    dataValue.setValue( value.trim() );
+                    dataValue.setLastUpdated( new Date() );
+                    dataValue.setStoredBy( storedBy );
+                    
                     dataValueService.addDataValue( dataValue );
                     //llValueMap.put( dataElement.getId(), value );
                     //liDEMap.put( dataElement.getId(), optionCombo.getId() );
@@ -306,7 +348,8 @@ public class AutoLLDataAggregationAction implements Action
             else
             {
                 dataValue.setValue( value );
-                dataValue.setTimestamp( new Date() );
+                //dataValue.setTimestamp( new Date() );
+                dataValue.setLastUpdated(  new Date()  );
                 dataValue.setStoredBy( storedBy );
 
                 dataValueService.updateDataValue( dataValue );

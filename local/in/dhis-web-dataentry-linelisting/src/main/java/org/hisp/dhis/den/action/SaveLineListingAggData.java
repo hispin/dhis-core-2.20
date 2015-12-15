@@ -212,14 +212,17 @@ public class SaveLineListingAggData
         }
         else
         {
-            DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, optionCombo );
+            //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, optionCombo );
+            
+            DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
+            
             if ( dataValue == null )
             {
                 if ( value != null )
                 {
-                    dataValue = new DataValue( dataElement, period, organisationUnit, value, storedBy, new Date(),
-                        null, optionCombo );
-
+                    //dataValue = new DataValue( dataElement, period, organisationUnit, value, storedBy, new Date(), null, optionCombo );
+                    dataValue = new DataValue( dataElement, period, organisationUnit, optionCombo, null , value, storedBy, new Date(), null  );
+                    
                     dataValueService.addDataValue( dataValue );
                     llValueMap.put( dataElement.getId(), value );
                     liDEMap.put( dataElement.getId(), optionCombo.getId() );
@@ -228,9 +231,10 @@ public class SaveLineListingAggData
             else
             {
                 dataValue.setValue( value );
-                dataValue.setTimestamp( new Date() );
+                //dataValue.setTimestamp( new Date() );
+                dataValue.setLastUpdated(  new Date()  );
                 dataValue.setStoredBy( storedBy );
-
+                
                 dataValueService.updateDataValue( dataValue );
                 llValueMap.put( dataElement.getId(), value );
                 liDEMap.put( dataElement.getId(), optionCombo.getId() );

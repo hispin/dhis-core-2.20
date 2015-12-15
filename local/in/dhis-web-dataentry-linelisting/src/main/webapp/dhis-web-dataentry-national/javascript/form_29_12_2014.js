@@ -105,12 +105,6 @@
     	oCell = newRow.insertCell(2);
     	oCell.innerHTML = "<select name='entryfield' id='value[1029].value:value["+nextRecordNo+"].value' onchange='saveLLbirthValue(1029,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' selected>---</option><option value='M'>Male</option><option value='F'>Female</option></select>";    	
 
-    	oCell = newRow.insertCell(4);
-    	oCell.innerHTML = "<select name='entryfield' id='value[6823].value:value["+nextRecordNo+"].value' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' selected>---</option><option value='DAY'>Day</option><option value='WEEK'>Week</option><option value='MONTH'>Month</option><option value='YEAR'>Year</option></select>";    	
-		
-		oCell = newRow.insertCell(5);
-		oCell.innerHTML = "<input name='entryfield' id='value[6824].value:value["+nextRecordNo+"].value' type='text' value='' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'>";    	
-    	
     	oCell = newRow.insertCell(3);
     	oCell.innerHTML = "<select name='entryfield' id='value[1030].value:value["+nextRecordNo+"].value' onchange='saveLLbirthValue(1030,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' selected>---</option><option value='B1DAY'>BELOW 1 DAY</option><option value='B1WEEK'>1 DAY - 1 WEEK</option><option value='B1MONTH'>1 WEEK - 1 MONTH</option><option value='B1YEAR'>1 MONTH - 1 YEAR</option><option value='B5YEAR'>1 YEAR - 5 YEARS</option><option value='O5YEAR'>OVER 5 YEARS</option></select>";
     		    	        	

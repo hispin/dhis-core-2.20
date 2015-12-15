@@ -49,6 +49,8 @@ import org.hisp.dhis.den.api.LLDataValueStore;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
+import org.hisp.dhis.system.database.DatabaseInfo;
+import org.hisp.dhis.system.database.DatabaseInfoProvider;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -93,7 +95,13 @@ public class HibernateLLDataValueStore
     {
         this.dataElementCategoryService = dataElementCategoryService;
     }
+    
+    private DatabaseInfoProvider databaseInfoProvider;
 
+    public void setDatabaseInfoProvider( DatabaseInfoProvider databaseInfoProvider )
+    {
+        this.databaseInfoProvider = databaseInfoProvider;
+    }
     // -------------------------------------------------------------------------
     // Support methods for reloading periods
     // -------------------------------------------------------------------------
@@ -776,7 +784,133 @@ public class HibernateLLDataValueStore
             LLDataSets.LLD_CAUSE_DE77, LLDataSets.LLD_CAUSE_DE78, LLDataSets.LLD_CAUSE_DE78, LLDataSets.LLD_CAUSE_DE79,
             LLDataSets.LLD_CAUSE_DE79, LLDataSets.LLD_CAUSE_DE80, LLDataSets.LLD_CAUSE_DE80, LLDataSets.LLD_CAUSE_DE81,
             LLDataSets.LLD_CAUSE_DE81, LLDataSets.LLD_CAUSE_DE82, LLDataSets.LLD_CAUSE_DE82, LLDataSets.LLD_CAUSE_DE83,
-            LLDataSets.LLD_CAUSE_DE83, LLDataSets.LLD_CAUSE_DE84, LLDataSets.LLD_CAUSE_DE84, };
+            LLDataSets.LLD_CAUSE_DE83, LLDataSets.LLD_CAUSE_DE84, LLDataSets.LLD_CAUSE_DE84,
+            
+            
+            //for haryana
+            
+            
+            //Pneumonia
+            LLDataSets.LLD_CAUSE_DE85, LLDataSets.LLD_CAUSE_DE85,
+            LLDataSets.LLD_CAUSE_DE86, LLDataSets.LLD_CAUSE_DE86,
+            LLDataSets.LLD_CAUSE_DE87, LLDataSets.LLD_CAUSE_DE87,
+            //LLDataSets.LLD_CAUSE_DE88, LLDataSets.LLD_CAUSE_DE88,
+            //LLDataSets.LLD_CAUSE_DE89, LLDataSets.LLD_CAUSE_DE89,
+            
+            //Fever related
+            LLDataSets.LLD_CAUSE_DE90, LLDataSets.LLD_CAUSE_DE90,
+            LLDataSets.LLD_CAUSE_DE91, LLDataSets.LLD_CAUSE_DE91,
+            LLDataSets.LLD_CAUSE_DE92, LLDataSets.LLD_CAUSE_DE92,
+            //LLDataSets.LLD_CAUSE_DE93, LLDataSets.LLD_CAUSE_DE93,
+            //LLDataSets.LLD_CAUSE_DE94, LLDataSets.LLD_CAUSE_DE94,
+        
+            //Meconium aspiration syndrome
+            LLDataSets.LLD_CAUSE_DE95, LLDataSets.LLD_CAUSE_DE95,
+            LLDataSets.LLD_CAUSE_DE96, LLDataSets.LLD_CAUSE_DE96,
+            LLDataSets.LLD_CAUSE_DE97, LLDataSets.LLD_CAUSE_DE97,
+            LLDataSets.LLD_CAUSE_DE98, LLDataSets.LLD_CAUSE_DE98,
+            LLDataSets.LLD_CAUSE_DE99, LLDataSets.LLD_CAUSE_DE99,
+            
+            
+            //Meningitis
+            LLDataSets.LLD_CAUSE_DE100, LLDataSets.LLD_CAUSE_DE100,
+            LLDataSets.LLD_CAUSE_DE101, LLDataSets.LLD_CAUSE_DE101,
+            LLDataSets.LLD_CAUSE_DE102, LLDataSets.LLD_CAUSE_DE102,
+            LLDataSets.LLD_CAUSE_DE103, LLDataSets.LLD_CAUSE_DE103,
+            LLDataSets.LLD_CAUSE_DE104, LLDataSets.LLD_CAUSE_DE104,
+            
+            
+            //Major Congenital Malformation
+            LLDataSets.LLD_CAUSE_DE105, LLDataSets.LLD_CAUSE_DE105,
+            LLDataSets.LLD_CAUSE_DE106, LLDataSets.LLD_CAUSE_DE106,
+            LLDataSets.LLD_CAUSE_DE107, LLDataSets.LLD_CAUSE_DE107,
+            LLDataSets.LLD_CAUSE_DE108, LLDataSets.LLD_CAUSE_DE108,
+            LLDataSets.LLD_CAUSE_DE109, LLDataSets.LLD_CAUSE_DE109,
+            
+            //Prematurity
+            LLDataSets.LLD_CAUSE_DE110, LLDataSets.LLD_CAUSE_DE110,
+            LLDataSets.LLD_CAUSE_DE111, LLDataSets.LLD_CAUSE_DE111,
+            LLDataSets.LLD_CAUSE_DE112, LLDataSets.LLD_CAUSE_DE112,
+            LLDataSets.LLD_CAUSE_DE113, LLDataSets.LLD_CAUSE_DE113,
+            LLDataSets.LLD_CAUSE_DE114, LLDataSets.LLD_CAUSE_DE114,
+        
+            //Hypothermia
+            LLDataSets.LLD_CAUSE_DE115, LLDataSets.LLD_CAUSE_DE115,
+            LLDataSets.LLD_CAUSE_DE116, LLDataSets.LLD_CAUSE_DE116,
+            LLDataSets.LLD_CAUSE_DE117, LLDataSets.LLD_CAUSE_DE117,
+            LLDataSets.LLD_CAUSE_DE118, LLDataSets.LLD_CAUSE_DE118,
+            LLDataSets.LLD_CAUSE_DE119, LLDataSets.LLD_CAUSE_DE119,
+            
+            //Diptheria
+            LLDataSets.LLD_CAUSE_DE120, LLDataSets.LLD_CAUSE_DE120,
+            LLDataSets.LLD_CAUSE_DE121, LLDataSets.LLD_CAUSE_DE121,
+            LLDataSets.LLD_CAUSE_DE122, LLDataSets.LLD_CAUSE_DE122,
+            LLDataSets.LLD_CAUSE_DE123, LLDataSets.LLD_CAUSE_DE123,
+            LLDataSets.LLD_CAUSE_DE124, LLDataSets.LLD_CAUSE_DE124,
+            
+            //Childhood Tuberculosis
+            LLDataSets.LLD_CAUSE_DE125, LLDataSets.LLD_CAUSE_DE125,
+            LLDataSets.LLD_CAUSE_DE126, LLDataSets.LLD_CAUSE_DE126,
+            LLDataSets.LLD_CAUSE_DE127, LLDataSets.LLD_CAUSE_DE127,
+            LLDataSets.LLD_CAUSE_DE128, LLDataSets.LLD_CAUSE_DE128,
+            LLDataSets.LLD_CAUSE_DE129, LLDataSets.LLD_CAUSE_DE129,
+            
+            
+            //Dysentry
+            LLDataSets.LLD_CAUSE_DE130, LLDataSets.LLD_CAUSE_DE130,
+            LLDataSets.LLD_CAUSE_DE131, LLDataSets.LLD_CAUSE_DE131,
+            LLDataSets.LLD_CAUSE_DE132, LLDataSets.LLD_CAUSE_DE132,
+            LLDataSets.LLD_CAUSE_DE133, LLDataSets.LLD_CAUSE_DE133,
+            LLDataSets.LLD_CAUSE_DE134, LLDataSets.LLD_CAUSE_DE134,
+            
+            //Pertusis
+            LLDataSets.LLD_CAUSE_DE135, LLDataSets.LLD_CAUSE_DE135,
+            LLDataSets.LLD_CAUSE_DE136, LLDataSets.LLD_CAUSE_DE136,
+            LLDataSets.LLD_CAUSE_DE137, LLDataSets.LLD_CAUSE_DE137,
+            LLDataSets.LLD_CAUSE_DE138, LLDataSets.LLD_CAUSE_DE138,
+            LLDataSets.LLD_CAUSE_DE139, LLDataSets.LLD_CAUSE_DE139,
+            
+            //Polio
+            LLDataSets.LLD_CAUSE_DE140, LLDataSets.LLD_CAUSE_DE140,
+            LLDataSets.LLD_CAUSE_DE141, LLDataSets.LLD_CAUSE_DE141,
+            LLDataSets.LLD_CAUSE_DE142, LLDataSets.LLD_CAUSE_DE142,
+            LLDataSets.LLD_CAUSE_DE143, LLDataSets.LLD_CAUSE_DE143,
+            LLDataSets.LLD_CAUSE_DE144, LLDataSets.LLD_CAUSE_DE144,
+            
+            //Tetanus Neonatorum
+            LLDataSets.LLD_CAUSE_DE145, LLDataSets.LLD_CAUSE_DE145,
+            LLDataSets.LLD_CAUSE_DE146, LLDataSets.LLD_CAUSE_DE146,
+            LLDataSets.LLD_CAUSE_DE147, LLDataSets.LLD_CAUSE_DE147,
+            LLDataSets.LLD_CAUSE_DE148, LLDataSets.LLD_CAUSE_DE148,
+            LLDataSets.LLD_CAUSE_DE149, LLDataSets.LLD_CAUSE_DE149,
+            
+            //Tetanus (Others)
+            LLDataSets.LLD_CAUSE_DE150, LLDataSets.LLD_CAUSE_DE150,
+            LLDataSets.LLD_CAUSE_DE151, LLDataSets.LLD_CAUSE_DE151,
+            LLDataSets.LLD_CAUSE_DE152, LLDataSets.LLD_CAUSE_DE152,
+            LLDataSets.LLD_CAUSE_DE153, LLDataSets.LLD_CAUSE_DE153,
+            LLDataSets.LLD_CAUSE_DE154, LLDataSets.LLD_CAUSE_DE154,
+            
+            
+            //Acute Flaccide paralysis
+            LLDataSets.LLD_CAUSE_DE155, LLDataSets.LLD_CAUSE_DE155,
+            LLDataSets.LLD_CAUSE_DE156, LLDataSets.LLD_CAUSE_DE156,
+            LLDataSets.LLD_CAUSE_DE157, LLDataSets.LLD_CAUSE_DE157,
+            LLDataSets.LLD_CAUSE_DE158, LLDataSets.LLD_CAUSE_DE158,
+            LLDataSets.LLD_CAUSE_DE159, LLDataSets.LLD_CAUSE_DE159,
+            
+            //Respiratory Infections (other than TB)
+            LLDataSets.LLD_CAUSE_DE160, LLDataSets.LLD_CAUSE_DE160,
+            LLDataSets.LLD_CAUSE_DE161, LLDataSets.LLD_CAUSE_DE161,
+            LLDataSets.LLD_CAUSE_DE162, LLDataSets.LLD_CAUSE_DE162,
+            LLDataSets.LLD_CAUSE_DE163, LLDataSets.LLD_CAUSE_DE163,
+            LLDataSets.LLD_CAUSE_DE164, LLDataSets.LLD_CAUSE_DE164,
+            
+            
+            
+        
+        
+        };
 
         int[] aggDeOptComIds = { LLDataSets.LLD_OPTIONCOMBO_DEFAULT, LLDataSets.LLD_OPTIONCOMBO_DEFAULT,
             LLDataSets.LLD_OPTIONCOMBO_DEFAULT, LLDataSets.LLD_OPTIONCOMBO_DEFAULT, LLDataSets.LLD_OPTIONCOMBO_DEFAULT,
@@ -798,75 +932,198 @@ public class HibernateLLDataValueStore
             LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
             LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
             LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, 
+            
+            
+           
+            
+            // for haryana
+            
+            //Pneumonia
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            
+            // Fever/Other Fever related
+            
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            // Meconium aspiration syndrome
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            // Meningitis
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            // Major Congenital Malformation
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            // Prematurity
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            // Hypothermia
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            
+            // Diptheria
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            
+            // Childhood Tuberculosis
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            
+            //Dysentry
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            
+            // Pertusis
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            // Polio
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            
+            // Tetanus Neonatorum
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            // Tetanus (Others)
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+            //Acute Flaccide paralysis
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
 
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE, LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
-            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE };
+            
+            // Respiratory Infections (other than TB)
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            LLDataSets.LLD_CAUSE_OPTIONCOMBO_FEMALE,LLDataSets.LLD_CAUSE_OPTIONCOMBO_MALE,
+            
+        };
 
         String[] queries = new String[aggDeIds.length];
 
@@ -2135,7 +2392,1277 @@ public class HibernateLLDataValueStore
             + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
             + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
             + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+       
+        // for haryana
+        
+       
+        //  : Fever/other Fever  related below 1 day Female
+        queries[177] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_OFR
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Fever/other Fever related below 1 day Male
+        queries[178] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_OFR
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Fever/other Fever related 1 day to 1 week Female
+        queries[179] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_OFR
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Fever/other Fever related 1 day to 1 week Male
+        queries[180] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_OFR
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Fever/other Fever related 1 week to 1 month Female
+        queries[181] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_OFR
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Fever/other Fever related 1 week to 1 month Male
+        queries[182] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_OFR
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        
+        
+        
+        
+        //  : PNEUMONIA Fever  related below 1 day Female
+        queries[183] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PNEUMONIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : PNEUMONIA Fever related below 1 day Male
+        queries[184] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PNEUMONIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : PNEUMONIA Fever related 1 day to 1 week Female
+        queries[185] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PNEUMONIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : PNEUMONIA Fever related 1 day to 1 week Male
+        queries[186] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PNEUMONIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : PNEUMONIA Fever related 1 week to 1 month Female
+        queries[187] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PNEUMONIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : PNEUMONIA Fever related 1 week to 1 month Male
+        queries[188] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PNEUMONIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
 
+        
+        
+        
+        
+        
+        
+        //  : Meconium aspiration syndrome below 1 day Female
+        queries[189] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome below 1 day Male
+        queries[190] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome 1 day to 1 week Female
+        queries[191] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome 1 day to 1 week Male
+        queries[192] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome 1 week to 1 month Female
+        queries[193] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome 1 week to 1 month Male
+        queries[194] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome 1 month to 1 year Female
+        queries[195] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome 1 month to 1 year Male
+        queries[196] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Meconium aspiration syndrome 1 year to 5 year Female
+        queries[197] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meconium aspiration syndrome 1 year to 5 year Male
+        queries[198] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MAS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";           
+
+        
+       
+        //  :Meningitis below 1 day Female
+        queries[199] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis below 1 day Male
+        queries[200] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis 1 day to 1 week Female
+        queries[201] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis 1 day to 1 week Male
+        queries[202] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis 1 week to 1 month Female
+        queries[203] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis 1 week to 1 month Male
+        queries[204] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis 1 month to 1 year Female
+        queries[205] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis 1 month to 1 year Male
+        queries[206] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Meningitis 1 year to 5 year Female
+        queries[207] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Meningitis 1 year to 5 year Male
+        queries[208] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MENINGITIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";           
+        
+        
+        
+        
+        //  :Major Congenital Malformation below 1 day Female
+        queries[209] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation below 1 day Male
+        queries[210] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation 1 day to 1 week Female
+        queries[211] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation 1 day to 1 week Male
+        queries[212] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation 1 week to 1 month Female
+        queries[213] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation 1 week to 1 month Male
+        queries[214] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation 1 month to 1 year Female
+        queries[215] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation 1 month to 1 year Male
+        queries[216] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Major Congenital Malformation 1 year to 5 year Female
+        queries[217] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Major Congenital Malformation 1 year to 5 year Male
+        queries[218] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_MCM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";             
+        
+        
+        //  : Prematurity below 1 day Female
+        queries[219] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Prematurity below 1 day Male
+        queries[220] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Prematurity 1 day to 1 week Female
+        queries[221] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Prematurity 1 day to 1 week Male
+        queries[222] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Prematurity 1 week to 1 month Female
+        queries[223] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Prematurity 1 week to 1 month Male
+        queries[224] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Prematurity 1 month to 1 year Female
+        queries[225] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  :Prematurity 1 month to 1 year Male
+        queries[226] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Prematurity 1 year to 5 year Female
+        queries[227] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Prematurity 1 year to 5 year Male
+        queries[228] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PREMATURITY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";             
+                
+        
+        //  : Hypothermia below 1 day Female
+        queries[229] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia below 1 day Male
+        queries[230] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia 1 day to 1 week Female
+        queries[231] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia 1 day to 1 week Male
+        queries[232] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia 1 week to 1 month Female
+        queries[233] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia 1 week to 1 month Male
+        queries[234] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia 1 month to 1 year Female
+        queries[235] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia 1 month to 1 year Male
+        queries[236] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Hypothermia 1 year to 5 year Female
+        queries[237] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Hypothermia 1 year to 5 year Male
+        queries[238] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_HYPOTHERMIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";            
+        
+        
+        //  : Diptheria below 1 day Female
+        queries[239] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria below 1 day Male
+        queries[240] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria 1 day to 1 week Female
+        queries[241] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria 1 day to 1 week Male
+        queries[242] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria 1 week to 1 month Female
+        queries[243] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria 1 week to 1 month Male
+        queries[244] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria 1 month to 1 year Female
+        queries[245] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria 1 month to 1 year Male
+        queries[246] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Diptheria 1 year to 5 year Female
+        queries[247] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Diptheria 1 year to 5 year Male
+        queries[248] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DIPTHERIA
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";            
+               
+        
+        //  : Childhood Tuberculosis below 1 day Female
+        queries[249] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis below 1 day Male
+        queries[250] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis 1 day to 1 week Female
+        queries[251] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis 1 day to 1 week Male
+        queries[252] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis 1 week to 1 month Female
+        queries[253] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis 1 week to 1 month Male
+        queries[254] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis 1 month to 1 year Female
+        queries[255] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis 1 month to 1 year Male
+        queries[256] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Childhood Tuberculosis 1 year to 5 year Female
+        queries[257] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Childhood Tuberculosis 1 year to 5 year Male
+        queries[258] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_CHILD_TUBERCULOSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";            
+                
+        
+        //  : Dysentry below 1 day Female
+        queries[259] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry below 1 day Male
+        queries[260] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry 1 day to 1 week Female
+        queries[261] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry 1 day to 1 week Male
+        queries[262] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry 1 week to 1 month Female
+        queries[263] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry 1 week to 1 month Male
+        queries[264] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry 1 month to 1 year Female
+        queries[265] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry 1 month to 1 year Male
+        queries[266] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Dysentry 1 year to 5 year Female
+        queries[267] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Dysentry 1 year to 5 year Male
+        queries[268] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_DYSENTRY
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";          
+        
+        //  : Pertusis below 1 day Female
+        queries[269] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis below 1 day Male
+        queries[270] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis 1 day to 1 week Female
+        queries[271] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis 1 day to 1 week Male
+        queries[272] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis 1 week to 1 month Female
+        queries[273] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis 1 week to 1 month Male
+        queries[274] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis 1 month to 1 year Female
+        queries[275] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis 1 month to 1 year Male
+        queries[276] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Pertusis 1 year to 5 year Female
+        queries[277] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Pertusis 1 year to 5 year Male
+        queries[278] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_PERTUSIS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";           
+                
+        //  : Polio below 1 day Female
+        queries[279] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio below 1 day Male
+        queries[280] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio 1 day to 1 week Female
+        queries[281] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio 1 day to 1 week Male
+        queries[282] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio 1 week to 1 month Female
+        queries[283] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio 1 week to 1 month Male
+        queries[284] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio 1 month to 1 year Female
+        queries[285] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio 1 month to 1 year Male
+        queries[286] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Polio 1 year to 5 year Female
+        queries[287] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Polio 1 year to 5 year Male
+        queries[288] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_POLIO
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";   
+        
+        //  : Tetanus Neonatorum below 1 day Female
+        queries[289] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum below 1 day Male
+        queries[290] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 day to 1 week Female
+        queries[291] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 day to 1 week Male
+        queries[292] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 week to 1 month Female
+        queries[293] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 week to 1 month Male
+        queries[294] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 month to 1 year Female
+        queries[295] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 month to 1 year Male
+        queries[296] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 year to 5 year Female
+        queries[297] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus Neonatorum 1 year to 5 year Male
+        queries[298] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_NEONATORUM
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";   
+        
+       
+        
+        
+        
+        //  : Tetanus (Others) below 1 day Female
+        queries[299] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) below 1 day Male
+        queries[300] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) 1 day to 1 week Female
+        queries[301] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) 1 day to 1 week Male
+        queries[302] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) 1 week to 1 month Female
+        queries[303] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) 1 week to 1 month Male
+        queries[304] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) 1 month to 1 year Female
+        queries[305] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) 1 month to 1 year Male
+        queries[306] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Tetanus (Others) 1 year to 5 year Female
+        queries[307] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Tetanus (Others) 1 year to 5 year Male
+        queries[308] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_TETANUS_OTHERS
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";           
+        
+        
+        
+       
+        
+        //  : Acute Flaccide paralysis  below 1 day Female
+        queries[309] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  below 1 day Male
+        queries[310] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  1 day to 1 week Female
+        queries[311] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  1 day to 1 week Male
+        queries[312] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  1 week to 1 month Female
+        queries[313] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  1 week to 1 month Male
+        queries[314] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  1 month to 1 year Female
+        queries[315] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  1 month to 1 year Male
+        queries[316] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Acute Flaccide paralysis  1 year to 5 year Female
+        queries[317] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Acute Flaccide paralysis  1 year to 5 year Male
+        queries[318] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_AFP
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";         
+        
+        
+        
+        
+        //  : Respiratory Infections (other than TB) below 1 day  Female
+        queries[319] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB) below 1 day Male
+        queries[320] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1DAY') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB) 1 day to 1 week Female
+        queries[321] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB)  1 day to 1 week Male
+        queries[322] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1WEEK') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB) 1 week to 1 month Female
+        queries[323] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB) 1 week to 1 month Male
+        queries[324] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1MONTH') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB) 1 month to 1 year Female
+        queries[325] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB) 1 month to 1 year Male
+        queries[326] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B1YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        
+        //  : Respiratory Infections (other than TB) 1 year to 5 year Female
+        queries[327] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'F' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+        
+        //  : Respiratory Infections (other than TB)1 year to 5 year Male
+        queries[328] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLD_DEATH_CAUSE + " AND value LIKE '" + LLDataSets.LLD_RI_OTHER_THAN_TB
+            + "' AND recordno IN ( SELECT recordno FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = "
+            + pId + " AND dataelementid = " + LLDataSets.LLD_AGE_CATEGORY
+            + " AND value IN ('B5YEAR') AND recordno IN (SELECT recordno FROM lldatavalue WHERE dataelementid = "
+            + LLDataSets.LLD_SEX + " AND value = 'M' AND sourceid = " + ouId + " AND periodid = " + pId + "))";
+                
+        
+        
+        
+        
         try
         {
             //Connection con = jdbcTemplate.getDataSource().getConnection();
@@ -2193,12 +3720,16 @@ public class HibernateLLDataValueStore
                 System.out.println( "Exception while closing DB Connections : " + e.getMessage() );
             }
         }
-
+        
+        //System.out.println( aggDeIds.length + " -- "+ aggDeOptComIds.length + " -- " + queries.length );
+        
         return deValueMap;
     }
 
     public Map<String, String> processLineListMaternalDeaths( OrganisationUnit organisationUnit, Period periodL )
     {
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
+        
         Map<String, String> deValueMap = new HashMap<String, String>();
         int ouId = organisationUnit.getId();
 
@@ -2217,7 +3748,8 @@ public class HibernateLLDataValueStore
             LLDataSets.LLMD_BY_TRAINED, LLDataSets.LLMD_BY_ANM, LLDataSets.LLMD_BY_NURSE, LLDataSets.LLMD_BY_DOCTOR,
             LLDataSets.LLMD_CAUSE_ABORTION, LLDataSets.LLMD_CAUSE_OPL, LLDataSets.LLMD_CAUSE_FITS,
             LLDataSets.LLMD_CAUSE_SH, LLDataSets.LLMD_CAUSE_BBCD, LLDataSets.LLMD_CAUSE_BACD,
-            LLDataSets.LLMD_CAUSE_HFBD, LLDataSets.LLMD_CAUSE_HFAD, LLDataSets.LLMD_CAUSE_NK, LLDataSets.LLMD_CAUSE_MDNK
+            LLDataSets.LLMD_CAUSE_HFBD, LLDataSets.LLMD_CAUSE_HFAD, LLDataSets.LLMD_CAUSE_NK, LLDataSets.LLMD_CAUSE_MDNK, LLDataSets.LLMD_CAUSE_ANAEMIA,
+            LLDataSets.LLMD_CAUSE_SEVERE_ANAEMIA, LLDataSets.LLMD_CAUSE_MODERATE_ANAEMIA
 
         };
         String[] queries = new String[aggDeIds.length];
@@ -2242,18 +3774,52 @@ public class HibernateLLDataValueStore
             + " AND dataelementid = " + LLDataSets.LLMD_DURATION_OF_PREGNANCY + "  AND value = 'ADW42D'";
 
         // Metarnal Death At age below 16
-        queries[6] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
-            + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value < 16";
+        if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+        {
+            queries[6] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value < 16";
+        }
+        else if( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+        {
+            queries[6] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND CAST( value as numeric ) < 16";
+        }
         // Metarnal Death At age 16 to 19
-        queries[7] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
-            + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value >= 16 and value <= 19";
+        if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+        {
+            queries[7] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value >= 16 and value <= 19";
+        }
+        else if( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+        {
+            queries[7] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND CAST( value as numeric ) >= 16 and CAST( value as numeric ) <= 19";
+        }
+        
         // Metarnal Death At age 20 to 35
-        queries[8] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
-            + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value >= 20 and value <= 35 ";
+        if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+        {
+            queries[8] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value >= 20 and value <= 35 ";
+        }
+        else if( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+        {
+            queries[8] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND CAST( value as numeric ) >= 20 and CAST( value as numeric ) <= 35 ";
+        }
+        
         // Metarnal Death At age above 35
-        queries[9] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
-            + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value > 35";
-
+        if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
+        {
+            queries[9] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND value > 35";
+        }
+        else if( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+        {
+            queries[9] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+                + " AND dataelementid = " + LLDataSets.LLMD_AGE_AT_DEATH + "  AND CAST( value as numeric ) > 35";
+        }
+        
         // Metarnal Death At Home
         queries[10] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
             + " AND dataelementid = " + LLDataSets.LLMD_DELIVERY_AT + "  AND value = 'HOME'";
@@ -2320,7 +3886,15 @@ public class HibernateLLDataValueStore
         // Metarnal Death Other Causes (including cause not known)
         queries[30] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
             + " AND dataelementid = " + LLDataSets.LLMD_DEATH_CAUSE + "  AND value = 'MDNK'";
-        
+        // Metarnal Death Other Causes (including cause not known)
+        queries[31] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLMD_DEATH_CAUSE + "  AND value = 'ANAEMIA'";
+        // Metarnal Death Other Causes (including cause not known)
+        queries[32] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLMD_DEATH_CAUSE + "  AND value = 'SEVEREANAEMIA'";
+        // Metarnal Death Other Causes (including cause not known)
+        queries[33] = "SELECT COUNT(*) FROM lldatavalue WHERE sourceid = " + ouId + " AND periodid = " + pId
+            + " AND dataelementid = " + LLDataSets.LLMD_DEATH_CAUSE + "  AND value = 'MODERATEANAEMIA'";
         try
         {
             //Connection con = jdbcTemplate.getDataSource().getConnection();

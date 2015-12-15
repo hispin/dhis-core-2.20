@@ -22,13 +22,22 @@ public class GetOrgUnitsAction implements Action
     // Getters & Setters
     // -------------------------------------------------------------------------
 
+    /*
     private Integer orgUnitId;
 
     public void setOrgUnitId( Integer orgUnitId )
     {
         this.orgUnitId = orgUnitId;
     }
-        
+    */
+    
+    private String orgUnitId;
+    
+    public void setOrgUnitId( String orgUnitId )
+    {
+        this.orgUnitId = orgUnitId;
+    }
+
     private OrganisationUnit orgUnit;
     
     public OrganisationUnit getOrgUnit()

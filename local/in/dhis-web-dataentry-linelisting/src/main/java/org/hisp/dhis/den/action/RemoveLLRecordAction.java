@@ -33,7 +33,7 @@ public class RemoveLLRecordAction implements Action
 
     public String execute() throws Exception
     {
-        System.out.println("Inside remove ll record action");
+        //System.out.println("Inside remove ll record action");
         
         lldataValueService.removeLLRecord( recordId );
 

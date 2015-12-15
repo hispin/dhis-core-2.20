@@ -3015,41 +3015,6 @@ function isLLDSexFieldEntered( recordNo )
     return true;
 }
 
-function isLLDAgeTypeFieldEntered( recordNo )
-{
-    var dataElementId = 6826;
-    var field = document.getElementById( 'value[' + dataElementId + '].value:value[' + recordNo + '].value' );
-    var resVal = field.selectedIndex;
-  
-    if(resVal <= 0)
-    {
-        alert("Please Select Age Type");
-        field.focus();field.select();
-        return false
-    }
-  
-    return true;
-}
-
-function isLLDAgeFieldEntered( recordNo )
-{
-    var dataElementId = 6826;
-    var field = document.getElementById( 'value[' + dataElementId + '].value:value[' + recordNo + '].value' );
-    var resVal = field.value;
-
-    if(resVal == null || resVal.replace(/^\s\s*/, '').replace(/\s\s*$/, '') == "" )
-    {
-        alert("Please enter Age");
-        field.focus();field.select();
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-
 function isLLDAgeCategoryFieldEntered( recordNo )
 {  
     var dataElementId = 1030;
@@ -3058,8 +3023,7 @@ function isLLDAgeCategoryFieldEntered( recordNo )
   
     if(resVal <= 0)
     {
-        //alert("Please enter AGE CATEGORY");
-        alert("Please enter age");
+        alert("Please enter AGE CATEGORY");
         field.focus();field.select();
         return false
     }
@@ -3134,7 +3098,7 @@ function validateLLDNameField( dataElementId, recordNo )
         else
         {
             saveLLbirthValue( dataElementId, recordNo );
-            //document.getElementById(recordNo).style.display = 'block';
+            document.getElementById(recordNo).style.display = 'block';
             document.getElementById('actions').style.display = 'block';
         }
     
@@ -3189,7 +3153,7 @@ function validateLLDVillageField( dataElementId, recordNo )
         else
         {
             saveLLbirthValue( dataElementId, recordNo );
-            //document.getElementById(recordNo).style.display = 'block';
+            document.getElementById(recordNo).style.display = 'block';
             document.getElementById('actions').style.display = 'block';
         }
     }
@@ -3222,7 +3186,7 @@ function validateLLDSexField( dataElementId, recordNo )
         else
         {
             saveLLbirthValue( dataElementId, recordNo );
-            //document.getElementById(recordNo).style.display = 'block';
+            document.getElementById(recordNo).style.display = 'block';
             document.getElementById('actions').style.display = 'block';
         }
     }
@@ -3233,464 +3197,6 @@ function validateLLDSexField( dataElementId, recordNo )
         return false;
     }
 }
-
-
-function validateLLDAgeTypeField( dataElementId, recordNo )
-{
-    var field = document.getElementById( 'value[' + dataElementId + '].value:value[' + recordNo + '].value' );
-    var resVal = field.selectedIndex;
-    
-    if(isLLDSexFieldEntered( recordNo ))
-    {
-        if(resVal <= 0)
-        {
-        	alert("Please Select Age Type");
-            field.options[0].selected = true;
-      
-            //field.focus();
-            setTimeout(function(){
-                field.focus();field.select();
-            },2);
-            return false;
-        }
-        else
-        {
-            saveLLbirthValue( dataElementId, recordNo );
-            //document.getElementById(recordNo).style.display = 'block';
-            document.getElementById('actions').style.display = 'block';
-        }
-    }
-    else
-    {
-        field.options[0].selected = true;
-    
-        return false;
-    }
-}
-
-
-
-function validateLLDAgeField( dataElementId, recordNo )
-{
-    var field = document.getElementById( 'value[' + dataElementId + '].value:value[' + recordNo + '].value' );
-    var resVal = field.value;
-    resVal = resVal.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-      
-    if( isLLDAgeTypeFieldEntered( recordNo ) )
-    {
-        if(resVal == null || resVal == "" )
-        {
-            alert("Please enter Age");
-            field.value = "";
-            //field.focus();
-            setTimeout(function(){
-                field.focus();field.select();
-            },2);
-    
-            return false;
-        }
-        if ( !isInteger(resVal) )
-        {
-            alert("Please Enter Only Digits");
-            field.value = "";
-            setTimeout(function(){
-                field.focus();field.select();
-            },2);
-            return false;
-        }
-        else
-        {
-            //saveLLbirthValue( dataElementId, recordNo );
-            //document.getElementById(recordNo).style.display = 'block';
-            //document.getElementById('actions').style.display = 'block';
-			
-			var ageTypeField = document.getElementById( 'value[6826].value:value[' + recordNo + '].value' );
-			var ageTypeSelIndex = ageTypeField.selectedIndex;
-        
-			var ageTypeVal = ageTypeField.options[ ageTypeSelIndex ].value;
-        
-			//alert( ageTypeVal + "--" + resVal ); 
-			// Hour
-			if( ageTypeVal == "HOUR" )
-			{
-				if( parseInt(resVal) > 23 || parseInt(resVal) < 1 )
-				{
-					alert("Hours should be less than 24");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				
-				if( parseInt(resVal) == 0 )
-				{
-					alert("Please enter the valid range between 1 to 23");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				
-				else if( parseInt(resVal) >= 1 && parseInt(resVal) <= 23 )
-				{
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-				
-					clearList( ageCategoryField );
-	
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, true);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, false);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "B1DAY", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadInfantCausesWithin24Hour( recordNo );
-				}
-			}
-			// Day
-			else if( ageTypeVal == "DAY" )
-			{
-				if( parseInt(resVal) == 0 )
-				{
-					alert("Please enter the valid range between 1 to 30");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				
-				
-				
-				else if( parseInt(resVal) > 6 || parseInt(resVal) < 1 )
-				{
-					alert("Days should be less than 7");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				
-				
-				else if( parseInt(resVal) >= 1 && parseInt(resVal) <= 6 )
-				{
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-				
-					clearList( ageCategoryField );
-	
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, true);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, false);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "B1WEEK", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadInfantCauses( recordNo );
-				}
-				/*
-				else if( parseInt(resVal) > 7 && parseInt(resVal) <= 30 )
-				{
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-				
-					clearList( ageCategoryField );
-	
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, true);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "B1MONTH", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadInfantCauses( recordNo );
-				}
-				*/
-				
-			}
-			
-			// Week
-			else if( ageTypeVal == "WEEK" )
-			{
-				//alert( "1");
-				if( parseInt(resVal) == 0 )
-				{
-					//alert( "2");
-					alert("Please enter the valid range between 1 to 3");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				
-				else if( parseInt(resVal) > 4 || parseInt(resVal) < 1 )
-				{
-					//alert( "2");
-					alert("Weeks should be less than 4");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				else if( parseInt(resVal) >= 1 && parseInt(resVal) <= 3 )
-				{
-					//alert( "3");
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-				
-					clearList( ageCategoryField );
-	
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, true);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "B1MONTH", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadInfantCauses( recordNo );
-				}
-			}
-
-			// Month
-			else if( ageTypeVal == "MONTH" )
-			{
-				if( parseInt(resVal) == 0 )
-				{
-					alert("Please enter the valid range between 1 to 11");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				else if( parseInt(resVal) > 11 || parseInt(resVal) < 1 )
-				{
-					alert("Months should be less than 12");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				else if( parseInt(resVal) >= 1 && parseInt(resVal) <= 11 )
-				{
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-				
-					clearList( ageCategoryField );
-	
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, false);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, true);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "B1YEAR", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadDeathCauses1YearTo5Year( recordNo );
-				}
-			}
-			
-			// Year
-			else if( ageTypeVal == "YEAR" )
-			{
-				if( parseInt(resVal) == 0 )
-				{
-					alert("Please enter the valid range between 1 to 150");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-				
-				else if( parseInt(resVal) > 150 )
-				{
-					alert("Years should be less than 151");
-					field.value = "";
-					setTimeout(function(){
-					field.focus();field.select();
-					},2);
-					return false;
-				}
-			
-				else if( ageTypeVal == "YEAR" && ( parseInt(resVal) <= 150 && parseInt(resVal) >= 55 ) )
-	        	{	
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-					
-					clearList( ageCategoryField );
-	
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, false);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, true);
-					
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "O55YEAR", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadDeathCuases( recordNo );
-					
-	        	}
-				else if( ageTypeVal == "YEAR" && ( parseInt(resVal) <= 55 && parseInt(resVal) >= 15 ) )
-				{
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-					
-					clearList( ageCategoryField );
-			
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, false);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O15YEAR" , false, true);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "O15YEAR", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadDeathCuases( recordNo );
-				}
-			
-				else if( ageTypeVal == "YEAR" && ( parseInt(resVal) <= 14 && parseInt(resVal) >= 6 ) )
-				{
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-					
-					clearList( ageCategoryField );
-			
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, false);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, false);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, true);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O15YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "O5YEAR", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadDeathCuases( recordNo );
-				}
-			
-				else if( ageTypeVal == "YEAR" && ( parseInt(resVal) <= 5 && parseInt(resVal) >= 1 ) )
-				{
-					var ageCategoryField = document.getElementById( 'value[1030].value:value[' + recordNo + '].value' );
-					
-					document.getElementById( 'value[1030].value:value[' + recordNo + '].value' ).style.display = 'none';
-					
-					clearList( ageCategoryField );
-			
-					ageCategoryField.options[0] = new Option( "---", "NONE" , false, false);
-					ageCategoryField.options[1] = new Option( "BELOW 1 DAY", "B1DAY" , false, false);
-					ageCategoryField.options[2] = new Option( "1 DAY - 1 WEEK", "B1WEEK" , false, false);
-					ageCategoryField.options[3] = new Option( "1 WEEK - 1 MONTH", "B1MONTH" , false, false);
-					ageCategoryField.options[4] = new Option( "1 MONTH - 1 YEAR", "B1YEAR" , false, false);
-					ageCategoryField.options[5] = new Option( "1 YEAR - 5 YEARS", "B5YEAR" , false, true);
-					ageCategoryField.options[6] = new Option( "6 YEARS - 14 YEARS", "O5YEAR" , false, false);
-					ageCategoryField.options[7] = new Option( "15 YEARS - 55 YEARS", "O15YEAR" , false, false);
-					ageCategoryField.options[8] = new Option( "OVER 55 YEARS", "O55YEAR" , false, false);
-					
-					
-					saveLLbirthValue( dataElementId, recordNo );
-		            document.getElementById('actions').style.display = 'block';
-					
-					var valueSaverTemp = new ValueSaver( "1030:"+recordNo, "B5YEAR", '#ccffcc' );
-					valueSaverTemp.save();
-					
-					loadDeathCauses1YearTo5Year( recordNo );
-				}
-			}		
-        }
-
-    }
-    
-    else
-    {
-        field.value = "";
-    
-        return false;
-    }
-}
-
 
 function loadDeathCuases( recordNo )
 {
@@ -3847,6 +3353,11 @@ function loadInfantCausesWithin24Hour( recordNo )
 }
 
 
+
+
+
+
+
 function loadDeathCauses1YearTo5Year( recordNo )
 {
     var field = document.getElementById( 'value[1031].value:value[' + recordNo + '].value' );
@@ -3863,12 +3374,16 @@ function loadDeathCauses1YearTo5Year( recordNo )
     
 }
 
+
+
+
+
 function validateLLDAgeCategoryField( dataElementId, recordNo )
 {
     var field = document.getElementById( 'value[' + dataElementId + '].value:value[' + recordNo + '].value' );
     var resVal = field.selectedIndex;
     
-    if( isLLDAgeFieldEntered( recordNo ) )
+    if(isLLDSexFieldEntered( recordNo ))
     {
         if(resVal <= 0)
         {
@@ -3907,6 +3422,8 @@ function validateLLDAgeCategoryField( dataElementId, recordNo )
         		loadDeathCuases( recordNo )
         	}
         	
+            
+
             saveLLbirthValue( dataElementId, recordNo );
             
             var valueSaver1 = new ValueSaver( "1031:"+recordNo, "NONE", '#ccffcc' );
@@ -3960,8 +3477,6 @@ function validateLLDPCDField( dataElementId, recordNo )
         return false;
     }
 }
-
-
 
 // -----------------------------------------------------------------------------
 // Linelisting Maternal Death Related Methods for Validation
@@ -4605,7 +4120,7 @@ function saveLLbirthValue( dataElementId, recordNo )
     		dataElementId == 1035 || dataElementId == 1036 || dataElementId == 1037 || dataElementId == 1038 || 
     		dataElementId == 1039 || dataElementId == 1040 || dataElementId == 1043 || dataElementId == 1046 || 
     		dataElementId == 1050 || dataElementId == 1051 || dataElementId == 1052 || dataElementId == 1054 || 
-    		dataElementId == 5786 || dataElementId == 5788 || dataElementId == 3120 || dataElementId == 6826
+    		dataElementId == 5786 || dataElementId == 5788 || dataElementId == 3120
     		)
     {
         resVal = field.options[field.selectedIndex].value;
@@ -5079,6 +4594,7 @@ function saveLineListingAggDataReceived( node )
 	*/
 
 }
+
 
 function removeLLRecord( nextRecordNo )
 {

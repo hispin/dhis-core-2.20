@@ -48,14 +48,13 @@
     	oCell.innerHTML = "<select name='entryfield' id='value[1029].value:value["+nextRecordNo+"].value' onchange='validateLLDSexField(1029,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' selected>---</option><option value='M'>Male</option><option value='F'>Female</option></select>";    	
 
     	oCell = newRow.insertCell(4);
-    	oCell.innerHTML = "<select name='entryfield' id='value[6826].value:value["+nextRecordNo+"].value' onchange='validateLLDAgeTypeField(6826,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' selected>---</option><option value='HOUR'>Hour</option><option value='DAY'>Day</option><option value='WEEK'>Week</option><option value='MONTH'>Month</option><option value='YEAR'>Year</option></select>";    	
+    	oCell.innerHTML = "<select name='entryfield' id='value[6823].value:value["+nextRecordNo+"].value' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' selected>---</option><option value='DAY'>Day</option><option value='WEEK'>Week</option><option value='MONTH'>Month</option><option value='YEAR'>Year</option></select>";    	
 		
 		oCell = newRow.insertCell(5);
-		oCell.innerHTML = "<input name='entryfield' id='value[6827].value:value["+nextRecordNo+"].value' type='text' value='' onchange='validateLLDAgeField(6827,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'>";
+		oCell.innerHTML = "<input name='entryfield' id='value[6824].value:value["+nextRecordNo+"].value' type='text' value='' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'>";
     			
     	oCell = newRow.insertCell(6);
-		oCell.style.display = 'none';
-    	oCell.innerHTML = "<select name='entryfield' id='value[1030].value:value["+nextRecordNo+"].value' onchange='validateLLDAgeCategoryField(1030,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='display: none;width:1px;'><option value='NONE' selected>---</option><option value='B1DAY'>BELOW 1 DAY</option><option value='B1WEEK'>1 DAY - 1 WEEK</option><option value='B1MONTH'>1 WEEK - 1 MONTH</option><option value='B1YEAR'>1 MONTH - 1 YEAR</option><option value='B5YEAR'>1 YEAR - 5 YEARS</option><option value='O5YEAR'>6 YEARS - 14 YEARS</option><option value='O15YEAR'>15 YEARS - 55 YEARS</option><option value='O55YEAR'>OVER 55 YEARS</option></select>";
+    	oCell.innerHTML = "<select name='entryfield' id='value[1030].value:value["+nextRecordNo+"].value' onchange='validateLLDAgeCategoryField(1030,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:275px;'><option value='NONE' selected>---</option><option value='B1DAY'>BELOW 1 DAY</option><option value='B1WEEK'>1 DAY - 1 WEEK</option><option value='B1MONTH'>1 WEEK - 1 MONTH</option><option value='B1YEAR'>1 MONTH - 1 YEAR</option><option value='B5YEAR'>1 YEAR - 5 YEARS</option><option value='O5YEAR'>6 YEARS - 14 YEARS</option><option value='O15YEAR'>15 YEARS - 55 YEARS</option><option value='O55YEAR'>OVER 55 YEARS</option></select>";
     		    	        	
     	oCell = newRow.insertCell(7);
     	oCell.innerHTML = "<select name='entryfield' id='value[1031].value:value["+nextRecordNo+"].value' onchange='validateLLDPCDField(1031,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:275px;'><option value='NK'>---</option><option value='WITHIN24HOURSOFBIRTH'>C01-WITHIN 24 HOURS OF BIRTH</option><option value='SEPSIS'>C02-SEPSIS</option><option value='ASPHYXIA'>C03-ASPHYXIA</option><option value='LOWBIRTHWEIGH'>C04-LOWBIRTHWEIGHT</option><option value='PNEUMONIA'>C05-PNEUMONIA</option><option value='DIADIS'>C06-DIARRHOEA</option><option value='OFR'>C07-FEVER RELATED</option><option value='MEASLES'>C08-MEASLES</option><option value='OTHERS'>C09-OTHERS</option><option value='DIADIS'>A01-DIARRHOEAL DISEASE</option><option value='TUBER'>A02-TUBERCULOSIS</option><option value='RID'>A03-RESPIRATORY DISEASES INCLUDING INFECTION (OTHER THAN TB)</option><option value='MALARIA'>A04-MALARIA</option><option value='OFR'>A05-OTHER FEVER RELATED</option><option value='HIVAIDS'>A06-HIV/AIDS</option><option value='HDH'>A07-HEART DISEASE/HYPERTENSION RELATED</option><option value='SND'>A08-NEUROLOGICAL DISEASE INCLUDING STROKE</option><option value='AI'>A09-TRANUMA/ACCIDENTS/BURN CASES</option><option value='SUICIDES'>A10-SUICIDES</option><option value='ABS'>A11-ANIMAL BITES AND STINGS</option><option value='OKAD'>A12-KNOWN ACUTE DISEASE</option><option value='OKCD'>A13-KNOWN CHRONIC DISEASE</option><option value='NK'>A14-NOT KNOWN</option></select>";    	    	
@@ -79,7 +78,7 @@
 		<th width="7%">Sex</th>
 		<th width="4%">Age Type</th>
 		<th width="4%">Age</th>
-		<th width="1%" style='display:none'></th>
+		<th width="20%">Age Category</th>
 		<th width="10%">Probable Cause of death</th>
 		<th width="2%">&nbsp;</th>		
 	</tr>
@@ -104,9 +103,8 @@
 			<!-- Age Type -->
 		#elseif($count1 == 4)
 		<td>
-			<select name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" onchange="validateLLDAgeTypeField($llDataValue.getDataElement().getId(),$llDataValue.getRecordNo())" onkeypress="return keyPress(event, this)" style="width:100% text-align:center" #if( $locked ) disabled="disabled"#end>
+			<select name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" onkeypress="return keyPress(event, this)" style="width:100% text-align:center" #if( $locked ) disabled="disabled"#end>
 				<option value="NONE" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>---</option>
-				<option value="HOUR" #if($llDataValue.getValue() && $llDataValue.getValue()=="HOUR") selected #end>Hour</option>
 				<option value="DAY" #if($llDataValue.getValue() && $llDataValue.getValue()=="DAY") selected #end>Day</option>
 				<option value="WEEK" #if($llDataValue.getValue() && $llDataValue.getValue()=="WEEK") selected #end>Week</option>
 				<option value="MONTH" #if($llDataValue.getValue() && $llDataValue.getValue()=="MONTH") selected #end>Month</option>
@@ -115,12 +113,12 @@
 		</td>
 
 		#elseif($count1 == 5)
-		<td><input name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" type="text" onchange="validateLLDAgeField($llDataValue.getDataElement().getId(),$llDataValue.getRecordNo())" value="#if($llDataValue.getValue())$llDataValue.getValue()#end" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"  #if( $locked ) disabled="disabled"#end></td>       
+		<td><input name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" type="text" value="#if($llDataValue.getValue())$llDataValue.getValue()#end" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"  #if( $locked ) disabled="disabled"#end></td>       
 			
-		#elseif($count1 == 6 )
-			<td style="display:none;">
+		#elseif($count1 == 6)
+			<td>
 				#set( $ageCategory = $llDataValue.getValue() )
-				<select name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" onchange="validateLLDAgeCategoryField($llDataValue.getDataElement().getId(),$llDataValue.getRecordNo())" onkeypress="return keyPress(event, this)" style="width:1px;text-align:center" #if( $locked ) disabled="disabled"#end>
+				<select name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" onchange="validateLLDAgeCategoryField($llDataValue.getDataElement().getId(),$llDataValue.getRecordNo())" onkeypress="return keyPress(event, this)" style="width:275px;" text-align:center" #if( $locked ) disabled="disabled"#end>
 					<option value="NONE" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>---</option>
 					<option value="B1DAY" #if($llDataValue.getValue() && $llDataValue.getValue()=="B1DAY") selected #end>BELOW 1 DAY</option>
 					<option value="B1WEEK" #if($llDataValue.getValue() && $llDataValue.getValue()=="B1WEEK") selected #end>1 DAY - 1 WEEK</option>
@@ -139,7 +137,7 @@
 				#if( $ageCategory == "B1DAY" )
 					<select name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" onchange="validateLLDPCDField($llDataValue.getDataElement().getId(),$llDataValue.getRecordNo())" onkeypress="return keyPress(event, this)" style="width:275px;" #if( $locked ) disabled="disabled"#end>
 						<option value="OTHERS" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="OTHERS") selected #end>---</option>
-						<option value="WITHIN24HOURSOFBIRTH" #if($llDataValue.getValue() && $llDataValue.getValue()=="WITHIN24HOURSOFBIRTH") selected #end>C01-WITHIN 24 HOURS OF BIRTH</option>
+						<option value="SEPSIS" #if($llDataValue.getValue() && $llDataValue.getValue()=="WITHIN24HOURSOFBIRTH") selected #end>C01-WITHIN 24 HOURS OF BIRTH</option>
 					</select>				
 				<!-- -->
 				
@@ -287,9 +285,8 @@
 	</td>
 	<!-- Age Type -->
 	<td>
-		<select name="entryfield" id="value[6826].value:value[$recordNo].value"  onchange="validateLLDAgeTypeField(6826,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
+		<select name="entryfield" id="value[6823].value:value[$recordNo].value"  onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
 			<option value="NONE" selected>---</option>
-			<option value="HOUR">Hour</option>
 			<option value="DAY">Day</option>
 			<option value="WEEK">Week</option>
 			<option value="MONTH">Month</option>
@@ -297,10 +294,10 @@
 		</select>		
 	</td>
 	<!-- Age -->
-	<td><input name="entryfield" id="value[6827].value:value[$recordNo].value" type="text" value="" onchange="validateLLDAgeField(6827,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
+	<td><input name="entryfield" id="value[6824].value:value[$recordNo].value" type="text" value="" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
 	
-	<td style="display:none">
-		<select name="entryfield" id="value[1030].value:value[$recordNo].value" onchange="validateLLDAgeCategoryField(1030,$recordNo)" onkeypress="return keyPress(event, this)" style="width:1px;text-align:center">
+	<td>
+		<select name="entryfield" id="value[1030].value:value[$recordNo].value" onchange="validateLLDAgeCategoryField(1030,$recordNo)" onkeypress="return keyPress(event, this)" style="width:275px;" text-align:center">
 			<option value="NONE" selected>---</option>
 			<option value="B1DAY">BELOW 1 DAY</option>
 			<option value="B1WEEK">1 DAY - 1 WEEK</option>
@@ -399,11 +396,13 @@
     lastRecordNo = $lastRecord;
     function onLoad()
 	{
+		
 		var recordSize = $recordNos.size();
-		if( recordSize >= 1 )
+		if( recordSize >= 1)
 		{
 			document.getElementById('actions').style.display = 'block';
 		}
 	}
 	onLoad();
 </script>
+

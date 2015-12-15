@@ -16,7 +16,7 @@
 	
 	<module>dhis-web-maintenance-in</module>
 	<module>dhis-web-reports-national</module>
-	
+	<module>dhis-web-dataentry-linelisting</module>
 	<!--
 	<module>dhis-web-maintenance-rbf</module>
 	

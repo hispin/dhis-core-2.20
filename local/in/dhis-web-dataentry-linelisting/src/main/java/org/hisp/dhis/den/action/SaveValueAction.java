@@ -170,7 +170,7 @@ public class SaveValueAction
         // ---------------------------------------------------------------------      
         
         DataElementCategoryOptionCombo defaultOptionCombo = dataElement.getCategoryCombo().getOptionCombos().iterator().next();        
-        LLDataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, defaultOptionCombo, recordNo);
+        LLDataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, defaultOptionCombo, recordNo );
         
 
         if ( dataValue == null )

@@ -37,7 +37,8 @@ function getOUDetailsRecevied(xmlObject)
 		document.getElementById("selOrgUnitName").value = orgUnitName;	
     }    		
 }
-//form Validation
+
+// form Validation
 
 function formValidationsLLAggregation()
 {
@@ -84,5 +85,4 @@ function llAggregate()
 				jQuery('#loaderDiv').hide();
 			});
 	}
-}	
-
+}

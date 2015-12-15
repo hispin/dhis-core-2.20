@@ -129,7 +129,8 @@ public class DefaultStatefulDataValueSaver
         // Update DB
         // ---------------------------------------------------------------------
 
-        DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, optionCombo );
+        //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, period, optionCombo );
+        DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
 
         if ( dataValue == null )
         {
@@ -137,7 +138,8 @@ public class DefaultStatefulDataValueSaver
             {
                 LOG.debug( "Adding DataValue, value added" );
 
-                dataValue = new DataValue( dataElement, period, organisationUnit, value, storedBy, new Date(), null, optionCombo );
+                //dataValue = new DataValue( dataElement, period, organisationUnit, value, storedBy, new Date(), null, optionCombo );
+                dataValue = new DataValue( dataElement, period, organisationUnit, optionCombo, null , value, storedBy, new Date(), null  );
 
                 dataValueService.addDataValue( dataValue );
             }
@@ -147,7 +149,8 @@ public class DefaultStatefulDataValueSaver
             LOG.debug( "Updating DataValue, value added/changed" );
 
             dataValue.setValue( value );
-            dataValue.setTimestamp( new Date() );
+            //dataValue.setTimestamp( new Date() );
+            dataValue.setLastUpdated(  new Date()  );
             dataValue.setStoredBy( storedBy );
 
             dataValueService.updateDataValue( dataValue );

@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
+import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.den.state.SelectedStateManager;
 import org.hisp.dhis.expression.Expression;
@@ -41,6 +43,7 @@ import org.hisp.dhis.period.Period;
 import org.hisp.dhis.validation.ValidationResult;
 import org.hisp.dhis.validation.ValidationRule;
 import org.hisp.dhis.validation.ValidationRuleService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Action;
 
@@ -75,6 +78,9 @@ public class ValidationAction
     {
         this.expressionService = expressionService;
     }
+    
+    @Autowired
+    private DataElementCategoryService dataElementCategoryService;
     
     // -------------------------------------------------------------------------
     // Output
@@ -132,8 +138,9 @@ public class ValidationAction
         DataSet dataSet = selectedStateManager.getSelectedDataSet();       
 
         //do the validation
-        results = new ArrayList<ValidationResult>( validationRuleService.validate( dataSet, period, orgUnit ) );
-        
+        //results = new ArrayList<ValidationResult>( validationRuleService.validate( dataSet, period, orgUnit ) );
+        DataElementCategoryOptionCombo defaultAttributeOptionCombo = dataElementCategoryService.getDefaultDataElementCategoryOptionCombo();
+        results = new ArrayList<ValidationResult>( validationRuleService.validate( dataSet, period, orgUnit, defaultAttributeOptionCombo ) );
         
         //Get the leftside and rightside Expression and create maps
         if ( results.size() > 0 )

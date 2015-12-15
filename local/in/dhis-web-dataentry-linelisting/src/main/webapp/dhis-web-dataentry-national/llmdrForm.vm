@@ -62,13 +62,13 @@
     	oCell.innerHTML = "<select name='entryfield' id='value[1036].value:value["+nextRecordNo+"].value' onchange='validateLLMDDeliveryAtField(1036,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE'>---</option><option value='HOME'>HOME</option><option value='SC'>SUBCENTER</option><option value='PHC'>PHC</option><option value='CHC'>CHC</option><option value='MC'>DH/SDH/MEDICAL COLLEGE</option></select>";
     	*/	    	        	
     	oCell = newRow.insertCell(6);
-    	oCell.innerHTML = "<select name='entryfield' id='value[1037].value:value["+nextRecordNo+"].value' onchange='validateLLMDDeliveryByField(1037,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='UNTRAINED'>UNTRAINED</option><option value='TRAINED'>TRAINED</option><option value='ANM'>ANM</option><option value='NURSE'>NURSE</option><option value='DOCTOR'>DOCTOR</option><option value='OTHER'>OTHERS</option></select>";    	    	
+    	oCell.innerHTML = "<select name='entryfield' id='value[1037].value:value["+nextRecordNo+"].value' onchange='validateLLMDDeliveryByField(1037,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='UNTRAINED'>UNTRAINED</option><option value='TRAINED'>TRAINED</option><option value='ANM'>ANM</option><option value='NURSE'>NURSE</option><option value='DOCTOR'>DOCTOR</option><option value='OTHERS'>OTHERS</option></select>";    	    	
 
     	oCell = newRow.insertCell(7);
-    	oCell.innerHTML = "<select name='entryfield' id='value[1038].value:value["+nextRecordNo+"].value' onchange='validateLLMDCauseField(1038,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='ABORTION'>M01-Abortion</option><option value='OPL'>M02-Obstructed/prolonged labour</option><option value='FITS'>M03-Severe hypertension/fits</option><option value='BBCD'>M04-Bleeding</option><option value='HFBD'>M05-High fever</option><option value='MDNK'>M06-Other Causes (including causes not known)</option><!--<option value='FITS'>FITS</option><option value='SH'>SEVERE HYPERTENSION</option><option value='BBCD'>BLEEDING BEFORE CHILD DELIVERY</option><option value='BACD'>BLEEDING AFTER CHILD DELIVERY</option><option value='HFBD'>HIGH FEVER BEFORE DELIVERY</option><option value='HFAD'>HIGH FEVER AFTER DELIVERY</option><option value='ANAEMIA'>Anaemia as cause of Direct/Associated with other Medical Disease</option><option value='SEVEREANAEMIA'>Severe Anaemia (<7gm)</option><option value='MODERATEANAEMIA'>Moderate Anaemia (>7gm <11gm)</option><option value='OTHERS'>ANY OTHERS</option><option value='NK'>NOT KNOWN</option><option value='MDNK'>Other Causes (including cause not known)</option>--></select>";    	    	
+    	oCell.innerHTML = "<select name='entryfield' id='value[1038].value:value["+nextRecordNo+"].value' onchange='validateLLMDCauseField(1038,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='ABORTION'>ABORTION</option><option value='OPL'>OBSTRUCTED/PROLONGED LABOUR</option><option value='FITS'>FITS</option><option value='SH'>SEVERE HYPERTENSION</option><option value='BBCD'>BLEEDING BEFORE CHILD DELIVERY</option><option value='BACD'>BLEEDING AFTER CHILD DELIVERY</option><option value='HFBD'>HIGH FEVER BEFORE DELIVERY</option><option value='HFAD'>HIGH FEVER AFTER DELIVERY</option><option value='OTHERS'>ANY OTHERS</option><option value='NK'>NOT KNOWN</option><option value='MDNK'>Other Causes (including cause not known)</option></select>";    	    	
 
     	oCell = newRow.insertCell(8);
-    	oCell.innerHTML = "<select name='entryfield' id='value[1039].value:value["+nextRecordNo+"].value' onchange='validateLLMDAuditedField(1039,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='Y'>YES</option><option value='N'>NO</option><option value='NOTKNOWN'>NOT KNOWN</option></select>";
+    	oCell.innerHTML = "<select name='entryfield' id='value[1039].value:value["+nextRecordNo+"].value' onchange='validateLLMDAuditedField(1039,"+nextRecordNo+")' onkeypress='return keyPress(event, this)' style='width:100% text-align:center'><option value='NONE' SELECTED>---</option><option value='Y'>YES</option><option value='N'>NO</option><option value='NK'>NOT KNOWN</option></select>";
     	
         oCell = newRow.insertCell(9);
         oCell.innerHTML = "<div id='"+nextRecordNo+"' style='display: none;'><a href='javascript:removeLLRecord( "+ nextRecordNo+" )' title='remove'><img src='../images/delete.png' alt='remove'></a></div>";
@@ -78,21 +78,31 @@
 
 
 
-<div align="center"><h3><u>Linelisting : Maternal Deaths</u></h3></div>
+<div align="center"><h3><u>Linelisting : Maternal Deaths Record Form</u></h3></div>
 
 
 <table id="tblGrid" width="100%">
 	<tr>
-		<th width="3%">Sl. No.</th>
-		<th width="16%">Name of Mother</th>
-		<th width="15%">Village</th>
-		<th width="10%">Age at Death</th>
-		<th width="11%">Death During</th>
-		<th width="11%">Delivery At</th>		
-		<th width="11%">Delivery By</th>
-		<th width="12%">Cause of Death</th>
-		<th width="9%">Is Audited?</th>
-		<th width="2%">&nbsp;</th>
+		<th>Sl. No.</th>
+		<th>Date of Death</th>
+		<th>Maternal Death During</th>
+		<th>Gravida</th>
+		<th>Name of the Deceased Mother</th>
+		<th>Name of the Husband</th>
+		<th>Address</th>
+		<th>Age</th>
+		<th>Place of Death</th>
+		<th>Type of Inst</th>
+		<th>Name of the Inst./ Place</th>
+		<th>District (Where Death Occurred)</th>
+		<th>Block (Where Death Occurred)</th>
+		<th>Tested Hb in gm/dl</th>
+		<th>Major Cause of Death</th>
+		<th>Detail Cause of Death</th>
+		<th>Name of the reporting Person</th>
+		<th>CDMO Review the Death Case</th>
+		<th>Collector Review the Death Case</th>
+		<th>Detail Cause of Death</th>
 	<tr>
 
 #set( $mapKeys = $recordNos )
@@ -109,7 +119,7 @@
 					<option value="NONE" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>---</option>
 					<option value="Y" #if($llDataValue.getValue() && $llDataValue.getValue()=="Y") selected #end>YES</option>
 					<option value="N" #if($llDataValue.getValue() && $llDataValue.getValue()=="N") selected #end>NO</option>
-					<option value="NOTKNOWN" #if($llDataValue.getValue() && $llDataValue.getValue()=="NOTKNOWN") selected #end>NOT KNOWN</option>
+					<option value="NK" #if($llDataValue.getValue() && $llDataValue.getValue()=="NK") selected #end>NOT KNOWN</option>
 				</select>
 			</td>
 			<td #if( $locked ) style="display:none" #end>
@@ -147,21 +157,13 @@
 					<option value="ANM" #if($llDataValue.getValue() && $llDataValue.getValue()=="ANM") selected #end>ANM</option>
 					<option value="NURSE" #if($llDataValue.getValue() && $llDataValue.getValue()=="NURSE") selected #end>NURSE</option>
 					<option value="DOCTOR" #if($llDataValue.getValue() && $llDataValue.getValue()=="DOCTOR") selected #end>DOCTOR</option>
-					<option value="OTHER" #if($llDataValue.getValue() && $llDataValue.getValue()=="OTHER") selected #end>OTHERS</option>
+					<option value="OTHERS" #if($llDataValue.getValue() && $llDataValue.getValue()=="OTHERS") selected #end>OTHERS</option>
 				</select>
 			</td>
 		#elseif($count1 == 7)
 			<td>
 				<select name="entryfield" id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" onchange="validateLLMDCauseField($llDataValue.getDataElement().getId(),$llDataValue.getRecordNo())" onkeypress="return keyPress(event, this)" style="width:100% text-align:center" #if( $locked ) disabled="disabled"#end>
-					<!--<option value="MDNK" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>OTHER CAUSES</option>-->
 					<option value="NONE" #if(!$llDataValue.getValue() || $llDataValue.getValue()=="NONE") selected #end>---</option>
-					<option value="ABORTION" #if($llDataValue.getValue() && $llDataValue.getValue()=="ABORTION") selected #end>M01-Abortion</option>
-					<option value="OPL" #if($llDataValue.getValue() && $llDataValue.getValue()=="OPL") selected #end>M02-Obstructed/prolonged labour</option>
-					<option value="FITS" #if($llDataValue.getValue() && $llDataValue.getValue()=="FITS") selected #end>M03-Severe hypertension/fits</option>
-					<option value="BBCD" #if($llDataValue.getValue() && $llDataValue.getValue()=="BBCD") selected #end>M04-Bleeding</option>
-					<option value="HFBD" #if($llDataValue.getValue() && $llDataValue.getValue()=="HFBD") selected #end>M05-High fever</option>
-					<option value="MDNK" #if($llDataValue.getValue() && $llDataValue.getValue()=="MDNK") selected #end>M06-Other Causes (including causes not known)</option>
-					<!--
 					<option value="ABORTION" #if($llDataValue.getValue() && $llDataValue.getValue()=="ABORTION") selected #end>ABORTION</option>
 					<option value="OPL" #if($llDataValue.getValue() && $llDataValue.getValue()=="OPL") selected #end>OBSTRUCTED/PROLONGED LABOUR</option>
 					<option value="FITS" #if($llDataValue.getValue() && $llDataValue.getValue()=="FITS") selected #end>FITS</option>
@@ -170,15 +172,9 @@
 					<option value="BACD" #if($llDataValue.getValue() && $llDataValue.getValue()=="BACD") selected #end>BLEEDING AFTER CHILD DELIVERY</option>
 					<option value="HFBD" #if($llDataValue.getValue() && $llDataValue.getValue()=="HFBD") selected #end>HIGH FEVER BEFORE DELIVERY</option>
 					<option value="HFAD" #if($llDataValue.getValue() && $llDataValue.getValue()=="HFAD") selected #end>HIGH FEVER AFTER DELIVERY</option>
-					
-					<option value="ANAEMIA" #if($llDataValue.getValue() && $llDataValue.getValue()=="ANAEMIA") selected #end>Anaemia as cause of Direct/Associated with other Medical Disease</option>
-					<option value="SEVEREANAEMIA" #if($llDataValue.getValue() && $llDataValue.getValue()=="SEVEREANAEMIA") selected #end>Severe Anaemia (<7gm)</option>
-					<option value="MODERATEANAEMIA" #if($llDataValue.getValue() && $llDataValue.getValue()=="MODERATEANAEMIA") selected #end>Moderate Anaemia (>7gm <11gm)</option>
-					
 					<option value="OTHERS" #if($llDataValue.getValue() && $llDataValue.getValue()=="OTHERS") selected #end>ANY OTHERS</option>
 					<option value="NK" #if($llDataValue.getValue() && $llDataValue.getValue()=="NK") selected #end>NOT KNOWN</option>
 					<option value="MDNK" #if($llDataValue.getValue() && $llDataValue.getValue()=="MDNK") selected #end>Other Causes (including cause not known)</option>										
-					-->
 				</select>
 			</td>
 		#elseif($count1 == 1)
@@ -196,82 +192,106 @@
 	</tr>	
 #end
 <tr #if( $locked ) style="display:none" #end>
+	<!-- slno -->
 	<td align="center"><div id='value[1032].value:value[$recordNo].slno' align='center'>$slno</div></td>
-	<td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
-	<td><input name="entryfield" id="value[1033].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDVillageField(1033,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
-	<td><input name="entryfield" id="value[1034].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDAgeAtDeathField(1034,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center" maxlength='2'></td>
+    <!-- Date of Death -->
+    <td>
+		#set( $tempVar =  "value[1023].value:value["+$recordNo+"].value" )
+        <input name="entryfield" id="$tempVar" type="text" value="" onchange="validateLLMDRDOBField(1023,$recordNo)" onkeypress="return keyPress(event, this)" style="width:10em text-align:center">
+			<script type="text/javascript">
+				var a = "value\\[1023\\]\\.value\\:value\\[$recordNo\\]\\.value";
+				datePicker( a, false);
+			</script>			
+    </td>
+    <!-- Maternal Death During  -->
 	<td>
-		<select name="entryfield" id="value[1035].value:value[$recordNo].value" onchange="validateLLMDDuringField(1035,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
+		<select name="entryfield" id="value[1035].value:value[$recordNo].value" onchange="validateLLMDRDuringField(1035,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
 			<option value="NONE" selected>---</option>					
-			<option value="FTP">FIRST TRIMESTER PREGNANCY</option>
-			<option value="STP">SECOND TRIMESTER PREGNANCY</option>
-			<option value="TTP">THIRD TRIMESTER PREGNANCY</option>
-			<option value="DELIVERY">DELIVERY</option>
-			<option value="ADW42D">AFTER DELIVERY WITHIN 42 DAYS</option>
+			<option value="PREGNANCY">Pregnancy</option>
+			<option value="DELIVERY">Delivery</option>
+			<option value="PNC">PNC</option>
 		</select>		
-	</td>	
+	</td>
+	<!-- Gravida -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRGravidaField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
+    
+	<!-- Name of the Deceased Mother -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRMotherNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>    
+    
+	<!-- Name of the Husband  -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRHusbandNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>        
+    
+    <!-- Address  -->
+    <td><input name="entryfield" id="value[1033].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRAddressField(1033,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
+    
+    <!-- Age  -->	
+    <td><input name="entryfield" id="value[1034].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRAgeField(1034,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center" maxlength='2'></td>	
+
+    <!-- Place of Death   -->
 	<td>
-		<select name="entryfield" id="value[1036].value:value[$recordNo].value" onchange="validateLLMDDeliveryAtField(1036,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
+		<select name="entryfield" id="value[1035].value:value[$recordNo].value" onchange="validateLLMDRPlaceofDeathField(1035,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
+			<option value="NONE" selected>---</option>					
+			<option value="FACILITY">Facility</option>
+			<option value="COMMUNITY">Community</option>
+		</select>		
+	</td>
+
+	<!-- Type of Inst  -->
+	<td>
+		<select name="entryfield" id="value[1036].value:value[$recordNo].value" onchange="validateLLMDRTypeOfInstField(1036,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
 			<option value="NONE">---</option>
-			<option value="HOME">HOME</option>
-			<option value="SC">SUBCENTER</option>
-			<option value="PHC">PHC</option>
+			<option value="MCH">MCH</option>
+			<option value="DHH">DHH</option>
+			<option value="SDH">SDH</option>
 			<option value="CHC">CHC</option>
-			<option value="MC">DH/SDH/MEDICAL COLLEGE</option>
-			<option value="PVTINST">PVT INST</option> <!-- hide or orissa application -->
+			<option value="PHC">PHC</option>
+			<option value="SC">SC</option>
 		</select>	
 	</td>	
+	    	
+    <!-- Name of the Inst./ Place -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRInstPlaceNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
+
+
+    <!-- District (Where Death Occurred) -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRDistrictNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
+    
+    
+    <!-- Block (Where Death Occurred) -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRBlockNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
+    
+    
+    <!-- Tested Hb in gm/dl -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRTestedHBNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>    
+    
+   <!-- Major Cause of Death -->
 	<td>
-		<select name="entryfield" id="value[1037].value:value[$recordNo].value" onchange="validateLLMDDeliveryByField(1037,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
+		<select name="entryfield" id="value[1038].value:value[$recordNo].value" onchange="validateLLMDRCauseField(1038,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
 			<option value="NONE" SELECTED>---</option>
-			<option value="UNTRAINED">UNTRAINED</option>
-			<option value="TRAINED">TRAINED</option>
-			<option value="ANM">ANM</option>
-			<option value="NURSE">NURSE</option>
-			<option value="DOCTOR">DOCTOR</option>
-			<option value="OTHER">OTHERS</option>
+			<option value="HAEMORRHAGE">Haemorrhage</option>
+			<option value="SEPSIS">Sepsis</option>
+			<option value="ABORTION">Abortion</option>
+			<option value="OBSTRUCTEDLABOUR">Obstructed Labour</option>
+			<option value="HYPDISOINPRG">Hypertensive disorders in pregnancy</option>
+			<option value="OTHERS">Others</option>
 		</select>	
-	</td>
-	<td>
-		<select name="entryfield" id="value[1038].value:value[$recordNo].value" onchange="validateLLMDCauseField(1038,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
-			<option value="NONE" SELECTED>---</option>
-			<option value="ABORTION">M01-Abortion</option>
-			<option value="OPL">M02-Obstructed/prolonged labour</option>
-			<option value="FITS">M03-Severe hypertension/fits</option>
-			<option value="BBCD">M04-Bleeding</option>
-			<option value="HFBD">M05-High fever</option>
-			<option value="MDNK">M06-Other Causes (including causes not known)</option>
-			
-			<!--
-			<option value="FITS">FITS</option>
-			<option value="SH">SEVERE HYPERTENSION</option>
-			<option value="BBCD">BLEEDING BEFORE CHILD DELIVERY</option>
-			<option value="BACD">BLEEDING AFTER CHILD DELIVERY</option>
-			<option value="HFBD">HIGH FEVER BEFORE DELIVERY</option>
-			<option value="HFAD">HIGH FEVER AFTER DELIVERY</option>
-			-->
-			<!-- add option for Haryana From-->
-			<!--
-			<option value="ANAEMIA">Anaemia as cause of Direct/Associated with other Medical Disease</option> 
-			<option value="SEVEREANAEMIA">Severe Anaemia (<7gm)</option> 
-			<option value="MODERATEANAEMIA">Moderate Anaemia (>7gm <11gm)</option>
-			-->
-			<!-- add option for Haryana To-->
-			<!--
-			<option value="OTHERS">ANY OTHERS</option>
-			<option value="NK">NOT KNOWN</option>
-			<option value="MDNK">M06-Other Causes (including cause not known)</option>
-			-->
-		</select>	
-	</td>
-	<td>
-		<select name="entryfield" id="value[1039].value:value[$recordNo].value" onchange="validateLLMDAuditedField(1039,$recordNo)" onkeypress="return keyPress(event, this)" style="width:100% text-align:center">
-			<option value="NONE" SELECTED>---</option>
-			<option value="Y">YES</option>
-			<option value="N">NO</option>
-			<option value="NOTKNOWN">NOT KNOWN</option>		
-		</select>	
-	</td>
+	</td>    
+    
+    <!-- Detail  Cause of Death -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRDetailsCauseNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>
+    
+    
+    <!-- Name of the reporting Person -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRReportingPersonNameField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>    
+    
+    
+    <!-- CDMO Review the Death Case -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRCDMOReviewDeathCaseField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>        
+    
+
+    <!-- Collector Review the Death Case -->
+    <td><input name="entryfield" id="value[1032].value:value[$recordNo].value" type="text" value="" onchange="validateLLMDRCollectorReviewDeathCaseField(1032,$recordNo )" onkeypress="return keyPress(event, this)" style="width:100% text-align:center"></td>        
+    
     <td>
        <div id='$recordNo' style="display: none;"><a href="#" onclick="javascript:removeLLRecord( '$recordNo' )" title="$i18n.getString( "remove" )"><img src="../images/delete.png" alt="$i18n.getString( "remove" )"></a></div>
     </td>		

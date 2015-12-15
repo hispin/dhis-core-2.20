@@ -37,7 +37,60 @@ public class LLDataSets
     public static final String LL_DEATHS_IDSP = "Line listing Deaths IDSP";
     public static final String LL_IDSP_LAB = "Line Listing IDSP Lab";
     public static final String LL_COLD_CHAIN = "Line listing Cold Chain";
+    
+    public static final String LL_FAMILY_PLANING = "Line listing Family Planing";
+    public static final String LL_YUKTI_STATUS = "Line listing Yukti Status";
 
+    //----------------------------------------------------------------
+    // LineListing Family Planing Data Element for Bihar
+    //----------------------------------------------------------------
+    
+    
+
+    // 7271 : LLFP- Name of the Hospital 7271
+    public static final int LLFP_HOSPITAL_NAME = 7271;
+    // 7272 :  LLFP- Contact No 7272
+    public static final int LLFP_CONTACT_NO = 7272;
+    // 7273 :  LLFP- Sterilisation done for Female 7273
+    public static final int LLFP_STERILISATION_FEMALE = 7273;
+    // 7274 :  LLFP- Sterilisation done for Male 7274
+    public static final int LLFP_STERILISATION_MALE = 7274;
+    // 7275 :  LLFP- No of Cases Paid for Female 7275
+    public static final int LLFP_CASES_PAID_FEMALE = 7275;
+    // 7276 :  LLFP- No of Cases Paid for Male 7276
+    public static final int LLFP_CASES_PAID_MALE = 7276;
+    // 7277 :  LLFP- Amount Paid 7277
+    public static final int LLFP_AMOUNT_PAID = 7277;
+    // 7278 :  LLFP- Amount Due 7278
+    public static final int LLFP_AMOUNT_DUE = 7278;
+    // 7279 :  LLFP- Remark 7279
+    public static final int LLFP_REMARK = 7279;
+    // 7287 : LLFP- Name of the Hospital 7314
+    public static final int LLFP_ACCREDITATION_ID = 7314;
+    
+    //----------------------------------------------------------------
+    // LineListing Yukti status ata Element for Bihar
+    //----------------------------------------------------------------
+    
+    
+    
+    // 7280 : LLYS- Name of the Site 7280
+    public static final int LLYS_SITE_NAME = 7280;
+    // 7281 :  LLYS- Contact No 7281
+    public static final int LLYS_CONTACT_NO = 7281;
+    // 7282 :  LLYS- No of MTPs Performed 7282
+    public static final int LLYS_MTP_PERFORMED = 7282;
+    // 7283 :  LLYS- No of Accredited Cases Paid 7283
+    public static final int LLYS_ACCREDITED_CASE_PAID = 7283;
+    // 7284 :  LLYS- Amount Paid 7284
+    public static final int LLYS_AMOUNT_PAID = 7284;
+    // 7285 :  LLYS- Amount Due 7285
+    public static final int LLYS_AMOUNT_DUE = 7285;
+    // 7286 :  LLYS- Remark 7286
+    public static final int LLYS_REMARK = 7286;
+    // 7288 : LLFP- Name of the Hospital 7315
+    public static final int LLYS_ACCREDITATION_ID = 7315;
+    
     //----------------------------------------------------------------
     // LineListing Cold Chain
     //----------------------------------------------------------------
@@ -115,6 +168,10 @@ public class LLDataSets
     public static final int LLD_SEX = 1029;
     public static final int LLD_AGE_CATEGORY = 1030;
     public static final int LLD_DEATH_CAUSE = 1031;
+
+    // production
+    public static final int LLD_DEATH_AGE_TYPE = 6826;
+    public static final int LLD_DEATH_AGE = 6827;
     
     public static final int LLD_DEATH_OVER05Y = 552;
     public static final int LLD_DEATH_OVER05Y_MALE = 553;
@@ -302,12 +359,216 @@ public class LLDataSets
     // 1249 : Others 1 month to 1 year
     public static final int LLD_CAUSE_DE83 = 1249;
     // 1250 : Not known 1 month to 1 year
-    public static final int LLD_CAUSE_DE84 = 1250;   
+    public static final int LLD_CAUSE_DE84 = 1250;
+    
+    
+    
+    
+    
+    //for Haryana application cause of death
+    
+    //Pneumonia below 1 day
+    public static final int LLD_CAUSE_DE85 = 6050;
+    //Pneumonia  1 day to 1 week
+    public static final int LLD_CAUSE_DE86 = 6051;
+    //Pneumonia  1 week to 1 month
+    public static final int LLD_CAUSE_DE87 = 6052;
+    
+    
+    //Pneumonia  1 month to 1 year
+        //public static final int LLD_CAUSE_DE88 = 0;
+    //Pneumonia  1 year to 5 year
+        //public static final int LLD_CAUSE_DE89 = 0;
+    
+    
+    
+    //Fever related below 1 day
+    public static final int LLD_CAUSE_DE90 = 6053;
+    //Fever related 1 day to 1 week
+    public static final int LLD_CAUSE_DE91 = 6054;
+    //Fever related 1 week to 1 month
+    public static final int LLD_CAUSE_DE92 = 6055;
+    
+    //Fever related 1 month to 1 year
+        //public static final int LLD_CAUSE_DE93 = 0;
+    //Fever related 1 year to 5 year
+        //public static final int LLD_CAUSE_DE94 = 0;
+    
+    //Meconium aspiration syndrome below 1 day
+    public static final int LLD_CAUSE_DE95 = 6056;
+    //Meconium aspiration syndrome 1 day to 1 week
+    public static final int LLD_CAUSE_DE96 = 6057;
+    //Meconium aspiration syndrome 1 week to 1 month
+    public static final int LLD_CAUSE_DE97 = 6058;
+    //Meconium aspiration syndrome 1 month to 1 year
+    public static final int LLD_CAUSE_DE98 = 6059;
+    //Meconium aspiration syndrome 1 year to 5 year
+    public static final int LLD_CAUSE_DE99 = 6060;
+    
+    
+    //Meningitis below 1 day
+    public static final int LLD_CAUSE_DE100 = 6061;
+    //Meningitis 1 day to 1 week
+    public static final int LLD_CAUSE_DE101 = 6062;
+    //Meningitis 1 week to 1 month
+    public static final int LLD_CAUSE_DE102 = 6063;
+    //Meningitis 1 month to 1 year
+    public static final int LLD_CAUSE_DE103 = 6064;
+    //Meningitis 1 year to 5 year
+    public static final int LLD_CAUSE_DE104 = 6065;
+    
+    
+    //Major Congenital Malformation below 1 day
+    public static final int LLD_CAUSE_DE105 = 6066;
+    //Major Congenital Malformation 1 day to 1 week
+    public static final int LLD_CAUSE_DE106 = 6067;
+    //Major Congenital Malformation 1 week to 1 month
+    public static final int LLD_CAUSE_DE107 = 6068;
+    //Major Congenital Malformation 1 month to 1 year
+    public static final int LLD_CAUSE_DE108 = 6069;
+    //Major Congenital Malformation 1 year to 5 year
+    public static final int LLD_CAUSE_DE109 = 6070;
+    
+    
+    
+    // Prematurity below 1 day
+    public static final int LLD_CAUSE_DE110 = 6071;
+    //Prematurity 1 day to 1 week
+    public static final int LLD_CAUSE_DE111 = 6072;
+    //Prematurity 1 week to 1 month
+    public static final int LLD_CAUSE_DE112 = 6073;
+    //Prematurity1 month to 1 year
+    public static final int LLD_CAUSE_DE113 = 6074;
+    //Prematurity 1 year to 5 year
+    public static final int LLD_CAUSE_DE114 = 6075;
+    
+    
+    
+    //Hypothermia below 1 day
+    public static final int LLD_CAUSE_DE115 = 6076;
+    //Hypothermia 1 day to 1 week
+    public static final int LLD_CAUSE_DE116 = 6077;
+    //Hypothermia 1 week to 1 month
+    public static final int LLD_CAUSE_DE117 = 6078;
+    //Hypothermia 1 month to 1 year
+    public static final int LLD_CAUSE_DE118 = 6079;
+    //Hypothermia 1 year to 5 year
+    public static final int LLD_CAUSE_DE119 = 6080;
+    
+   
+    //Diptheria below 1 day
+    public static final int LLD_CAUSE_DE120 = 6081;
+    //Diptheria 1 day to 1 week
+    public static final int LLD_CAUSE_DE121 = 6082;
+    //Diptheria 1 week to 1 month
+    public static final int LLD_CAUSE_DE122 = 6083;
+    //Diptheria 1 month to 1 year
+    public static final int LLD_CAUSE_DE123 = 6084;
+    //Diptheria 1 year to 5 year
+    public static final int LLD_CAUSE_DE124 = 6085;
+    
+    
+    //Childhood Tuberculosis below 1 day
+    public static final int LLD_CAUSE_DE125 = 6086;
+    //Childhood Tuberculosis 1 day to 1 week
+    public static final int LLD_CAUSE_DE126 = 6087;
+    //Childhood Tuberculosis 1 week to 1 month
+    public static final int LLD_CAUSE_DE127 = 6088;
+    //Childhood Tuberculosis 1 month to 1 year
+    public static final int LLD_CAUSE_DE128 = 6089;
+    //Childhood Tuberculosis 1 year to 5 year
+    public static final int LLD_CAUSE_DE129 = 6090;
+    
+    
+    //Dysentry below 1 day
+    public static final int LLD_CAUSE_DE130 = 6091;
+    //Dysentry 1 day to 1 week
+    public static final int LLD_CAUSE_DE131 = 6092;
+    //Dysentry 1 week to 1 month
+    public static final int LLD_CAUSE_DE132 = 6093;
+    //Dysentry 1 month to 1 year
+    public static final int LLD_CAUSE_DE133 = 6094;
+    //Dysentry 1 year to 5 year
+    public static final int LLD_CAUSE_DE134 = 6095;
+    
+    
+    //Pertusis below 1 day
+    public static final int LLD_CAUSE_DE135 = 6096;
+    //Pertusis 1 day to 1 week
+    public static final int LLD_CAUSE_DE136 = 6097;
+    //Pertusis 1 week to 1 month
+    public static final int LLD_CAUSE_DE137 = 6098;
+    //Pertusis 1 month to 1 year
+    public static final int LLD_CAUSE_DE138 = 6099;
+    //Pertusis 1 year to 5 year
+    public static final int LLD_CAUSE_DE139 = 6100;
+    
+    
+    //Polio below 1 day
+    public static final int LLD_CAUSE_DE140 = 6101;
+    //Polio 1 day to 1 week
+    public static final int LLD_CAUSE_DE141 = 6102;
+    //Polio 1 week to 1 month
+    public static final int LLD_CAUSE_DE142 = 6103;
+    //Polio 1 month to 1 year
+    public static final int LLD_CAUSE_DE143 = 6104;
+    //Polio 1 year to 5 year
+    public static final int LLD_CAUSE_DE144 = 6105;
+    
+    
+    //Tetanus Neonatorum below 1 day
+    public static final int LLD_CAUSE_DE145 = 6106;
+    //Tetanus Neonatorum 1 day to 1 week
+    public static final int LLD_CAUSE_DE146 = 6107;
+    //Tetanus Neonatorum 1 week to 1 month
+    public static final int LLD_CAUSE_DE147 = 6108;
+    //Tetanus Neonatorum 1 month to 1 year
+    public static final int LLD_CAUSE_DE148 = 6109;
+    //Tetanus Neonatorum 1 year to 5 year
+    public static final int LLD_CAUSE_DE149 = 6110;
+    
+    
+    //Tetanus (Others) below 1 day
+    public static final int LLD_CAUSE_DE150 = 6111;
+    //Tetanus (Others) 1 day to 1 week
+    public static final int LLD_CAUSE_DE151 = 6112;
+    //Tetanus (Others) 1 week to 1 month
+    public static final int LLD_CAUSE_DE152 = 6113;
+    //Tetanus (Others) 1 month to 1 year
+    public static final int LLD_CAUSE_DE153 = 6114;
+    //Tetanus (Others) 1 year to 5 year
+    public static final int LLD_CAUSE_DE154 = 6115;
+    
+    
+    //Acute Flaccide paralysis below 1 day
+    public static final int LLD_CAUSE_DE155 = 6116;
+    //Acute Flaccide paralysis 1 day to 1 week
+    public static final int LLD_CAUSE_DE156 = 6117;
+    //Acute Flaccide paralysis 1 week to 1 month
+    public static final int LLD_CAUSE_DE157 = 6118;
+    //Acute Flaccide paralysis 1 month to 1 year
+    public static final int LLD_CAUSE_DE158 = 6119;
+    //Acute Flaccide paralysis 1 year to 5 year
+    public static final int LLD_CAUSE_DE159 = 6120;
+    
+    
+    //Respiratory Infections (other than TB) below 1 day
+    public static final int LLD_CAUSE_DE160 = 6121;
+    //Respiratory Infections (other than TB) 1 day to 1 week
+    public static final int LLD_CAUSE_DE161 = 6122;
+    //Respiratory Infections (other than TB) 1 week to 1 month
+    public static final int LLD_CAUSE_DE162 = 6123;
+    //Respiratory Infections (other than TB) 1 month to 1 year
+    public static final int LLD_CAUSE_DE163 = 6124;
+    //Respiratory Infections (other than TB) 1 year to 5 year
+    public static final int LLD_CAUSE_DE164 = 6125;
+    
+    
+    
     
     public static final int LLD_OPTIONCOMBO_DEFAULT = 1;
     public static final int LLD_CAUSE_OPTIONCOMBO_MALE = 8;
     public static final int LLD_CAUSE_OPTIONCOMBO_FEMALE = 7;
-       
     public static final String LLD_ASPHYXIA = "ASPHYXIA";
     public static final String LLD_SEPSIS = "SEPSIS";
     public static final String LLD_LOW_BIRTH_WEIGH = "LOWBIRTHWEIGH";   
@@ -331,7 +592,47 @@ public class LLDataSets
     public static final String LLD_OKCD = "OKCD";
     public static final String LLD_OTHERS = "OTHERS";                                          
     public static final String LLD_NOT_KNOWN = "NK";
-       
+    
+    // for haryana application
+    
+    
+    // Respiratory Infections (other than TB)
+    public static final String LLD_RI_OTHER_THAN_TB = "RIOTHERTB";
+    // Fever related
+    public static final String LLD_FR = "FEVERRELATED"; 
+    // Meconium aspiration syndrome
+    public static final String LLD_MAS = "MAS";
+    // Meningitis
+    public static final String LLD_MENINGITIS = "MENINGITIS";
+    // Major Congenital Malformation
+    public static final String LLD_MCM = "MCM";
+    // Prematurity
+    public static final String LLD_PREMATURITY = "PREMATURITY";
+    // Hypothermia
+    public static final String LLD_HYPOTHERMIA = "HYPOTHERMIA";
+    // Diptheria
+    public static final String LLD_DIPTHERIA = "DIPTHERIA";
+    // Childhood Tuberculosis
+    public static final String LLD_CHILD_TUBERCULOSIS = "CHILDTUBERCULOSIS";
+    //Dysentry
+    public static final String LLD_DYSENTRY = "DYSENTRY";
+    // Pertusis
+    public static final String LLD_PERTUSIS = "PERTUSIS";
+    // Polio
+    public static final String LLD_POLIO = "POLIO";
+    // Tetanus Neonatorum
+    public static final String LLD_TETANUS_NEONATORUM = "TETANUSNEONATORUM";
+    // Tetanus (Others)
+    public static final String LLD_TETANUS_OTHERS = "TETANUSOTHERS";
+    //Acute Flaccide paralysis
+    public static final String LLD_AFP = "AFP";
+   
+    
+    
+    
+    
+    
+    
     //-------------------------------------------------------------------
     // Line listing Maternal Death
     //-------------------------------------------------------------------
@@ -361,7 +662,8 @@ public class LLDataSets
     public static final int LLMD_AT_PHC = 535;
     public static final int LLMD_AT_CHC = 536;
     public static final int LLMD_AT_MC = 537;
-    public static final int LLMD_AT_PVTINST = 5726; // This data element should be created for state specific for line listing maternal death delivery at PVT INST
+    public static final int LLMD_AT_PVTINST = 5726; // This data element should be created for state specific for line listing maternal death delivery at PVT INST for Punjab Application
+    
     
     public static final int LLMD_BY_UNTRAINED = 538;
     public static final int LLMD_BY_TRAINED = 539;
@@ -378,5 +680,17 @@ public class LLDataSets
     public static final int LLMD_CAUSE_HFBD = 549;
     public static final int LLMD_CAUSE_HFAD = 550;
     public static final int LLMD_CAUSE_NK = 551;
-    public static final int LLMD_CAUSE_MDNK = 5725;// This dataelement should be created for state specific for linelisting maternal death Other Causes (including cause not known)
+    //public static final int LLMD_CAUSE_MDNK = 5725;// This data element should be created for state specific for line listing maternal death Other Causes (including cause not known) for Punjab Application
+    //public static final int LLMD_CAUSE_MDNK = 5938;// This data element should be created for state specific for line listing maternal death Other Causes (including cause not known) for Orissa Application
+    public static final int LLMD_CAUSE_MDNK = 6839;// This data element should be created for state specific for line listing maternal death Other Causes (including cause not known) for Maharashtra Application
+    // for haryana application
+    // Anaemia as cause of Direct/Associated with other Medical Disease
+    public static final int LLMD_CAUSE_ANAEMIA = 6043;
+    // Severe Anaemia (<7gm)
+    public static final int LLMD_CAUSE_SEVERE_ANAEMIA = 6044; 
+    // Moderate Anaemia (>7gm <11gm)
+    public static final int LLMD_CAUSE_MODERATE_ANAEMIA = 6045;
+
+
+
 }

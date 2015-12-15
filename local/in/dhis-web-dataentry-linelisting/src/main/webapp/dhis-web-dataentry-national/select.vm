@@ -27,7 +27,9 @@ visibility:hidden;
 	<span id="currentOptionCombo">Please Fill All Fields.</span>
     <br>
     #set( $dataset = $selectedStateManager.getSelectedDataSet() )
-    #if ($dataset.name == "Line listing Births" ) $i18n.getString("select_DOB_for_selected_month") #end
+    #if ($dataset.name == "Line listing Births" ) $i18n.getString("select_DOB_for_selected_month") 
+    #elseif ($dataset.name == "Line listing Family Planing" ) $i18n.getString("please_fill_name_of_the_hospital")
+    #end
     
 </div>
 
@@ -35,9 +37,7 @@ visibility:hidden;
 
 
 <div id="actions" style="width:200px text-align:right; display : none;">
-
-<br>
-
+	
 <br><br><br><br><br>
 <input type="button" value="SAVE" onclick="saveLineListingAggData()" #if( $isLineListing.equals("no") ) disabled="disabled" #end>
 </div>

@@ -118,6 +118,9 @@
                 ##if( !$locked ) <img src="../images/calendar_icon.gif" width="16" height="16" id="getvalue[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].value" cursor: pointer;" title="$i18n.getString( "date_selector" )" onmouseover="this.style.background='orange';" onmouseout="this.style.background=''"> #end
 				#if( !$locked ) <script type="text/javascript"> datePicker('value\\[$llDataValue.getDataElement().getId()\\]\\.value\\:value\\[$llDataValue.getRecordNo()\\]\\.value', false); </script> #end	
            </td>
+           
+           
+           
             ##set($calInfo = $calInfo + "Calendar.setup({inputField:'value["+$llDataValue.getDataElement().getId()+"].value:value["+$llDataValue.getRecordNo()+"].value',ifFormat:'$i18n.getString('format.date.label')',button:'getvalue["+$llDataValue.getDataElement().getId()+"].value:value["+$llDataValue.getRecordNo()+"].value'});")
         #elseif($count1 == 1)
             <td align="center"><div id="value[$llDataValue.getDataElement().getId()].value:value[$llDataValue.getRecordNo()].slno" align='center'>$slno</div></td>
