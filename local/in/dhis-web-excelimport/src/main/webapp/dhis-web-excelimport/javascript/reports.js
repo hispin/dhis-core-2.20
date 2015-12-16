@@ -199,3 +199,75 @@ function submitImportForm()
 		document.getElementById( "reportForm" ).submit();
 	}
 }
+
+// get Line Listing Import Sheet
+function getLineListingImportSheet( ouId, reportListFileName )
+{ 
+  var periodTypeList = document.getElementById( "periodTypeId" );
+  var periodType = periodTypeList.options[ periodTypeList.selectedIndex ].value;
+  //var reportListFileName = document.reportForm.reportListFileNameTB.value;
+  var autogenvalue = document.getElementById( "autogen" ).value;
+ // alert("file:" +reportListFileName + ", periodType :" + periodType + ", ouid:" + ouId);
+          
+  if ( periodType != "NA" && ouId != null && ouId != "" )
+  { 
+	  $.post("getLineListingImportSheets.action",
+		{
+			periodType : periodType,
+			ouId : ouId[0],
+			reportListFileName : reportListFileName
+		},
+		function (data)
+		{
+			getLineListingImportSheetsReceived(data);
+		},'xml');
+  }
+
+}
+
+function getLineListingImportSheetsReceived( xmlObject )
+{	
+    var importSheetList = byId( "importSheetList" );
+	var orgUnitName = byId( "ouNameTB" );
+    
+    clearList( importSheetList );
+    
+	if(xmlObject == null)
+	{
+		return;
+	}
+    var reports = xmlObject.getElementsByTagName( "report" );
+    for ( var i = 0; i < reports.length; i++)
+	{
+		var id = reports[ i ].getElementsByTagName( "id" )[0].firstChild.nodeValue;
+		var name = reports[ i ].getElementsByTagName( "name" )[0].firstChild.nodeValue;
+		var model = reports[ i ].getElementsByTagName( "model" )[0].firstChild.nodeValue;
+		var fileName = reports[ i ].getElementsByTagName( "fileName" )[0].firstChild.nodeValue;
+		var checkerFileName = reports[ i ].getElementsByTagName( "checkerFileName" )[0].firstChild.nodeValue;
+		var datasetId = reports[ i ].getElementsByTagName( "datasetid" )[0].firstChild.nodeValue;
+		var ouName = reports[ i ].getElementsByTagName( "ouName" )[0].firstChild.nodeValue;
+	
+		orgUnitName.value = ouName;			
+	
+		var option = document.createElement( "option" );
+		option.value = id;
+		option.text = name;
+		importSheetList.add( option, null );
+	
+		reportModels.put( id, model );
+		reportFileNames.put( id, fileName );
+		checkerFileNames.put( id, checkerFileName );
+		reportDatasets.put( id, datasetId );
+	}
+}
+
+
+
+
+
+
+
+
+
+
+

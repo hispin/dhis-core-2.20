@@ -1,4 +1,4 @@
-package org.hisp.dhis.excelimport.action;
+package org.hisp.dhis.excelimport.linelisting.action;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,8 +22,10 @@ import org.xml.sax.SAXParseException;
 
 import com.opensymphony.xwork2.Action;
 
-public class GetReportsAction
-    implements Action
+/**
+ * @author Mithilesh Kumar Thakur
+ */
+public class GetLineListingImportSheetsAction implements Action
 {
 
     // -------------------------------------------------------------------------
@@ -90,18 +92,11 @@ public class GetReportsAction
         return ouName;
     }
 
-    private String autogenrep;
-
-    public void setAutogenrep( String autogenrep )
-    {
-        this.autogenrep = autogenrep;
-    }
-
    // private String orgUnitLevel;
 
     private String raFolderName;
     
-    private OrganisationUnit orgUnit;
+    OrganisationUnit orgUnit;
 
     // -------------------------------------------------------------------------
     // Action implementation
@@ -118,32 +113,37 @@ public class GetReportsAction
             {
                 //orgUnit = organisationUnitService.getOrganisationUnit( Integer.parseInt( ouId ) );
                 orgUnit = organisationUnitService.getOrganisationUnit( ouId );// use uid
-                //System.out.println( "Org UNIT Name : " + orgUnit.getName() );
-                
+
                 //int ouLevel = organisationUnitService.getLevelOfOrganisationUnit( orgUnit );
+                
+                /*
                 int ouLevel = organisationUnitService.getLevelOfOrganisationUnit( orgUnit.getId() );
 
                 if ( autogenrep.equalsIgnoreCase( "1" ) )
-                {
                     ouLevel++;
-                }
-                    
+                */
+                
                 //orgUnitLevel = "" + ouLevel;
                 ouName = orgUnit.getShortName();
+                
                 System.out.println( ouName );
-                getSelectedReportList( reportListFileName );
+                
+                getSelectedSheetList( reportListFileName );
+                
                 //System.out.println("\n\n Report File Name:" + reportListFileName );
             }
             catch ( Exception e )
             {
-                //System.out.println( "Exception while getting Reports List : " + e.getMessage() );
+                System.out.println( "Exception while getting Reports List : " + e.getMessage() );
             }
         }
 
         return SUCCESS;
     }
 
-    public void getSelectedReportList( String reportListFileName )
+    
+    // Supported Methods
+    public void getSelectedSheetList( String reportListFileName )
     {
         String fileName = reportListFileName;
 
@@ -180,7 +180,7 @@ public class GetReportsAction
         String dataSetId = "";
         String reportModel = "";
         String reportFileName = "";
-        // String checkerFileName = "";
+        //String checkerFileName = "";
         int count = 0;
 
         try
@@ -194,7 +194,7 @@ public class GetReportsAction
                 return;
             }
 
-            NodeList listOfReports = doc.getElementsByTagName( "excelImportReport" );
+            NodeList listOfReports = doc.getElementsByTagName( "lineListingExcelImportSheet" );
             int totalReports = listOfReports.getLength();
             for ( int s = 0; s < totalReports; s++ )
             {
@@ -223,8 +223,7 @@ public class GetReportsAction
                     Element reportFileNameElement = (Element) reportFileNameList.item( 0 );
                     NodeList textreportFileNameList = reportFileNameElement.getChildNodes();
                     reportFileName = ((Node) textreportFileNameList.item( 0 )).getNodeValue().trim();
-
-
+                  
                     NodeList reportDatasetList = reportElement.getElementsByTagName( "dataset" );
                     Element reportDatasetElement = (Element) reportDatasetList.item( 0 );
                     NodeList textreportDatasetList = reportDatasetElement.getChildNodes();
@@ -237,6 +236,7 @@ public class GetReportsAction
                         Report reportObj = new Report( reportId, reportName, reportType, reportModel, reportFileName, dataSetId );
                         reportList.add( count, reportObj );
                         count++;
+                        
                         System.out.println( reportName + " : " + reportId );
                     }
                 }

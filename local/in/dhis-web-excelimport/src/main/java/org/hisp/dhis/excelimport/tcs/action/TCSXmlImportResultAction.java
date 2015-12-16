@@ -20,7 +20,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
-import org.hisp.dhis.system.util.StreamUtils;
+import org.hisp.dhis.commons.util.StreamUtils;
 import org.hisp.dhis.user.CurrentUserService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -80,14 +80,14 @@ public class TCSXmlImportResultAction implements Action
     {
         this.currentUserService = currentUserService;
     }
- /*   
+    /*
     private DataSetLockService dataSetLockService;
     
     public void setDataSetLockService( DataSetLockService dataSetLockService )
     {
         this.dataSetLockService = dataSetLockService;
     }
-*/
+    */
     private DataSetService dataSetService;
 
     public void setDataSetService( DataSetService dataSetService )
@@ -161,7 +161,7 @@ public class TCSXmlImportResultAction implements Action
         {        
             outputFile = new File( outputPath );
 
-            StreamUtils.write( upload, outputFile );
+            //StreamUtils.write( upload, outputFile );
 
             if( importTCSData() !=0 )
             {

@@ -118,6 +118,31 @@ public class ReportService
     // Services
     // -------------------------------------------------------------------------
 
+    // get Max Record No From LLDataValue
+    public Integer getMaxRecordNoFromLLDataValue()
+    {
+        Integer maxRecordNo = null;
+        
+        try
+        {
+            String query = "SELECT MAX( recordno ) FROM lldatavalue ";
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+            
+            if ( rs.next() )
+            {
+                maxRecordNo = rs.getInt( 1 );
+            }
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        
+        return maxRecordNo;
+    }
+   
+    
     public List<Period> getMonthlyPeriods( Date start, Date end )
     {
         List<Period> periodList = new ArrayList<Period>( periodService.getPeriodsBetweenDates( start, end ) );
@@ -370,9 +395,9 @@ public class ReportService
                         tempPeriod = (Period) periodList.get( 0 );
                     }
 
-                    DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod,
-                        optionCombo );
-
+                    //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
+                    
                     if ( dataValue != null )
                     {
                         // Works for both text and boolean data types
@@ -515,8 +540,8 @@ public class ReportService
                         double aggregatedValue = 0.0;
                         for ( Period tempPeriod : periodList )
                         {
-                            DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement,
-                                tempPeriod, optionCombo );
+                            //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                            DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
 
                             if ( dataValue != null )
                             {
@@ -550,8 +575,8 @@ public class ReportService
                         tempPeriod = (Period) periodList.get( 0 );
                     }
 
-                    DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod,
-                        optionCombo );
+                    //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit,  optionCombo );
 
                     if ( dataValue != null )
                     {
@@ -693,8 +718,8 @@ public class ReportService
                         tempPeriod = (Period) periodList.get( 0 );
                     }
 
-                    DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod,
-                        optionCombo );
+                    //DataValue dataValue = dataValueService.getDataValue( organisationUnit, dataElement, tempPeriod, optionCombo );
+                    DataValue dataValue = dataValueService.getDataValue( dataElement, tempPeriod, organisationUnit, optionCombo );
 
                     if ( dataValue != null )
                     {

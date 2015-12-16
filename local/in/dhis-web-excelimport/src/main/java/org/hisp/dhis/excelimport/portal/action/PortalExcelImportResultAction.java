@@ -1,6 +1,6 @@
 package org.hisp.dhis.excelimport.portal.action;
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -217,15 +217,15 @@ public class PortalExcelImportResultAction implements Action
     }
 
     private String raFolderName;
-    
+
     private boolean lockStatus;
     
     public boolean isLockStatus()
     {
         return lockStatus;
     }
-	
-	String selectedPeriodicity;
+    
+    String selectedPeriodicity;
     
     public void setSelectedPeriodicity( String selectedPeriodicity )
     {
@@ -438,7 +438,7 @@ public class PortalExcelImportResultAction implements Action
         
         String selectedMonth = "";
         
-		String selectedFinancialYear = "";
+        String selectedFinancialYear = "";
         String selectedFormat = "";
         String selectedParentName = "";
         
@@ -479,12 +479,12 @@ public class PortalExcelImportResultAction implements Action
             {
                 selectedParentName = cellContent;
             }
-			/*
+            /*
             else if( header.getExpression().equalsIgnoreCase( ExcelImport_Header.HEADER_PERIODICITY ) )
             {
                 selectedPeriodicity = cellContent;
             }
-			*/
+            */
         }
         
         String selStartDate = "";
@@ -593,10 +593,11 @@ public class PortalExcelImportResultAction implements Action
                     {
                         System.out.println("--------Importing started for :"+portalOrgUnit.getName() + "-------------" );
                         
-						lockStatus = dataSetService.isLocked( dataSet, selectedPeriod, portalOrgUnit, null );
+                        //lockStatus = dataSetService.isLocked( dataSet, selectedPeriod, portalOrgUnit, null );
+                        lockStatus = dataSetService.isLocked( dataSet, selectedPeriod, portalOrgUnit, null, null );
                         //DataSetLock dataSetLock = dataSetLockService.getDataSetLockByDataSetPeriodAndSource( dataSet, selectedPeriod, portalOrgUnit );
-                        //if( dataSetLock != null )
-                        if( lockStatus )
+                       // if( dataSetLock != null )
+                        if( lockStatus )    
                         {
                             message += "<br><font color=red><strong>Unable to Import : Corresponding Dataset ( "+dataSet.getName()+" ) for " + portalOrgUnit.getName() + " and for period : " + periodFormat.format( selectedPeriod.getStartDate() ) + " is locked.</strong></font>";
                             System.out.println("Unable to Import : Corresponding Dataset ( "+dataSet.getName()+" ) for " + portalOrgUnit.getName() + " and for period : " + periodFormat.format( selectedPeriod.getStartDate() ) + " is locked.");
@@ -612,7 +613,9 @@ public class PortalExcelImportResultAction implements Action
                         for( ExcelImport_DeCode deCode : deCodeList )
                         {
                             String deCodeExpression = deCode.getExpression();
-			    System.out.println( deCodeExpression );
+                            
+                            System.out.println( deCodeExpression );
+                            
                             if( deCodeExpression != null && !deCodeExpression.trim().equals( "" ) )
                             {
                                 Integer deId = Integer.parseInt( deCodeExpression.split( "\\." )[0] );
@@ -942,7 +945,7 @@ public class PortalExcelImportResultAction implements Action
                 return orgUnitId;
             }
         }
-			
+        
         return null;
     }
 
@@ -1056,6 +1059,7 @@ public class PortalExcelImportResultAction implements Action
             }
         }
 
+        System.out.println( "Start Date is : " + startDate );
         Period period = periodType.createPeriod( dateFormat.parse( startDate ) );
         period = reloadPeriodForceAdd( period );
         periodService.addPeriod( period );

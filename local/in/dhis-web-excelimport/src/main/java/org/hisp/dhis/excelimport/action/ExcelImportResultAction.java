@@ -135,14 +135,14 @@ public class ExcelImportResultAction
     {
         this.currentUserService = currentUserService;
     }
-    /*
+	/*
     private DataSetLockService dataSetLockService;
     
     public void setDataSetLockService( DataSetLockService dataSetLockService )
     {
         this.dataSetLockService = dataSetLockService;
     }
-    */
+	*/
     private SessionFactory sessionFactory;
 
     public void setSessionFactory( SessionFactory sessionFactory )
@@ -360,14 +360,24 @@ public class ExcelImportResultAction
     {
         this.orgUnitListCB = orgUnitListCB;
     }
-
+    
+    /*
     private int ouIDTB;
 
     public void setOuIDTB( int ouIDTB )
     {
         this.ouIDTB = ouIDTB;
     }
-
+    */
+    
+    private String ouIDTB;
+    
+    public void setOuIDTB( String ouIDTB )
+    {
+        this.ouIDTB = ouIDTB;
+    }
+    
+    
     private File file;
 
     public void setUpload( File file )
@@ -508,8 +518,7 @@ public class ExcelImportResultAction
     {
         return lockStatus;
     }
-    
-    
+	
     // -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
@@ -579,12 +588,11 @@ public class ExcelImportResultAction
             return SUCCESS;
         }
         
-        //Workbook excelImportFile = Workbook.getWorkbook( file );
-        
         Workbook excelImportFile = Workbook.getWorkbook( new File( excelFilePath ) );
-        
+       
+        /*
         Workbook excelTemplateFile = Workbook.getWorkbook( new File( excelTemplatePath ) );
-
+        
         excelValidator = validateReport( deCodesImportXMLFileName, excelImportFile, excelTemplateFile );
 
         if ( excelValidator == false )
@@ -593,7 +601,8 @@ public class ExcelImportResultAction
 
             return SUCCESS;
         }
-
+        */
+        
         if ( reportModelTB.equalsIgnoreCase( "STATIC" ) )
         {
             orgUnitList = new ArrayList<OrganisationUnit>();
@@ -610,9 +619,8 @@ public class ExcelImportResultAction
         eDate = format.parseDate( String.valueOf( selectedPeriod.getEndDate() ) );
 
         //DataSetLock dataSetLock = dataSetLockService.getDataSetLockByDataSetPeriodAndSource( dataSet, selectedPeriod, orgUnit );
-        
-        lockStatus = dataSetService.isLocked( dataSet, selectedPeriod, orgUnit, null );
-        
+        //lockStatus = dataSetService.isLocked( dataSet, selectedPeriod, orgUnit, null );
+        lockStatus = dataSetService.isLocked( dataSet, selectedPeriod, orgUnit, null, null );
         //if( dataSetLock != null )
         if( lockStatus )
         {
@@ -645,7 +653,7 @@ public class ExcelImportResultAction
 
                 String deCodeString = (String) it1.next();
 
-                String deType = (String) deCodeType.get( count1 );
+		String deType = (String) deCodeType.get( count1 );
                 String sType = (String) serviceType.get( count1 );
                 int tempRowNo = rowList.get( count1 );
                 int tempColNo = colList.get( count1 );
@@ -664,8 +672,6 @@ public class ExcelImportResultAction
 
                 String value = "";
 
-                System.out.println( deCodeString );
-                
                 deAndComboMap = getDeAndCombo( deCodeString );
 
                 for ( DataElement de : deAndComboMap.keySet() )
@@ -681,16 +687,20 @@ public class ExcelImportResultAction
 
                 dataValue.setPeriod( selectedPeriod );
                 dataValue.setSource( currentOrgUnit );
-                dataValue.setOptionCombo( currentOptionCombo );
-                dataValue.setTimestamp( new Date() );
+                
+                //dataValue.setOptionCombo( currentOptionCombo );
+                dataValue.setCategoryOptionCombo( currentOptionCombo );
+                //dataValue.setTimestamp( new Date() );
+                dataValue.setLastUpdated(  new Date() );
+                
                 dataValue.setStoredBy( storedBy );
 
                 Sheet sheet = excelImportFile.getSheet( sheetNo );
 
                 String cellContent = sheet.getCell( tempColNo, tempRowNo ).getContents();
-                
-                System.out.println( tempColNo + " : " + tempRowNo + " : " + cellContent );
-                
+
+		System.out.println( sheetNo + " : " + tempColNo + " : " + tempRowNo + " : " + cellContent );
+		
                 value = cellContent;
 
                 if ( cellContent.equalsIgnoreCase( "" ) || cellContent == null || cellContent.equalsIgnoreCase( " " ) )
@@ -704,8 +714,8 @@ public class ExcelImportResultAction
 
                 DataValue oldValue = new DataValue();
 
-                oldValue = dataValueService.getDataValue( currentOrgUnit, currentDataElement, selectedPeriod,
-                    currentOptionCombo );
+                //oldValue = dataValueService.getDataValue( currentOrgUnit, currentDataElement, selectedPeriod, currentOptionCombo );
+                oldValue = dataValueService.getDataValue( currentDataElement, selectedPeriod, currentOrgUnit, currentOptionCombo );
 
                 if ( oldValue == null )
                 {
@@ -723,7 +733,9 @@ public class ExcelImportResultAction
                     try
                     {
                         oldValue.setValue( value );
-                        oldValue.setTimestamp( new Date() );
+                        
+                        //oldValue.setTimestamp( new Date() );
+                        oldValue.setLastUpdated( new Date() );
                         oldValue.setStoredBy( storedBy );
 
                         dataValueService.updateDataValue( oldValue );
@@ -748,21 +760,21 @@ public class ExcelImportResultAction
         excelImportFile.close();
 
         statementManager.destroy();
-        
-        message = "The report has been imported successfully";
 
-        try
-        {
-        }
-        catch( Exception e )
-        {
-        }
-        finally
-        {
-            if( inputStream != null )
-            inputStream.close();             
-        }
+        message = "Data has been imported successfully";
 
+		try
+		{
+		}
+		catch( Exception e )
+		{
+		}
+		finally
+		{
+			if( inputStream != null )
+				inputStream.close();		 
+		}
+		
         return SUCCESS;
     }
 
@@ -1256,9 +1268,9 @@ public class ExcelImportResultAction
         finally
         {
             if( in != null ) 
-                in.close();
-            if( out != null )                       
-                out.close();
+				in.close();
+			if( out != null )			
+				out.close();
         }
 
         return 1;
