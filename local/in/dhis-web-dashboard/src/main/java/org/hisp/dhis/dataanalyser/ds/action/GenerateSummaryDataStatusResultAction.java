@@ -1,7 +1,7 @@
 package org.hisp.dhis.dataanalyser.ds.action;
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.constant.Constant;
 import org.hisp.dhis.constant.ConstantService;
-import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.dataanalyser.util.DashBoardService;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataset.DataSet;
@@ -27,6 +27,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
+import org.hisp.dhis.system.database.DatabaseInfo;
+import org.hisp.dhis.system.database.DatabaseInfoProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -92,7 +95,10 @@ public class GenerateSummaryDataStatusResultAction
         this.constantService = constantService;
     }
     
-    private List<Constant> constants;
+    @Autowired
+    private DatabaseInfoProvider databaseInfoProvider;
+    
+    //private List<Constant> constants;
 
     // ---------------------------------------------------------------
     // Output Parameters
@@ -305,11 +311,12 @@ public class GenerateSummaryDataStatusResultAction
 
         // Intialization
         
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
+        
         Constant constant = constantService.getConstantByName( SUMMARYSTATUSVARIABLE );
         constName =  constant.getName();
         constValue = constant.getValue();
-        
-        
+   
         /*
         constants = new ArrayList<Constant>( constantService.getAllConstants());
         
@@ -518,18 +525,37 @@ public class GenerateSummaryDataStatusResultAction
                         orgUnitId = ""+ cUnit.getId();
                         orgUnitCount = 0;
                         getOrgUnitInfo( o, dso );
-
-                        if ( includeZeros == null )
+                        
+                        if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
                         {
-                            query2 = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                                + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo
-                                + ") and value <> 0";
+                            if ( includeZeros == null )
+                            {
+                                query2 = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                    + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo
+                                    + ") and CAST(value AS NUMERIC) != 0 ";
+                            }
+                            else
+                            {
+                                query2 = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                    + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo + ")";
+                            }
                         }
-                        else
+                        
+                        else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
                         {
-                            query2 = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                                + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo + ")";
+                            if ( includeZeros == null )
+                            {
+                                query2 = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                    + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo
+                                    + ") and and value != 0 ";
+                            }
+                            else
+                            {
+                                query2 = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                    + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo + ")";
+                            }
                         }
+                        
 
                         Double tempDataStatusCount = tempOuMapResult.get( orgUnitId+":"+periodInfo );
                         if( tempDataStatusCount == null )
@@ -583,17 +609,34 @@ public class GenerateSummaryDataStatusResultAction
 
                 orgUnitInfo = "" + o.getId();
                 
+                if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
+                {
+                    if ( includeZeros == null )
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ") and CAST(value AS NUMERIC) != 0 ";
+                    }
+                    else
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                    }
+                }
                 
-                if ( includeZeros == null )
+                else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
                 {
-                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ") and value <> 0";
+                    if ( includeZeros == null )
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ") and value != 0 ";
+                    }
+                    else
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                    }
                 }
-                else
-                {
-                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
-                }
+                
 
                 SqlRowSet sqlResultSet = jdbcTemplate.queryForRowSet( query );
 

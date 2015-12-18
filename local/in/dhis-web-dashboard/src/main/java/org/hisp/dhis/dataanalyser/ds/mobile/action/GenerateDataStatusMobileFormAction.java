@@ -121,10 +121,13 @@ implements Action
                 
                 // Remove datasets which are nor mobile datasets
                 //else if ( d.getMobile() == null || !d.getMobile())
-                else if ( !d.isMobile() )    
+                /*
+                else if ( !d.isLinelisting() )
                 {
                    dataSetListIterator.remove();
                 }
+                */
+                
             }
         }
        

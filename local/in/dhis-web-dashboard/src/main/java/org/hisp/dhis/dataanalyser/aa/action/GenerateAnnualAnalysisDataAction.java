@@ -352,9 +352,20 @@ public class GenerateAnnualAnalysisDataAction
         {
             selectedDataElement = new DataElement();
             selectedDataElement = dataElementService.getDataElement(availableDataElements);
-            if (selectedDataElement.getAlternativeName() != null) 
+			             /**
+				* TODO
+				* HACKED JUST TO RUN WITH 2.11	
+				*/
+            if (selectedDataElement.getName() != null) 
+            //if (selectedDataElement.getAlternativeName() != null) 
             {
-                chartTitle += "\n DataElement : " + selectedDataElement.getAlternativeName();
+			             /**
+				* TODO
+				* HACKED JUST TO RUN WITH 2.11	
+				*/
+
+                //chartTitle += "\n DataElement : " + selectedDataElement.getAlternativeName();
+				chartTitle += "\n DataElement : " ;
             } 
             else {
                 chartTitle += "\n DataElement : " + selectedDataElement.getName();

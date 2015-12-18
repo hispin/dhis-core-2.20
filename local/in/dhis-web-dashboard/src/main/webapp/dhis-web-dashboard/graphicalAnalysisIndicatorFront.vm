@@ -1,3 +1,23 @@
+<style>
+    #overlay {
+    z-index:9998;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:#000;
+    opacity:0.45;
+    -moz-opacity:0.45;
+    filter:alpha(opacity=45);
+    visibility:hidden;   
+    }
+    #overlayImg{ width: 50px; height: 50px; z-index: 9999; position: absolute; left:50%}
+</style>
+<div id="overlay">
+    <div id="overlayImg"><img  width="50" height="50" src="images/ajax-loader.gif" style="margin:auto;position:fixed;top: 50%;left: 50%;"/></div>
+</div>
+
 <script>
 	
 	// Global Variables
@@ -6,6 +26,7 @@
 	var selFacility = "";
 	var dailyPeriodTypeName = '$dailyPeriodTypeName';
 	var weeklyPeriodTypeName = '$weeklyPeriodTypeName';
+	var forteenPeriodTypeName = '$forteenPeriodTypeName';
 	var monthlyPeriodTypeName = '$monthlyPeriodTypeName';
 	var quarterlyPeriodTypeName = '$quarterlyPeriodTypeName';
 	var sixmonthPeriodTypeName = '$sixMonthPeriodTypeName';
@@ -86,7 +107,7 @@
 	<table style=" border-collapse: collapse; margin-top: 0;" cellpadding="0" cellspacing="0" border=0>
 	<tr>
 		<td class="NormalB">$i18n.getString( "ga_filter_by_indicatorgroup" )<br>
-			<select id="indicatorGroupId" name="indicatorGroupId" style="width:325px" onChange="getIndicators()" >
+			<select id="indicatorGroupId" name="indicatorGroupId" style="width:450px" onChange="getIndicators()" >
 				<option value="$ALL">[ Select IndicatorGroup / All ]</option>
 				#foreach ( $group in $indicatorGroups )
 				<option value="$group.id" title="$group.name">$group.name</option>
@@ -102,7 +123,7 @@
 		<td class="NormalB">&nbsp;</td>
     </tr>    
     <tr>
-		<td class="NormalB">$i18n.getString( "filter" ):&nbsp;<input type="text" id="availableIndicatorsFilter" onkeyup="filterAvailableIndicators()" style="min-width:24em"></td>
+		<td class="NormalB">$i18n.getString( "filter" ):&nbsp;<input type="text" id="availableIndicatorsFilter" onkeyup="filterAvailableIndicators()" style="width:400px"></td>
 		<td class="NormalB">&nbsp;</td>
 		<td class="NormalB">&nbsp;</td>
     </tr>
@@ -113,7 +134,7 @@
     </tr>        
     <tr>
 		<td class="NormalB">$i18n.getString( "ga_available_indicatorList" )<br>
-			<select multiple size="7" id="availableIndicators" name="availableIndicators"  style="width:325px; height:100px" ondblclick="moveSelectedById( 'availableIndicators', 'selectedIndicators' )">
+			<select multiple size="7" id="availableIndicators" name="availableIndicators"  style="width:450px; height:100px" ondblclick="moveSelectedById( 'availableIndicators', 'selectedIndicators' )">
 				#foreach ( $element in $indicators )
 					<option value="$element.id" title="$element.name">$element.name</option>
 				#end
@@ -126,7 +147,7 @@
 			&nbsp;&nbsp;<input type="button" value="&lt;&lt;" style="width:40px" onClick="moveAllById( 'selectedIndicators', 'availableIndicators' )">&nbsp;&nbsp;
 		</td>
 		<td class="NormalB"> $i18n.getString( "ga_selected_IndicatorList" )<br />
-			<select multiple size="7" id="selectedIndicators" name="selectedIndicators"  style="width:350px; height:100px" ondblclick="moveSelectedById( 'selectedIndicators', 'availableIndicators' )">
+			<select multiple size="7" id="selectedIndicators" name="selectedIndicators"  style="width:450px; height:100px" ondblclick="moveSelectedById( 'selectedIndicators', 'availableIndicators' )">
 			</select>
 		</td>
     </tr>
@@ -144,7 +165,7 @@
             <table>
                 <tr>
                     <td class="NormalB"> $i18n.getString( "ga_viewby" )<br>
-                        <select id="categoryLB" name="categoryLB" onChange="categoryChangeFunction1(event)" disabled="true" style="width: 150px;">
+                        <select id="categoryLB" name="categoryLB" onChange="categoryChangeFunction1(event)" disabled="true" style="width: 200px;">
                             <option value="period">Period Wise</option>
                             <option value="children">Children</option>
                             <option value="random">Selected</option>    
@@ -152,7 +173,7 @@
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td align="left" class="NormalB"> $i18n.getString( "periodType" )<br>
-                        <select id="periodTypeLB" name="periodTypeLB" onchange="getPeriods()" style="width: 175px;" disabled="true">                                
+                        <select id="periodTypeLB" name="periodTypeLB" onchange="getPeriods()" style="width: 225px;" disabled="true">                                
                         #foreach ( $periodType in $periodTypes )
                             <option value="$periodType.name" #if($periodType.name==$monthlyPeriodTypeName) selected #end>$periodType.name</option>                              
                         #end
@@ -167,11 +188,11 @@
             <table>
                 <tr>
                     <td class="NormalB">$i18n.getString( "ga_orgunit" )<br>
-                        <select name="orgUnitListCB" id="orgUnitListCB" multiple size="7" style="width:150px;height:100px"  ondblclick="remOUFunction()"> >
+                        <select name="orgUnitListCB" id="orgUnitListCB" multiple size="7" style="width:200px;height:100px"  ondblclick="remOUFunction()"> >
                         </select>                       
                     </td>
                     <td class="NormalB"><input type="checkbox" id="ougGroupSetCB" name="ougGroupSetCB" onChange="getOrgUnitGroupsDataElements()"  disabled="true">$i18n.getString( "ga_orgUnitGroups" )<br>
-                        <select name="orgUnitGroupList" id="orgUnitGroupList" multiple size="7"  onChange="selectSingleOptionOrgUnitGroup()"  style="width:150px;height:100px" disabled="true">
+                        <select name="orgUnitGroupList" id="orgUnitGroupList" multiple size="7"  onChange="selectSingleOptionOrgUnitGroup()"  style="width:200px;height:100px" disabled="true">
                         </select>
                     </td>
                 </tr>
@@ -182,7 +203,7 @@
             <table>
                 <tr>
                     <td class="NormalB">$i18n.getString( "year" )<br>
-                        <select id="yearLB" name="yearLB" onchange="getWeeklyPeriod()" size="7" multiple style="width:150px;height:100px" disabled="true">                                                                                
+                        <select id="yearLB" name="yearLB" onchange="getWeeklyPeriod()" onblur="getTempForteenPeriod()" size="7" multiple style="width:200px;height:100px" disabled="true">                                                                                
                         #foreach($periodName in $periodNameList)
                         <option value="$periodName">$periodName</option>                                
                         #end
@@ -190,7 +211,7 @@
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td class="NormalB">$i18n.getString( "period" )<br>
-                        <select id="periodLB" name="periodLB" size="7" multiple style="width:175px;height:100px" disabled="true">                              
+                        <select id="periodLB" name="periodLB" size="7" multiple style="width:225px;height:100px" disabled="true">                              
                         </select>
                     </td>
                 </tr>
@@ -203,9 +224,9 @@
         <td class="NormalB" align="center">
             <table>
                 <tr>
-					<td><input type="button" name="ViewChart" value="$i18n.getString( 'ga_viewchart' )" style="width:150px; height: 25; font-family:Arial; font-weight:bold; color:#000000" onClick="javascript:selButtonFunction('ViewChart')"></td>
+					<td><input type="button" name="ViewChart" value="$i18n.getString( 'ga_viewchart' )" style="width:200px; height: 25; font-family:Arial; font-weight:bold; color:#000000" onClick="javascript:selButtonFunction('ViewChart')"></td>
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-					<td align="right"><input type="button" name="ViewSummary" value="$i18n.getString( 'ga_viewsummary' )" style="width:175px; height: 25; font-family:Arial; font-weight:bold; color:#000000" onClick="javascript:selButtonFunction('ViewSummary')" /></td>
+					<td align="right"><input type="button" name="ViewSummary" value="$i18n.getString( 'ga_viewsummary' )" style="width:225px; height: 25; font-family:Arial; font-weight:bold; color:#000000" onClick="javascript:selButtonFunction('ViewSummary')" /></td>
                     <input type="hidden" name="selectedButton" id="selectedButton">
                     <input type="hidden" name="validation" id="validation" value="indicator">
                 </tr>
@@ -214,7 +235,7 @@
     </tr>               
   </table>
 </form>
-<div id="contentDiv"></div>
+<!--<div id="contentDiv"></div>-->
 <script>
 	getPeriods();
 </script>

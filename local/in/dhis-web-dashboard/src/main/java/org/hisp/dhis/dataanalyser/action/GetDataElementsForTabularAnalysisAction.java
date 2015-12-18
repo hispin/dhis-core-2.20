@@ -20,7 +20,7 @@ import com.opensymphony.xwork2.Action;
 public class GetDataElementsForTabularAnalysisAction implements Action
 {
 
-    private final static int ALL = 0;
+    //private final static int ALL = 0;
 
     // -------------------------------------------------------------------------
     // Dependencies
@@ -127,34 +127,42 @@ public class GetDataElementsForTabularAnalysisAction implements Action
         optionComboIds = new ArrayList<String>();
         optionComboNames = new ArrayList<String>();
 
-        if ( id == null || id == ALL )
+        if ( id == null || id == 0 )
         {
-            System.out.println("The id is null");
-            dataElements = new ArrayList<DataElement>( dataElementService.getAllDataElements() );
+            System.out.println("Inside ID Null or 0");
+            //dataElements = new ArrayList<DataElement>( dataElementService.getAllActiveDataElements() );
+            dataElements = new ArrayList<DataElement>( dataElementService.getAggregateableDataElements() );
             System.out.println( " DataElements size = "+ dataElements.size() );
         } 
         else
         {
+            System.out.println(" 1 Inside De Id is : " + id );
+            
             if ( chkValue.equals( "true" ) )
             {
+                System.out.println(" 2 Inside De Id is : " + id );
+                
                 DataElementGroup dataElementGroup = dataElementService.getDataElementGroup( id );
                 if ( dataElementGroup != null )
                 {
                     dataElements = new ArrayList<DataElement>( dataElementGroup.getMembers() );
-                    //System.out.println( "dataElementGroup id = " + id + " dataElements size = " + dataElements.size() );
+                    System.out.println( "dataElementGroup id = " + id + " dataElements size = " + dataElements.size() );
                 }
                 else
                 {
                     dataElements = new ArrayList<DataElement>();
                 }
             }
+            
             if ( chkValue.equals( "false" ) )
             {
+                System.out.println(" Inside Section Id is : " + id );
+                
                 Section section = sectionService.getSection( id );
                 if ( section != null )
                 {
                     dataElements = new ArrayList<DataElement>( section.getDataElements() );
-                    //System.out.println( "section id = " + id + " dataElements size = " + dataElements.size() );
+                    System.out.println( "section id = " + id + " dataElements size = " + dataElements.size() );
                 }
                 else
                 {
@@ -167,11 +175,37 @@ public class GetDataElementsForTabularAnalysisAction implements Action
         while ( alldeIterator.hasNext() )
         {
             DataElement de1 = alldeIterator.next();
+            // if ( de1.getType().equals( DataElement.VALUE_TYPE_BOOL ) )
+            /*
             if ( !de1.getType().equals( DataElement.VALUE_TYPE_INT ) ||!de1.getDomainType().equals( DataElement.DOMAIN_TYPE_AGGREGATE ) )
-           // if ( de1.getType().equals( DataElement.VALUE_TYPE_BOOL ) )
+           
             {
                 alldeIterator.remove();
             }
+            
+            if ( !de1.getType().equals( DataElement.VALUE_TYPE_INT ) ||!de1.getDomainType().equals( "aggregate" ) )
+                
+            {
+                alldeIterator.remove();
+            }
+            */
+            
+            /*
+            if ( !de1.getType().equals( DataElement.VALUE_TYPE_INT )
+                || !de1.getDomainTypeNullSafe().equalsIgnoreCase( "aggregate" ) )
+            {
+
+                alldeIterator.remove();
+            }
+            */
+            
+            if( ( de1.getPublicAccess() != null && de1.getPublicAccess().equals( "--------" ) ) || !de1.getType().equals( DataElement.VALUE_TYPE_INT ) )
+            {
+                alldeIterator.remove();
+            }
+            
+            
+            
         }
         
         Collections.sort( dataElements, dataElementComparator );

@@ -89,7 +89,8 @@ public class GetDataElementGroupAction implements Action
         {
             sections = new ArrayList<Section>();
             sections = new ArrayList<Section>( sectionService.getAllSections() );
-            Collections.sort( sections, new SectionOrderComparator() );
+            //Collections.sort( sections, new SectionOrderComparator() );
+            Collections.sort( sections, new IdentifiableObjectNameComparator() );
         }
         
         

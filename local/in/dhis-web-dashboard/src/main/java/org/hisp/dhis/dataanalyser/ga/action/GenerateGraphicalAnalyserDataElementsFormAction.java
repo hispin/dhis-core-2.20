@@ -235,7 +235,12 @@ public class GenerateGraphicalAnalyserDataElementsFormAction implements Action
         return financialAprilPeriodType;
     }
 
+    private String forteenPeriodTypeName;
     
+    public String getForteenPeriodTypeName()
+    {
+        return forteenPeriodTypeName;
+    }
     // -------------------------------------------------------------------------
     // Action Implementation
     // -------------------------------------------------------------------------
@@ -247,23 +252,38 @@ public class GenerateGraphicalAnalyserDataElementsFormAction implements Action
         sections = new ArrayList<Section>();
         sections = new ArrayList<Section>( sectionService.getAllSections() );
         Collections.sort( sections, new SectionOrderComparator() );
-        
-        
-        
-        
-        
+       
         /* DataElements and Groups */
-        dataElements = new ArrayList<DataElement>( dataElementService.getAllDataElements() );
+        //dataElements = new ArrayList<DataElement>( dataElementService.getAllActiveDataElements() );
+        
+        dataElements = new ArrayList<DataElement>( dataElementService.getAggregateableDataElements() );
         
         // take only those dataElement which are VALUE_TYPE_INT and DOMAIN_TYPE_AGGREGATE
         Iterator<DataElement> alldeIterator = dataElements.iterator();
+        
         while ( alldeIterator.hasNext() )
         {
-            DataElement de1 = alldeIterator.next();
+            DataElement dataElement = alldeIterator.next();
+            
+            if( ( dataElement.getPublicAccess() != null && dataElement.getPublicAccess().equals( "--------" ) ) || !dataElement.getType().equals( DataElement.VALUE_TYPE_INT ) )
+            {
+                alldeIterator.remove();
+            }
+            
+            /*
             if ( !de1.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) || !de1.getDomainType().equalsIgnoreCase( DataElement.DOMAIN_TYPE_AGGREGATE ) )
             {
                 alldeIterator.remove();
             }
+            */
+            
+            /*
+            if ( !de1.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) || !de1.getDomainType().equals( "aggregate" ) )
+            {
+                alldeIterator.remove();
+            }
+            */
+            
         }
         
         
@@ -289,6 +309,9 @@ public class GenerateGraphicalAnalyserDataElementsFormAction implements Action
         
         dailyPeriodTypeName = DailyPeriodType.NAME;
         weeklyPeriodTypeName = WeeklyPeriodType.NAME;
+        
+        //forteenPeriodTypeName = ForteenPeriodType.NAME;
+        
         monthlyPeriodTypeName = MonthlyPeriodType.NAME;
         quarterlyPeriodTypeName = QuarterlyPeriodType.NAME;
         sixMonthPeriodTypeName = SixMonthlyPeriodType.NAME;

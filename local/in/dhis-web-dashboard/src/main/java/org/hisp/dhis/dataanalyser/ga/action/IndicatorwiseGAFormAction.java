@@ -194,6 +194,12 @@ public class IndicatorwiseGAFormAction implements Action
         return financialAprilPeriodType;
     }
     
+    private String forteenPeriodTypeName;
+    
+    public String getForteenPeriodTypeName()
+    {
+        return forteenPeriodTypeName;
+    }
     // -------------------------------------------------------------------------
     // Action Implementation
     // -------------------------------------------------------------------------
@@ -238,6 +244,9 @@ public class IndicatorwiseGAFormAction implements Action
         
         dailyPeriodTypeName = DailyPeriodType.NAME;
         weeklyPeriodTypeName = WeeklyPeriodType.NAME;
+        
+        //forteenPeriodTypeName = ForteenPeriodType.NAME;
+        
         monthlyPeriods = new ArrayList<Period>( periodService.getPeriodsByPeriodType( new MonthlyPeriodType() ) );
         periodNameList = new ArrayList<String>();
         Collections.sort( monthlyPeriods, new PeriodComparator() );

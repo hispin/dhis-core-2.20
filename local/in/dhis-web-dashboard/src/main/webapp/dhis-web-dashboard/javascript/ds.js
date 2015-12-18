@@ -1,3 +1,8 @@
+window.onload=function(){
+	jQuery('#contentDiv').dialog({autoOpen: false});	
+}
+
+
 // Removes slected orgunits from the Organisation List
 function remOUFunction()
 {
@@ -22,7 +27,6 @@ function getImmChildInfo(evt, dsId, selOrgUnit)
 */
 function getImmChildInfo1(evt, dsId, selOrgUnit)
 {
-
     alert("urlForImmChild");
 }
 			
@@ -242,8 +246,14 @@ function generateDataStatusResult( url )
 	url += getParamsStringBySelected( 'periodLB', 'periodLB' )+ "&"
 	*/	
 	//alert(url);
+	
+	
+	
 	jQuery('#loaderDiv').show();
+	
 	jQuery('#contentDiv').dialog('destroy').remove();
+	
+	//jQuery('#contentDiv').dialog('destroy').remove();
 	jQuery( '<div id="contentDiv">' ).load( url,
 	{
 		selectedDataSets : getFieldValue( 'selectedDataSets' ),

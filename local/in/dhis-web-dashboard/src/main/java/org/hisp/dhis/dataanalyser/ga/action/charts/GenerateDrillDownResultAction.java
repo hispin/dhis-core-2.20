@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,21 +41,9 @@ import org.hisp.dhis.dataelement.DataElementService;
 import org.hisp.dhis.i18n.I18nFormat;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.patient.Patient;
-import org.hisp.dhis.patient.PatientAttribute;
-import org.hisp.dhis.patient.PatientAttributeService;
-import org.hisp.dhis.patient.PatientIdentifier;
-import org.hisp.dhis.patient.PatientIdentifierService;
-import org.hisp.dhis.patient.PatientIdentifierType;
-import org.hisp.dhis.patient.PatientIdentifierTypeService;
-import org.hisp.dhis.patientattributevalue.PatientAttributeValue;
-import org.hisp.dhis.patientattributevalue.PatientAttributeValueService;
-import org.hisp.dhis.patientdatavalue.PatientDataValue;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
-import org.hisp.dhis.program.ProgramInstance;
-import org.hisp.dhis.program.ProgramStageInstance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -127,6 +114,7 @@ public class GenerateDrillDownResultAction
         this.periodService = periodService;
     }
 
+    /*
     private PatientAttributeValueService patientAttributeValueService;
 
     public void setPatientAttributeValueService( PatientAttributeValueService patientAttributeValueService )
@@ -154,7 +142,8 @@ public class GenerateDrillDownResultAction
     {
         this.patientIdentifierTypeService = patientIdentifierTypeService;
     }
-
+    */
+    
     
     // -------------------------------------------------------------------------
     // Input & Output
@@ -296,7 +285,9 @@ public class GenerateDrillDownResultAction
         Map<OrganisationUnit, Integer> ouAndLevel = new HashMap<OrganisationUnit, Integer>();
 
         List<Integer> levelsList = new ArrayList<Integer>();
-        Map<OrganisationUnit, List<PatientDataValue>> ouPatientDataValueMap = new HashMap<OrganisationUnit, List<PatientDataValue>>();
+        
+        //Map<OrganisationUnit, List<PatientDataValue>> ouPatientDataValueMap = new HashMap<OrganisationUnit, List<PatientDataValue>>();
+        
         List<DataElement> des = new ArrayList<DataElement>();
         String tempStr = "";
         for ( OrganisationUnit ou : orgUnitList )
@@ -308,13 +299,16 @@ public class GenerateDrillDownResultAction
                 levelsList.add( level );
             }
 
-            List<PatientDataValue> patientDataValues = new ArrayList<PatientDataValue>();
+            //List<PatientDataValue> patientDataValues = new ArrayList<PatientDataValue>();
             
             for( Period period : periods )
             {
-                patientDataValues.addAll( caseAggregationConditionService.getPatientDataValues( caseAggregationCondition, ou, period ) );
+				/**
+				* TODO - Commented this to fix compilation error while merging to 2.12
+				*/	
+                //patientDataValues.addAll( caseAggregationConditionService.getPatientDataValues( caseAggregationCondition, ou, period ) );
             }
-            
+            /*
             if ( patientDataValues != null )
             {
                 ouPatientDataValueMap.put( ou, patientDataValues );
@@ -327,6 +321,8 @@ public class GenerateDrillDownResultAction
                     }
                 }
             }
+            */
+            
         }
 
         WritableSheet sheet0 = outputReportWorkbook.getSheet( 0 );
@@ -359,8 +355,8 @@ public class GenerateDrillDownResultAction
         int srno = 0;
         for ( OrganisationUnit ou : orgUnitDataList )
         {
-            List<PatientDataValue> pdvList = ouPatientDataValueMap.get( ou );
-
+            //List<PatientDataValue> pdvList = ouPatientDataValueMap.get( ou );
+            /*
             for ( PatientDataValue patientDataValue : pdvList )
             {
                 ProgramStageInstance psi = patientDataValue.getProgramStageInstance();
@@ -464,7 +460,7 @@ public class GenerateDrillDownResultAction
                 }
                 colNo++;
 
-                // Execution date
+               
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd" );
                 String eDate = simpleDateFormat.format( executionDate );
                 sheet0.addCell( new Label( colNo, rowNo, "" + eDate, wCellformat ) );
@@ -483,6 +479,8 @@ public class GenerateDrillDownResultAction
                 rowNo++;
                 srno++;
             }
+            */
+            
         }
         outputReportWorkbook.write();
         outputReportWorkbook.close();

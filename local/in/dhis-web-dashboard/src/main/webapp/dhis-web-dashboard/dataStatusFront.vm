@@ -53,7 +53,7 @@
                 <select id="eDateLB" name="eDateLB" style="width:300px"></select>
             </td>
             <td class="NormalB">
-                <input type="checkbox" name="includeZeros" id="includeZeros" checked> Include Zero &nbsp;&nbsp; <input type="checkbox" name="usingDataEntryStatus" id="usingDataEntryStatus" > Data Entry Status
+                <input type="checkbox" name="includeZeros" id="includeZeros" checked> Include Zero &nbsp;&nbsp; <input type="checkbox" style="display:none" name="usingDataEntryStatus" id="usingDataEntryStatus" ><!-- Data Entry Status -->
                 <br/><br/>
                 <input type="button" name="ViewSummary" value="View DataSummary - Data Set" style="width:250px;height:30px;font-family: Arial; font-weight: bold; color: rgb(0, 0, 0);" onclick="textvalue('SummaryStatus')"/><br/><br/>
                 <input type="button" name="ViewStatus" value="View DataStatus - Data Set" style="width:250px;height:30px;font-family: Arial; font-weight: bold; color: rgb(0, 0, 0);" onclick="textvalue('DataStatus')"/><br/><br/>
@@ -67,7 +67,7 @@
     </table>
     <input type="hidden" name="selectedButton" id="selectedButton"/>
 </form>
-<div id="contentDiv"></div>
+<!--<div id="contentDiv"></div>-->
 
 #parse( "/dhis-web-commons/loader/loader.vm" )
 

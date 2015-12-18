@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
@@ -120,6 +121,22 @@ public class GenerateChartAction1
     {
         return dataList;
     }
+    
+    /*
+    private HttpServletResponse response;
+    
+    public HttpServletResponse getResponse()
+    {
+        return response;
+    }
+
+
+    public void setResponse( HttpServletResponse response )
+    {
+        this.response = response;
+    }
+    */
+    
 
     public String execute()
         throws Exception
@@ -133,7 +150,7 @@ public class GenerateChartAction1
         HttpServletRequest req = (HttpServletRequest) ctx.get( ServletActionContext.HTTP_REQUEST );
         String currentChart = req.getParameter( "currentChart" );
         String chartDisplayOption = req.getParameter( "chartDisplayOption" );
-
+      
         //System.out.println("chartDisplayOption : "+chartDisplayOption);
         session = req.getSession();
         Double[][] objData1 = (Double[][]) session.getAttribute( "data1" );
@@ -162,10 +179,15 @@ public class GenerateChartAction1
        
         
         if( objData1 == null || series1 == null ||  categories1 == null ||  chartTitle == null || xAxis_Title == null || yAxis_Title == null )
-                System.out.println("Session Objects are null");
-        else
-                System.out.println("Session Objects are not null");
+        {
+            System.out.println("Session Objects are null");
+        }
         
+        else
+        {
+            System.out.println("Session Objects are not null");
+        }
+                
         data1 = convertDoubleTodouble( objData1 );
        // data2 = convertDoubleTodouble( objData2 );
         
@@ -248,7 +270,9 @@ public class GenerateChartAction1
         {
             System.out.println(e.getMessage());
         }
-
+        
+        //response.setContentType("image/png");
+        
         return SUCCESS;
     }// execute end
 

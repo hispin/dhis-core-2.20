@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.dataelement.DataElementGroup;
 import org.hisp.dhis.dataset.Section;
 import org.hisp.dhis.dataset.SectionService;
@@ -105,8 +106,9 @@ implements Action
         // for dataSet Sections
         sections = new ArrayList<Section>();
         sections = new ArrayList<Section>( sectionService.getAllSections() );
-        Collections.sort( sections, new SectionOrderComparator() );
+        //Collections.sort( sections, new SectionOrderComparator() );
         
+        Collections.sort( sections, new IdentifiableObjectNameComparator() );
         
         orgUnitGroups = new ArrayList<OrganisationUnitGroup> ( orgUnitGroupService.getAllOrganisationUnitGroups() );
         

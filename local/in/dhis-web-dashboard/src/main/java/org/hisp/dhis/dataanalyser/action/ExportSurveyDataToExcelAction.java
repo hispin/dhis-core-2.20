@@ -373,7 +373,12 @@ public class ExportSurveyDataToExcelAction implements Action
          
          for(int j=0; j< series1.length; j++)
          {
-             Indicator indicator =  indicatorService.getIndicatorByName( series1[j] );
+             /**
+				* TODO
+				* HACKED JUST TO RUN WITH 2.11	
+				*/
+			 //Indicator indicator =  indicatorService.getIndicatorByName( series1[j] );
+			 Indicator indicator =  null;
              
              sheet0.addCell( new Label( tempCol1, tempRow1, indicator.getName(), wCellformat1 ) );
              String formula = indicator.getNumeratorDescription() + "/" +  indicator.getDenominatorDescription();

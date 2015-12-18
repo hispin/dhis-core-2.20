@@ -16,7 +16,9 @@
 	
 	<module>dhis-web-maintenance-in</module>
 	<module>dhis-web-reports-national</module>
+	<module>dhis-web-dashboard</module>
 	<module>dhis-web-dataentry-linelisting</module>
+	<module>dhis-web-excelimport</module>
 	<!--
 	<module>dhis-web-maintenance-rbf</module>
 	
@@ -26,9 +28,9 @@
 	<module>dhis-web-coldchain</module>
     <module>dhis-web-dataentry-ccem</module> -->
 	
-    <!--<module>dhis-web-dashboard</module>
+    <!--
     <module>dhis-web-dataentry-linelisting</module>
-    <module>dhis-web-excelimport</module>-->
+    -->
 	<!--<module>dhis-web-linelisting-in</module> -->
     
 <!--<module>dhis-web-mobile</module>

@@ -39,8 +39,8 @@
       */  
         
    		var url = "generateDrillDownPeriodToOrgChildChartIndicator.action?selDrillDownData="+selDrillDownData + "&selectedButton=" + selectedButton + "&categoryLB=" + viewBy + "&aggDataCB=" + aggDataCB;
-		$('#contentDataRecord').dialog('destroy').remove();
-   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+		$('#contentDiv').dialog('destroy').remove();
+   	    $('<div id="contentDiv">' ).load(url).dialog({
         title: 'Period to Org Child',
 		maximize: true, 
 		closable: true,
@@ -87,8 +87,8 @@
        */ 
         
    		var url = "generatedrillDownOugUnitToPeriodChartIndicator.action?selDrillDownData="+selDrillDownData + "&selectedButton=" + selectedButton + "&categoryLB=" + viewBy + "&aggDataCB=" + aggDataCB;
-		$('#contentDataRecord').dialog('destroy').remove();
-   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+		$('#contentDiv').dialog('destroy').remove();
+   	    $('<div id="contentDiv">' ).load(url).dialog({
         title: 'Org Unit to Period',
 		maximize: true, 
 		closable: true,
@@ -132,8 +132,8 @@
        */ 
  
    		var url = "generatedrillDownOugUnitToPeriodChartIndicator.action?selDrillDownData="+selDrillDownData + "&selectedButton=" + selectedButton + "&categoryLB=" + viewBy + "&aggDataCB=" + aggDataCB;
-		$('#contentDataRecord').dialog('destroy').remove();
-   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+		$('#contentDiv').dialog('destroy').remove();
+   	    $('<div id="contentDiv">' ).load(url).dialog({
         title: 'Org Unit Group to Period',
 		maximize: true, 
 		closable: true,
@@ -166,9 +166,14 @@
      
     // alert(chartDisplayOptionValue);   
 	
-	
      var tempSRC = "generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue;
-     document.getElementById('iframeForChart').src = tempSRC;	
+     /*
+	 document.getElementById('iframeForChart').src = tempSRC;	
+	*/
+		
+	document.getElementById("iframeForChart").innerHTML = "";
+	 //$("#iframeForChart").html('<img src="generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue" />')
+	 $("#iframeForChart").html('<img src="'+ tempSRC+ '"/>')
 	
 	
      //iframeForChart.location.href = "generateChart1.action?currentChart="+chartTypeOptionValue+"&chartDisplayOption="+chartDisplayOptionValue;
@@ -190,13 +195,21 @@
      
      
      var tempSRC = "generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue;
-     document.getElementById('iframeForChart').src = tempSRC;     
-     
+     /*
+	 document.getElementById('iframeForChart').src = tempSRC;     
+     */
      
      
      //iframeForChart.location.href = "generateChart1.action?currentChart="+chartTypeOptionValue+"&chartDisplayOption="+chartDisplayOptionValue;
        
      //getSortedList(chartDisplayOptionValue);
+	 
+	 document.getElementById("iframeForChart").innerHTML = "";
+	 //$("#iframeForChart").html('<img src="generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue" />')
+	 $("#iframeForChart").html('<img src="'+ tempSRC+ '"/>')
+	 
+	 
+	 
      getSortedListIndicator(chartDisplayOptionValue);    
    }
 
@@ -272,13 +285,34 @@ function exportToExcelFunction2( summaryOption )
     
     }
 
+$(document).ready(function(){
+	
+	var resultTypeValue = document.getElementById("resultType").value;
+	if( resultTypeValue == "ViewChart")
+	{
+		document.getElementById("iframeForChart").innerHTML = "";
+		$("#iframeForChart").html('<img src="generateChart1.action?currentChart=Vertical3DBarChart" />')
+	}
+	
+	
+	/*
+    $( "#iframeForChart" ).load( 'generateChart1.action?currentChart=Vertical3DBarChart', function()
+    {
+		
+    } );
+	*/
+	
+});		
+	
+	
 </script>
 <div align="right" class="NormalB">
+<input type="hidden" id= "resultType" name="resultType" value= "$selectedButton">
     <table>
         <tr>
             <td class="NormalB">
               #if($selectedButton.equals("ViewSummary"))
-                      
+			</td>          
               <td class="NormalB"><a id="exportExcelAnchor2" name="exportExcelAnchor2" href="#" onclick="javascript:exportToExcelFunction2('yes')" target="_blank">Export To WorkBook</a></td>
               <td class="NormalB">&nbsp;&nbsp;
                         <select id="chartDisplayOption" name="chartDisplayOption" onchange="getSortedListForSummary()">
@@ -405,7 +439,10 @@ function exportToExcelFunction2( summaryOption )
      #else
      <br>
          <div align="center">
+		 <div  id="iframeForChart"  width="850px" height="550px" ></div>
+		 <!--
              <iframe name="iframeForChart" id="iframeForChart" src="generateChart1.action?currentChart=Vertical3DBarChart" width="850px" height="550px" scrolling=auto frameborder="0"></iframe>
+		 -->	 
          </div>    
     <br>
 #end 

@@ -248,24 +248,55 @@ public class GenerateTabularAnalysisFormAction
         return sections;
     }
     
+    private String forteenPeriodTypeName;
+    
+    public String getForteenPeriodTypeName()
+    {
+        return forteenPeriodTypeName;
+    }
+    
+    // -------------------------------------------------------------------------
+    // Action Implementation
+    // -------------------------------------------------------------------------    
+    
     public String execute()
         throws Exception
     {
         /* DataElements and Groups */
-        dataElements = new ArrayList<DataElement>( dataElementService.getAllDataElements() );
+        //dataElements = new ArrayList<DataElement>( dataElementService.getAllActiveDataElements() );
         
-        System.out.println(" dataElements size = "+dataElements.size());
+        dataElements = new ArrayList<DataElement>( dataElementService.getAggregateableDataElements() );
+        
+        System.out.println(" dataElements size Before = "+dataElements.size());
+        
         // take only those dataElement which are VALUE_TYPE_INT and DOMAIN_TYPE_AGGREGATE
         Iterator<DataElement> alldeIterator = dataElements.iterator();
         while ( alldeIterator.hasNext() )
         {
             DataElement dataElement = alldeIterator.next();
+            
+            if( ( dataElement.getPublicAccess() != null && dataElement.getPublicAccess().equals( "--------" ) ) || !dataElement.getType().equals( DataElement.VALUE_TYPE_INT ) )
+            {
+                alldeIterator.remove();
+            }
+            
+            
+            /*
             if ( !dataElement.getDomainType().equalsIgnoreCase( DataElement.DOMAIN_TYPE_AGGREGATE ) )
             {
                 alldeIterator.remove();
             }
+            */
+            /*
+            if ( !dataElement.getDomainType().equals( "aggregate" ) )
+            {
+                alldeIterator.remove();
+            }
+            */
+            
         }
-        System.out.println(" dataElements size = "+dataElements.size());
+        
+        System.out.println(" dataElements size After filter Access = "+dataElements.size());
         
         //dataElementGroups = new ArrayList<DataElementGroup>( dataElementService.getAllDataElementGroups() );
         
@@ -317,6 +348,9 @@ public class GenerateTabularAnalysisFormAction
         
         dailyPeriodTypeName = DailyPeriodType.NAME;
         weeklyPeriodTypeName = WeeklyPeriodType.NAME;
+        
+        //forteenPeriodTypeName = ForteenPeriodType.NAME;
+        
         monthlyPeriodTypeName = MonthlyPeriodType.NAME;
         quarterlyPeriodTypeName = QuarterlyPeriodType.NAME;
         sixMonthPeriodTypeName = SixMonthlyPeriodType.NAME;

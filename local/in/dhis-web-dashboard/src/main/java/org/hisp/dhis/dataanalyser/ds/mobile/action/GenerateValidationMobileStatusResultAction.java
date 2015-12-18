@@ -39,6 +39,8 @@ import java.util.Set;
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.dataanalyser.util.DashBoardService;
 import org.hisp.dhis.dataelement.DataElement;
+import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
+import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataset.CompleteDataSetRegistration;
 import org.hisp.dhis.dataset.CompleteDataSetRegistrationService;
 import org.hisp.dhis.dataset.DataSet;
@@ -51,6 +53,7 @@ import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
 import org.hisp.dhis.user.User;
 import org.hisp.dhis.user.UserStore;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Action;
 
@@ -117,6 +120,9 @@ implements Action
     {
         this.userStore = userStore;
     }
+    
+    @Autowired
+    private DataElementCategoryService dataElementCategoryService;
     
     // ---------------------------------------------------------------
     // Output Parameters
@@ -442,6 +448,9 @@ implements Action
         dso = selDataSet.getSources();
         String orgUnitId = "";
         
+        DataElementCategoryOptionCombo defaultAttributeOptionCombo = dataElementCategoryService.getDefaultDataElementCategoryOptionCombo();
+        
+        
         while ( orgUnitListIterator.hasNext() )
         {
             //System.out.println( "Getting into first orgunit loop" );
@@ -504,7 +513,8 @@ implements Action
                         orgUnitCount = 0;
                         getOrgUnitInfo( o, dso );
 
-                        CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, cUnit );
+                        //CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, cUnit );
+                        CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, cUnit, defaultAttributeOptionCombo );
 
                         if ( completeDataSetRegistration != null )
                         {
@@ -526,7 +536,9 @@ implements Action
                 
                 orgUnitInfo = "" + o.getId();
 
-                CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, o );
+                //CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, o );
+                
+                CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, o, defaultAttributeOptionCombo );
                 
                 if ( completeDataSetRegistration != null )
                 {

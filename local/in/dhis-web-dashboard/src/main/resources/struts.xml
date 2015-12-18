@@ -78,6 +78,7 @@
 		<action name="generateChart1"
 			class="org.hisp.dhis.dataanalyser.ga.action.charts.GenerateChartAction1">
 			<result name="success" type="chart">
+				<!--<param name="contentType">image/png</param>-->
 				<param name="width">700</param>
 				<param name="height">500</param>
 			</result>
@@ -128,7 +129,8 @@
 		
 		<action name="getDataElemetGrp"
             class="org.hisp.dhis.dataanalyser.ga.action.GetDataElementGroupAction">
-            <result name="success" type="velocity-xml">/dhis-web-dashboard/getDataElementGrp.vm</result>
+            <result name="success" type="velocity">/dhis-web-dashboard/getDataElementGrp.vm</result>
+			<!--<result name="success" type="velocity-xml">/dhis-web-dashboard/getDataElementGrp.vm</result>-->
             <!--<interceptor-ref name="transactionStack"/>-->
             <param name="onExceptionReturn">plainTextError</param>
         </action>		
@@ -717,6 +719,20 @@
 			</result>
 		</action>
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		<!-- Maintenance 
 		<action name="maintenanceForm"
 		class="org.hisp.dhis.dataanalyser.maintenance.action.InConfigurationsFormAction">
@@ -846,6 +862,15 @@
 			<!--<interceptor-ref name="transactionStack"/>-->
 			<param name="onExceptionReturn">plainTextError</param>
 		</action>
+		
+		
+		<!-- Getting Forteen Period -->
+		<action name="getForteenPeriod"
+			class="org.hisp.dhis.dataanalyser.action.GetForteenPeriodAction">
+			<result name="success" type="velocity-xml">/dhis-web-dashboard/responseForteenPeriods.vm</result>
+			<param name="onExceptionReturn">plainTextError</param>
+		</action>		
+		
 		
 		<action name="getDataElements"
 			class="org.hisp.dhis.dataanalyser.action.GetDataElementsAction">
@@ -1047,8 +1072,51 @@
             <param name="page">/dhis-web-dashboard/BulkSMSForExcelSheetResult.vm</param>
 			<interceptor-ref name="fileUploadStack"/>
         </action>		
-
+	
+		<!-- Validation Rule for Odisha -->
+		<action name="validationRuleForm"
+			class="org.hisp.dhis.dataanalyser.vr.action.GenerateValidationRuleFormAction">
+			<result name="success" type="velocity">/main.vm</result>
+			<param name="page">
+				/dhis-web-dashboard/validationRuleForm.vm</param>
+			<param name="menu">/dhis-web-dashboard/menuWithTreeForValidation.vm</param>
+			<param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,javascript/ta.js,javascript/hashtable.js</param>
+			<param name="stylesheets">css/StylesForTags.css</param>
+			<interceptor-ref name="organisationUnitTreeStack"/>
+		</action>
 		
+		<action name="validationRuleResult"
+			class="org.hisp.dhis.dataanalyser.vr.action.GenerateValidationRuleResultAction">
+			<result name="success" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">filename="${fileName}"</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		
+		
+		
+		<!--  DataEntry Form Status -->
+		<action name="dataEntryFormStatus"
+			class="org.hisp.dhis.dataanalyser.deform.action.GenerateDataEntryStatusFormAction">
+			<result name="success" type="velocity">/main.vm</result>
+			<param name="page">/dhis-web-dashboard/dataEntryStatusForm.vm</param>
+			<param name="menu">/dhis-web-dashboard/menu.vm</param>
+			<param name="javascripts">javascript/dataEntryForm.js,javascript/hashtable.js</param>
+			<param name="stylesheets">css/StylesForTags.css</param>
+			<param name="requiredAuthorities">F_DATA_ENTRY_FORM_DATAELEMENTS</param>
+		</action>		
+		
+	   <!--  DataEntry Form Status Result -->
+		<action name="generateDataEntryFormStatusResult"
+			class="org.hisp.dhis.dataanalyser.deform.action.GenerateDataEntryStatusResultAction">
+			<result name="success" type="velocity">/content.vm</result>
+			<param name="page">/dhis-web-dashboard/dataEntryFormStatusResult.vm</param>
+			<param name="stylesheets">css/StylesForTags.css</param>
+		</action>		
+			
 	</package>
 
 </struts>

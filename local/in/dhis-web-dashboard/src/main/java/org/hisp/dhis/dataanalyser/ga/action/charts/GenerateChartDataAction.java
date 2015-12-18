@@ -913,7 +913,9 @@ public class GenerateChartDataAction
 
                             if( aggDataCB == null )
                             {
-                                DataValue dv1 = dataValueService.getDataValue( selectedOrgUnit, dElement, p, decoc );
+                                //DataValue dv1 = dataValueService.getDataValue( selectedOrgUnit, dElement, p, decoc );
+                                DataValue dv1 = dataValueService.getDataValue( dElement, p, selectedOrgUnit, decoc );
+                                
                                 if ( dv1 != null && dv1.getValue() != null )
                                     serviceValues[countForServiceList][countForPeriodList] = Double.parseDouble( dv1
                                         .getValue() );
@@ -940,7 +942,10 @@ public class GenerateChartDataAction
                                     OrganisationUnit ou = (OrganisationUnit) orgUnitsIterator.next();
 
                                     double tempd = -1.0;
-                                    DataValue dv1 = dataValueService.getDataValue( ou, dElement, p, decoc );
+                                    //DataValue dv1 = dataValueService.getDataValue( ou, dElement, p, decoc );
+                                    
+                                    DataValue dv1 = dataValueService.getDataValue( dElement, p, ou, decoc );
+                                    
                                     if ( dv1 != null && dv1.getValue() != null )
                                         tempd = Double.parseDouble( dv1.getValue() );
                                     if ( tempd == -1.0 )
@@ -998,7 +1003,8 @@ public class GenerateChartDataAction
 
                                 if ( aggDataCB == null )
                                 {
-                                    DataValue dv1 = dataValueService.getDataValue( selectedOrgUnit, dElement, p, decoc1 );
+                                    //DataValue dv1 = dataValueService.getDataValue( selectedOrgUnit, dElement, p, decoc1 );
+                                    DataValue dv1 = dataValueService.getDataValue( dElement, p, selectedOrgUnit, decoc1 );
                                     if ( dv1 != null && dv1.getValue() != null )
                                         aggDataValue = Double.parseDouble( dv1.getValue() );
                                     else
@@ -1022,7 +1028,8 @@ public class GenerateChartDataAction
                                     Double tempd = 0.0;
                                     if ( aggDataCB == null )
                                     {
-                                        DataValue dv1 = dataValueService.getDataValue( ou, dElement, p, decoc1 );
+                                        //DataValue dv1 = dataValueService.getDataValue( ou, dElement, p, decoc1 );
+                                        DataValue dv1 = dataValueService.getDataValue( dElement, p, ou,  decoc1 );
                                         if ( dv1 != null && dv1.getValue() != null )
                                             tempd = Double.parseDouble( dv1.getValue() );
                                     }
@@ -1436,7 +1443,9 @@ public class GenerateChartDataAction
                                 double tempAggValue = 0.0;
                                 for ( Period p1 : pList )
                                 {
-                                    DataValue dv1 = dataValueService.getDataValue( childOrgUnit, dElement, p1, decoc );
+                                    //DataValue dv1 = dataValueService.getDataValue( childOrgUnit, dElement, p1, decoc );
+                                    
+                                    DataValue dv1 = dataValueService.getDataValue( dElement, p1, childOrgUnit, decoc );
                                     if ( dv1 != null && dv1.getValue() != null )
                                         tempAggValue += Double.parseDouble( dv1.getValue() );
                                 }
@@ -1466,7 +1475,8 @@ public class GenerateChartDataAction
                                     double tempAggValue = 0.0;
                                     for ( Period p1 : pList )
                                     {
-                                        DataValue dv1 = dataValueService.getDataValue( ou, dElement, p1, decoc );
+                                        //DataValue dv1 = dataValueService.getDataValue( ou, dElement, p1, decoc );
+                                        DataValue dv1 = dataValueService.getDataValue( dElement, p1, ou, decoc );
                                         if ( dv1 != null && dv1.getValue() != null )
                                             tempAggValue += Double.parseDouble( dv1.getValue() );
                                     }
@@ -1510,8 +1520,8 @@ public class GenerateChartDataAction
                                     double tempAggValue = 0.0;
                                     for ( Period p1 : pList )
                                     {
-                                        DataValue dv1 = dataValueService.getDataValue( childOrgUnit, dElement, p1,
-                                            decoc1 );
+                                        //DataValue dv1 = dataValueService.getDataValue( childOrgUnit, dElement, p1, decoc1 );
+                                        DataValue dv1 = dataValueService.getDataValue( dElement, p1, childOrgUnit, decoc1 );
                                         if ( dv1 != null && dv1.getValue() != null )
                                             tempAggValue += Double.parseDouble( dv1.getValue() );
                                     }
@@ -1541,7 +1551,8 @@ public class GenerateChartDataAction
                                         double tempAggValue = 0.0;
                                         for ( Period p1 : pList )
                                         {
-                                            DataValue dv1 = dataValueService.getDataValue( ou, dElement, p1, decoc1 );
+                                            //DataValue dv1 = dataValueService.getDataValue( ou, dElement, p1, decoc1 );
+                                            DataValue dv1 = dataValueService.getDataValue( dElement, p1, ou, decoc1 );
                                             if ( dv1 != null && dv1.getValue() != null )
                                                 tempAggValue += Double.parseDouble( dv1.getValue() );
                                         }

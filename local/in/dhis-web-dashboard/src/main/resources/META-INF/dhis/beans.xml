@@ -299,6 +299,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="periodService">
             <ref bean="org.hisp.dhis.period.PeriodService"/>
         </property>
+        <!-- 
         <property name="patientIdentifierService">
             <ref bean="org.hisp.dhis.patient.PatientIdentifierService"/>
         </property>
@@ -311,6 +312,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         <property name="patientAttributeService">
             <ref bean="org.hisp.dhis.patient.PatientAttributeService"/>
         </property>
+        -->
         <property name="caseAggregationConditionService">
             <ref bean="org.hisp.dhis.caseaggregation.CaseAggregationConditionService"/>
         </property>
@@ -1199,6 +1201,16 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		</property>
     </bean>
 
+
+	<!-- Get Forteen Period List -->
+	
+	<bean id="org.hisp.dhis.dataanalyser.action.GetForteenPeriodAction"
+        class="org.hisp.dhis.dataanalyser.action.GetForteenPeriodAction"
+        scope="prototype">
+		<property name="periodService" ref="org.hisp.dhis.period.PeriodService">
+		</property>
+    </bean>	
+
 	<!-- Get Financial Year List  -->
 	
 	<bean id="org.hisp.dhis.dataanalyser.action.GetFinacialYearAction"
@@ -1503,25 +1515,45 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
         scope="prototype">
     </bean>
 	
-<!-- Schedular -->	
-    <bean name="schedulerForBulkSMSByExcelJob"
-        class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="org.hisp.dhis.dataanalyser.util.SendingBulkSMSFromExcelJob" />
-   </bean>
 
-   <bean id="cronTriggerForBulkSMSByExcelJob"
-        class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="schedulerForBulkSMSByExcelJob" />
-        <property name="cronExpression" value="0 53 16 * * ?" />
-   </bean>
-
-<!-- Scheduler for all Jobs -->
-
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="triggers">
-            <list>
-                <ref bean="cronTriggerForBulkSMSByExcelJob" />
-            </list>
+<!-- Validation Rule for Odisha -->
+	<bean
+		id="org.hisp.dhis.dataanalyser.vr.action.GenerateValidationRuleFormAction"
+		class="org.hisp.dhis.dataanalyser.vr.action.GenerateValidationRuleFormAction"
+		scope="prototype">       
+        <property name="periodService">
+            <ref bean="org.hisp.dhis.period.PeriodService"/>
+        </property>       
+        <property name="organisationUnitService">
+            <ref bean="org.hisp.dhis.organisationunit.OrganisationUnitService"/>
         </property>
-   </bean>		
+        <property name="organisationUnitGroupService">
+            <ref bean="org.hisp.dhis.organisationunit.OrganisationUnitGroupService"/>
+        </property>        	
+    </bean>	
+	
+	<bean
+		id="org.hisp.dhis.dataanalyser.vr.action.GenerateValidationRuleResultAction"
+		class="org.hisp.dhis.dataanalyser.vr.action.GenerateValidationRuleResultAction"
+		scope="prototype"> 
+        <property name="organisationUnitService" ref = "org.hisp.dhis.organisationunit.OrganisationUnitService"/>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/> 
+		<property name="periodService" ref="org.hisp.dhis.period.PeriodService"/> 
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService"/>
+		<property name="reportService" ref="org.hisp.dhis.reports.ReportService"/>    	
+    </bean>	
+
+   <!--  DataEntry Form Status -->
+   <bean id="org.hisp.dhis.dataanalyser.deform.action.GenerateDataEntryStatusFormAction"
+        class="org.hisp.dhis.dataanalyser.deform.action.GenerateDataEntryStatusFormAction">
+        
+   </bean>
+
+   <!--  DataEntry Form Status Result -->
+   <bean id="org.hisp.dhis.dataanalyser.deform.action.GenerateDataEntryStatusResultAction"
+        class="org.hisp.dhis.dataanalyser.deform.action.GenerateDataEntryStatusResultAction">
+        <property name="dashBoardService" ref="org.hisp.dhis.dataanalyser.util.DashBoardService"/>
+   </bean>
+
+   
 </beans>

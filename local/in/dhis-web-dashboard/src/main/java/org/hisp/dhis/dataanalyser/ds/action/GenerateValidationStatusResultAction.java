@@ -40,6 +40,8 @@ import java.util.Set;
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.dataanalyser.util.DashBoardService;
 import org.hisp.dhis.dataelement.DataElement;
+import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
+import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataset.CompleteDataSetRegistration;
 import org.hisp.dhis.dataset.CompleteDataSetRegistrationService;
 import org.hisp.dhis.dataset.DataSet;
@@ -50,6 +52,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Action;
 
@@ -108,7 +111,10 @@ public class GenerateValidationStatusResultAction
     {
         this.registrationService = registrationService;
     }
-
+    
+    @Autowired
+    private DataElementCategoryService dataElementCategoryService;
+    
     // ---------------------------------------------------------------
     // Output Parameters
     // ---------------------------------------------------------------
@@ -423,6 +429,8 @@ public class GenerateValidationStatusResultAction
         dso = selDataSet.getSources();
         String orgUnitId = "";
         
+        DataElementCategoryOptionCombo defaultAttributeOptionCombo = dataElementCategoryService.getDefaultDataElementCategoryOptionCombo();
+        
         while ( orgUnitListIterator.hasNext() )
         {
             //System.out.println( "Getting into first orgunit loop" );
@@ -468,9 +476,9 @@ public class GenerateValidationStatusResultAction
                         orgUnitId += String.valueOf( cUnit.getId() );
                         orgUnitCount = 0;
                         getOrgUnitInfo( o, dso );
-
-                        CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, cUnit );
-
+                        
+                        //CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, cUnit );
+                        CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, cUnit, defaultAttributeOptionCombo );
                         if ( completeDataSetRegistration != null )
                         {
                             dataStatusCount += 1;
@@ -488,7 +496,10 @@ public class GenerateValidationStatusResultAction
                 
                 orgUnitInfo = "" + o.getId();
 
-                CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, o );
+                //CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, o );
+                CompleteDataSetRegistration completeDataSetRegistration = registrationService.getCompleteDataSetRegistration( selDataSet, p, o, defaultAttributeOptionCombo );
+                
+               
                 
                 if ( completeDataSetRegistration != null )
                 {

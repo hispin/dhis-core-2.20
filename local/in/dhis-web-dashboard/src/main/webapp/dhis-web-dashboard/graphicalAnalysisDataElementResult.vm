@@ -45,8 +45,9 @@
 	   */
 	   
    		var url = "generatedrillDownPeriodToOrgChildChartDataElement.action?selDrillDownData="+selDrillDownData + "&selectedButton=" + selectedButton + "&categoryLB=" + viewBy + "&aggDataCB=" + aggDataCB;
-		$('#contentDataRecord').dialog('destroy').remove();
-   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+		
+		$('#contentDiv').dialog('destroy').remove();
+   	    $('<div id="contentDiv">' ).load(url).dialog({
         title: 'Period to Org Child',
 		maximize: true, 
 		closable: true,
@@ -109,8 +110,8 @@
         */
         
    		var url = "generatedrillDownOurUnitToPeriodChartDataElement.action?selDrillDownData="+selDrillDownData + "&selectedButton=" + selectedButton + "&categoryLB=" + viewBy + "&aggDataCB=" + aggDataCB;
-		$('#contentDataRecord').dialog('destroy').remove();
-   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+		$('#contentDiv').dialog('destroy').remove();
+   	    $('<div id="contentDiv">' ).load(url).dialog({
         title: 'Org Unit to Period',
 		maximize: true, 
 		closable: true,
@@ -177,8 +178,8 @@
        */ 
         
    		var url = "generatedrillDownOurUnitToPeriodChartDataElement.action?selDrillDownData="+selDrillDownData + "&selectedButton=" + selectedButton + "&categoryLB=" + viewBy + "&aggDataCB=" + aggDataCB;
-		$('#contentDataRecord').dialog('destroy').remove();
-   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+		$('#contentDiv').dialog('destroy').remove();
+   	    $('<div id="contentDiv">' ).load(url).dialog({
         title: 'Org Unit Group to Period',
 		maximize: true, 
 		closable: true,
@@ -222,10 +223,18 @@
 	
 	
 	var tempSRC = "generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue;
+	/*
+	document.getElementById('iframeForChart').src = tempSRC;
+	*/
+	
 	
 	//document.getElementById('iframeForChart').src = null;
-	document.getElementById('iframeForChart').src = tempSRC;
 	
+	 //alert( tempSRC);
+	 document.getElementById("iframeForChart").innerHTML = "";
+	 //$("#iframeForChart").html('<img src="generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue" />')
+	 $("#iframeForChart").html('<img src="'+ tempSRC+ '"/>')
+
 	 //document.getElementById("iframeForChart").location.src = "tempSRC";
 
      //iframeForChart.location.href = "generateChart1.action?currentChart="+chartTypeOptionValue+"&chartDisplayOption="+chartDisplayOptionValue;
@@ -248,7 +257,15 @@
      
      
      var tempSRC = "generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue;
-     document.getElementById('iframeForChart').src = tempSRC;
+     //alert( tempSRC);
+	 
+	 /*
+	 document.getElementById('iframeForChart').src = tempSRC;
+	 */
+	 
+	 document.getElementById("iframeForChart").innerHTML = "";
+	 //$("#iframeForChart").html('<img src="generateChart1.action?currentChart="+chartTypeOptionValue + "&chartDisplayOption=" + chartDisplayOptionValue" />')
+	 $("#iframeForChart").html('<img src="'+ tempSRC+ '"/>')
      
     // iframeForChart.location.href = "generateChart1.action?currentChart="+chartTypeOptionValue+"&chartDisplayOption="+chartDisplayOptionValue;
        
@@ -265,6 +282,7 @@ function getSortedListForSummary()
      //getSortedList(chartDisplayOptionValue);
      getSortedListDataElement(chartDisplayOptionValue);
 }
+
 /*
 function getSortedList(chartDisplayOptionValue)
 {
@@ -281,6 +299,7 @@ function getSortedList(chartDisplayOptionValue)
     request.send( requestString );
 }
 */
+
 /*
 function getSortedListReceived(xmlObject)
 {   
@@ -329,9 +348,36 @@ function exportToExcelFunction2( summaryOption )
 	
 	}
 
+	
+$(document).ready(function(){
+	
+	var resultTypeValue = document.getElementById("resultType").value;
+	//alert( resultTypeValue );
+	
+	if( resultTypeValue == "ViewChart")
+	{
+		//$("#iframeForChart").html("");
+		document.getElementById("iframeForChart").innerHTML = "";
+		
+		$("#iframeForChart").html('<img src="generateChart1.action?currentChart=Vertical3DBarChart" />')		
+	}
+	
+	/*
+    $( "#iframeForChart" ).load( 'generateChart1.action?currentChart=Vertical3DBarChart', function()
+    {
+		
+    } );
+	*/
+	
+});	
+	
+	
+	
 </script>
 <div align="right" class="NormalB">
-    <table>
+    <!--pppppp ----- $selectedButton-->
+	<input type="hidden" id= "resultType" name="resultType" value= "$selectedButton">
+	<table>
         <tr>
        
 	<td class="NormalB">
@@ -343,7 +389,8 @@ function exportToExcelFunction2( summaryOption )
                     <input type="radio" id="riRadio" name="riRadio" value="childrenWiseDrillDown" >Children Wise Drill Down
                     &nbsp;&nbsp;&nbsp;
                #end 
-              </td> -->  
+              </td> --> 
+	</td>
 			  <td class="NormalB"><a id="exportExcelAnchor2" name="exportExcelAnchor2" href="#" onclick="javascript:exportToExcelFunction2('yes')" target="_blank">Export To WorkBook</a></td>
 			  <td class="NormalB">&nbsp;&nbsp;
 			            <select id="chartDisplayOption" name="chartDisplayOption" onchange="getSortedListForSummary()">
@@ -442,15 +489,15 @@ function exportToExcelFunction2( summaryOption )
 	</div>
 #if($selectedButton.equals("ViewSummary"))
     <br><br>
-     #else
+#else
      <br>
          <div align="center">
-             <iframe name="iframeForChart" id="iframeForChart" src="generateChart1.action?currentChart=Vertical3DBarChart" width="850px" height="550px" scrolling=auto frameborder="0"></iframe>
+			
+			<div  id="iframeForChart"  width="850px" height="550px" ></div>
+            <!--<iframe name="iframeForChart" id="iframeForChart" src="generateChart1.action?currentChart=Vertical3DBarChart" width="850px" height="550px" scrolling=auto frameborder="0"></iframe>-->
          </div>    
          <br>
-     #end
+#end
 </div> 
         <textarea id="testId" rows="10" cols="70" style="display:none">&nbsp;</textarea>                                                                        
 <!--</form>-->
-
-    

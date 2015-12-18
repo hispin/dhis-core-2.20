@@ -23,6 +23,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
+import org.hisp.dhis.system.database.DatabaseInfo;
+import org.hisp.dhis.system.database.DatabaseInfoProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -112,8 +115,9 @@ public class GenerateDataStatusResultAction
     }
 */    
 
-
-
+    @Autowired
+    private DatabaseInfoProvider databaseInfoProvider;
+    
     // ---------------------------------------------------------------
     // Output Parameters
     // ---------------------------------------------------------------
@@ -368,7 +372,10 @@ public class GenerateDataStatusResultAction
         System.out.println( "Data Entry Status  Start Time  : " + new Date() );
         orgUnitCount = 0;
         dataViewName = "";
-
+        
+        
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
+        
         ouMapDataElementCount = new HashMap<OrganisationUnit, List<Integer>>();// Map for DataElement count Intialization
         periodNameList = new ArrayList<String>();
         ouMapDataStatusResult = new HashMap<OrganisationUnit, List<Integer>>();
@@ -567,20 +574,38 @@ public class GenerateDataStatusResultAction
                             orgUnitInfo = "-1";
                             orgUnitCount = 0;
                             getOrgUnitInfo( o, dso );
-        
-                            if ( includeZeros == null )
+                            
+                            if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
                             {
-                                query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                                    + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo
-                                    + ") and value <> 0";
-                                
+                                if ( includeZeros == null )
+                                {
+                                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo
+                                        + ") and CAST(value AS NUMERIC) != 0 ";
+                                    
+                                }
+                                else
+                                {
+                                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                                }
                             }
-                            else
+                            else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
                             {
-                                query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                                    + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                                if ( includeZeros == null )
+                                {
+                                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo
+                                        + ") and value != 0 ";
+                                    
+                                }
+                                else
+                                {
+                                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                                }
                             }
-        
+                            
                             System.out.println("Used Query is :::::::" + query );
                             SqlRowSet sqlResultSet = jdbcTemplate.queryForRowSet( query );
         
@@ -615,18 +640,35 @@ public class GenerateDataStatusResultAction
                     }
 
                 orgUnitInfo = "" + o.getId();
-
-                if ( includeZeros == null )
+                
+                if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
                 {
-                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ") and value <> 0";
+                    if ( includeZeros == null )
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ") AND CAST(value AS NUMERIC) != 0 ";
+                    }
+                    else
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                    }
                 }
-                else
+                
+                else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
                 {
-                    query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
-                        + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                    if ( includeZeros == null )
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ") and value != 0 ";
+                    }
+                    else
+                    {
+                        query = "SELECT COUNT(*) FROM " + dataViewName + " WHERE dataelementid IN (" + deInfo
+                            + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")";
+                    }
                 }
-
+                
                 SqlRowSet sqlResultSet = jdbcTemplate.queryForRowSet( query );
 
                 if ( sqlResultSet.next() )

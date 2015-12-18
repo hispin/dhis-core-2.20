@@ -52,7 +52,7 @@ public class GetDataElementsAction
     implements Action
 {
 
-    private final static int ALL = 0;
+    //private final static int ALL = 0;
 
     // -------------------------------------------------------------------------
     // Dependencies
@@ -160,7 +160,8 @@ public class GetDataElementsAction
         System.out.println( " id = " + id );
         if ( id == null || id == 0 )
         {
-            dataElements = new ArrayList<DataElement>( dataElementService.getAllDataElements() );
+            //dataElements = new ArrayList<DataElement>( dataElementService.getAllActiveDataElements() );
+            dataElements = new ArrayList<DataElement>( dataElementService.getAggregateableDataElements() );
             System.out.println( "id = " + id + " dataElements size = " + dataElements.size() );
         }
         else
@@ -195,22 +196,57 @@ public class GetDataElementsAction
             }
 
         }
-
+        
+        
+        
         System.out.println( " dataElements size = " + dataElements.size() );
         Iterator<DataElement> alldeIterator = dataElements.iterator();
         while ( alldeIterator.hasNext() )
         {
 
             DataElement de1 = alldeIterator.next();
+            
+            
+            
+            
             // de1.getDomainType()
             // if ( !de1.getType().equals( DataElement.VALUE_TYPE_INT ) ||
             // !de1.getType().equals( DataElement.DOMAIN_TYPE_AGGREGATE ) )
+            
+            /*
             if ( !de1.getType().equals( DataElement.VALUE_TYPE_INT )
                 || !de1.getDomainType().equals( DataElement.DOMAIN_TYPE_AGGREGATE ) )
             {
 
                 alldeIterator.remove();
             }
+            */
+            
+            
+            /*
+            if ( !de1.getType().equals( DataElement.VALUE_TYPE_INT )
+                || !de1.getDomainType().equals( "aggregate" ) )
+            {
+
+                alldeIterator.remove();
+            }
+            */
+            
+            /*
+            if ( !de1.getType().equals( DataElement.VALUE_TYPE_INT )
+                || !de1.getDomainTypeNullSafe().equalsIgnoreCase( "aggregate" ) )
+            {
+
+                alldeIterator.remove();
+            }
+            */
+            
+            if( ( de1.getPublicAccess() != null && de1.getPublicAccess().equals( "--------" ) ) || !de1.getType().equals( DataElement.VALUE_TYPE_INT ) )
+            {
+                alldeIterator.remove();
+            }
+            
+            
         }
         System.out.println( " dataElements size = " + dataElements.size() );
         Collections.sort( dataElements, dataElementComparator );

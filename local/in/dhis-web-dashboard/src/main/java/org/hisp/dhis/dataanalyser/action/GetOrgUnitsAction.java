@@ -1,7 +1,6 @@
 package org.hisp.dhis.dataanalyser.action;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,13 +35,24 @@ public class GetOrgUnitsAction implements Action
     // -------------------------------------------------------------------------
     // Getters & Setters
     // -------------------------------------------------------------------------
-
+    
+    /*
     private Integer orgUnitId;
 
     public void setOrgUnitId( Integer orgUnitId )
     {
         this.orgUnitId = orgUnitId;
     }
+    */
+    
+    
+    private String orgUnitId;
+    
+    public void setOrgUnitId( String orgUnitId )
+    {
+        this.orgUnitId = orgUnitId;
+    }
+    
     
     private String type;
     
@@ -81,7 +91,7 @@ public class GetOrgUnitsAction implements Action
     {
         if ( orgUnitId != null )
         {
-            orgUnit = organisationUnitService.getOrganisationUnit( orgUnitId );
+            orgUnit = organisationUnitService.getOrganisationUnit( orgUnitId );// use uid
         }
         
         System.out.println(" orgUnit Id is : " + orgUnit.getId() + " , orgUnit Name is : " + orgUnit.getName() );

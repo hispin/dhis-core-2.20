@@ -27,8 +27,8 @@ package org.hisp.dhis.dataanalyser.ta.action;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -364,6 +364,37 @@ public class GenerateTabularAnalysisResultAction
                 periodNames.add( periodStr );
             }
         }
+        
+        // for Forteen period
+        /*
+        if ( periodTypeLB.equalsIgnoreCase( ForteenPeriodType.NAME ) )
+        {
+            Integer pCount = 0;
+            for ( String periodStr : periodLB )
+            {
+                String  startForteenPeriodDate = periodStr.split( "To" )[0].trim(); //for start forteen period
+                String  endForteenPeriodDate = periodStr.split( "To" )[1].trim(); //for end forteen period
+                
+                startD = startForteenPeriodDate.trim();
+                endD = endForteenPeriodDate.trim();
+                
+                Date sDate = format.parseDate( startD );
+                Date eDate = format.parseDate( endD );
+                selStartPeriodList.add( sDate );
+                selEndPeriodList.add( eDate );
+                
+                List<Period> periodList = new ArrayList<Period>( periodService.getIntersectingPeriods( sDate, eDate ) );
+                List<Integer> periodIds = new ArrayList<Integer>( getIdentifiers(Period.class, periodList ) );
+                periodMap.put( pCount, periodIds );
+                
+                pCount++;
+                
+                periodNames.add( periodStr );
+            }
+        }
+        */
+        
+        
         // for FinancialAprilPeriodType
         else if ( periodTypeLB.equalsIgnoreCase( FinancialAprilPeriodType.NAME ) )
         {
@@ -658,12 +689,12 @@ public class GenerateTabularAnalysisResultAction
             }
             else if ( aggData.equalsIgnoreCase( GENERATEAGGDATA ) && aggPeriodCB == null )
             {
-                System.out.println("Inside generateOrgUnitLevelData_GenerateAggregateData_Periodwise method");
+                System.out.println("Inside generateOrgUnitLevelData_GenerateAggregateData_Periodwise method: " + new Date());
                 generateOrgUnitLevelData_GenerateAggregateData_Periodwise();
             }
             else if ( aggData.equalsIgnoreCase( GENERATEAGGDATA ) && aggPeriodCB != null )
             {
-                System.out.println("Inside generateOrgUnitLevelData_GenerateAggregateData_AggPeriods method");
+                System.out.println("Inside generateOrgUnitLevelData_GenerateAggregateData_AggPeriods method: " + new Date());
                 generateOrgUnitLevelData_GenerateAggregateData_AggPeriods();
             }
             else if ( aggData.equalsIgnoreCase( USECAPTUREDDATA ) && aggPeriodCB == null )
@@ -708,7 +739,7 @@ public class GenerateTabularAnalysisResultAction
         Collection<Integer> periodIds = new ArrayList<Integer>( getIdentifiers(Period.class, periods ) );
         periodIdsByComma = getCommaDelimitedString( periodIds );
         
-        System.out.println("PeriodIds: "+ periodIdsByComma );
+        //System.out.println("PeriodIds: "+ periodIdsByComma );
         
         for ( String service : selectedServices )
         {
@@ -729,7 +760,10 @@ public class GenerateTabularAnalysisResultAction
         }
         
         String indicaotrDes = reportService.getDataelementIdsAsString( indicatorList );
-        dataElementIdsByComma += "," + indicaotrDes;
+        //System.out.println("indicaotrDes: "+ indicaotrDes );
+		
+		if( indicaotrDes != null && !indicaotrDes.trim().equals( "" ) )
+			dataElementIdsByComma += "," + indicaotrDes;
     }
 
     // -------------------------------------------------------------------------
@@ -741,8 +775,6 @@ public class GenerateTabularAnalysisResultAction
         int headerRow = 0;
         int headerCol = 0;
 
-        //String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
-        //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
         String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator +  Configuration_IN.DEFAULT_TEMPFOLDER;
         File newdir = new File( outputReportPath );
         if( !newdir.exists() )
@@ -796,17 +828,37 @@ public class GenerateTabularAnalysisResultAction
         DataElementCategoryOptionCombo selDecoc = new DataElementCategoryOptionCombo();
         int flag = 0;
 
+        List<Integer> periodIds = new ArrayList<Integer>();
+        for( Integer periodMapKey : periodMap.keySet() )
+        {
+        	periodIds.addAll( periodMap.get( periodMapKey ) );
+        }
+        periodIdsByComma = getCommaDelimitedString( periodIds );
+        
+        int periodCount = 0;
+        long totalDiffDays = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            Date eDate = selEndPeriodList.get( periodCount++ );
+            
+            long diff = eDate.getTime() - sDate.getTime();
+            long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
+            totalDiffDays += diffDays;
+        }
+
         List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
         orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
         
-        Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getDataFromDataValueTableByPeriodAgg( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
-    
+        Map<String, String> aggDataMap = new HashMap<String, String>( );
+        System.out.println("Before getting UseCaptured Data : " + new Date() );
+        aggDataMap.putAll( reportService.getCapturedDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        System.out.println("After getting UseCaptured Data : " + new Date() + " ---- " + aggDataMap.size() );
+        
         /* Calculation Part */
         int rowCount = 1;
         int colCount = 0;
         for( OrganisationUnit ou : selOUList )
         {
-            System.out.println("Entered into orgunitloop :"+new Date());
             sheet0.addCell( new Number( headerCol, headerRow + rowCount, rowCount, getCellFormat2() ) );
             
             Integer level = orgunitLevelMap.get( ou.getId() );
@@ -841,20 +893,29 @@ public class GenerateTabularAnalysisResultAction
                     
                     try
                     {
-                        numValue = Double.parseDouble( getAggValByOrgUnit( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
+                        numValue = Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
                     }
                     catch( Exception e )
                     {
+                    	numValue = 0.0;
                     }
                     
-                    try
+                    if( !selIndicator.getDenominator().trim().equals( "1" ) )
                     {
-                        denValue = Double.parseDouble( getAggValByOrgUnit( selIndicator.getDenominator(), aggDataMap, ou.getId() ) );
+	                    try
+	                    {
+	                        denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), totalDiffDays ) );
+	                    }
+	                    catch( Exception e )
+	                    {
+	                    	denValue = 0.0;
+	                    }
                     }
-                    catch( Exception e )
+                    else 
                     {
+                        denValue = 1.0;
                     }
-                    
+
                     try
                     {
                         if( denValue != 0.0 )
@@ -888,7 +949,7 @@ public class GenerateTabularAnalysisResultAction
                         
                         if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                         {
-                            tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+selDecoc.getId() );
+                            tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
                             if( tempStr != null )
                             {
                                 try
@@ -917,7 +978,7 @@ public class GenerateTabularAnalysisResultAction
                         {
                             for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                             {
-                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+optionCombo.getId() );
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+optionCombo.getUid() );
                                 if( tempStr != null )
                                 {
                                     try
@@ -970,9 +1031,6 @@ public class GenerateTabularAnalysisResultAction
     {
         int headerRow = 0;
         int headerCol = 0;
-
-        //String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
-        //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
         
         String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator +  Configuration_IN.DEFAULT_TEMPFOLDER;
         File newdir = new File( outputReportPath );
@@ -1014,10 +1072,33 @@ public class GenerateTabularAnalysisResultAction
         DataElementCategoryOptionCombo selDecoc = new DataElementCategoryOptionCombo();
         int flag = 0;
 
+		List<Integer> periodIds = new ArrayList<Integer>();
+        for( Integer periodMapKey : periodMap.keySet() )
+        {
+        	periodIds.addAll( periodMap.get( periodMapKey ) );
+        }
+        periodIdsByComma = getCommaDelimitedString( periodIds );
+        
+        int periodCount = 0;
+        long totalDiffDays = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            Date eDate = selEndPeriodList.get( periodCount++ );
+            
+            long diff = eDate.getTime() - sDate.getTime();
+            long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
+            totalDiffDays += diffDays;
+        }
+
         List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
         orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
         
-        Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getDataFromDataValueTableByPeriodAgg( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        //Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getDataFromDataValueTableByPeriodAgg( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        Map<String, String> aggDataMap = new HashMap<String, String>( );
+        System.out.println("Before getting UseCaptured Data : " + new Date() );
+        aggDataMap.putAll( reportService.getCapturedDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        System.out.println("After getting UseCaptured Data : " + new Date() + " ---- " + aggDataMap.size() );
+
     
         /* Calculation Part */
         int rowCount = 1;
@@ -1069,18 +1150,27 @@ public class GenerateTabularAnalysisResultAction
                     
                     try
                     {
-                        numValue = Double.parseDouble( getAggValByOrgUnit( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
+                        numValue = Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
                     }
                     catch( Exception e )
                     {
+                    	numValue = 0.0;
                     }
                     
-                    try
+                    if( !selIndicator.getDenominator().trim().equals( "1" ) )
                     {
-                        denValue = Double.parseDouble( getAggValByOrgUnit( selIndicator.getDenominator(), aggDataMap, ou.getId() ) );
+	                    try
+	                    {
+	                        denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), totalDiffDays ) );
+	                    }
+	                    catch( Exception e )
+	                    {
+	                    	denValue = 0.0;
+	                    }
                     }
-                    catch( Exception e )
+                    else 
                     {
+                        denValue = 1.0;
                     }
                     
                     try
@@ -1116,7 +1206,7 @@ public class GenerateTabularAnalysisResultAction
                         
                         if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                         {
-                            tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+selDecoc.getId() );
+                            tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
                             if( tempStr != null )
                             {
                                 try
@@ -1145,7 +1235,7 @@ public class GenerateTabularAnalysisResultAction
                         {
                             for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                             {
-                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+optionCombo.getId() );
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+optionCombo.getUid() );
                                 if( tempStr != null )
                                 {
                                     try
@@ -1383,7 +1473,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -1436,7 +1527,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -1705,8 +1797,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement,
-                                        tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou, selDecoc );
 
                                     if ( dataValue != null )
                                     {
@@ -1783,9 +1875,10 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if ( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement,
-                                            tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
 
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
+                                        
                                         if ( dataValue != null )
                                         {
                                             tempStr += dataValue.getValue() + " : ";
@@ -2097,8 +2190,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement,
-                                        tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  selDecoc );
 
                                     if ( dataValue != null )
                                     {
@@ -2149,8 +2242,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if ( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement,
-                                            tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -2274,9 +2367,6 @@ public class GenerateTabularAnalysisResultAction
         int headerRow = 0;
         int headerCol = 0;
 
-        //String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
-        //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
-        
         String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator +  Configuration_IN.DEFAULT_TEMPFOLDER;
         File newdir = new File( outputReportPath );
         if( !newdir.exists() )
@@ -2335,19 +2425,39 @@ public class GenerateTabularAnalysisResultAction
         List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
         orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
         
-        Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getDataFromDataValueTable( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        Map<String, Map<String, String>> aggDataMapByPeriod = new HashMap<String, Map<String, String>>();
+        
+        System.out.println("Before getting Captured Data : " + new Date() );
+        
+        SimpleDateFormat standardDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int pCount = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            String startDate = standardDateFormat.format( sDate );
+        	List<Integer> periodIds = new ArrayList<Integer>( periodMap.get( pCount++ ) );
+            periodIdsByComma = getCommaDelimitedString( periodIds );
+        	
+            Map<String, String> tempAggDataMap = reportService.getCapturedDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma );
+            if( tempAggDataMap == null )
+            {
+            	tempAggDataMap = new HashMap<String, String>();
+            }
+            aggDataMapByPeriod.put( startDate, tempAggDataMap );
+        }
+        System.out.println("After getting Captured Data : " + new Date() );
     
         /* Calculation Part */
         int rowCount = 1;
         int colCount = 0;
         for( OrganisationUnit ou : selOUList )
         {
-            System.out.println("Entered into orgunitloop :"+new Date());
             sheet0.addCell( new Number( headerCol, headerRow + 1 + rowCount, rowCount, getCellFormat2() ) );
             
             Integer level = orgunitLevelMap.get( ou.getId() );
             if( level == null )
+            {
                 level = organisationUnitService.getLevelOfOrganisationUnit( ou.getId() );
+            }
             
             colCount = 1 + level - minOULevel;
             sheet0.addCell( new Label( colCount, headerRow + 1 + rowCount, ou.getName(), getCellFormat2() ) );
@@ -2397,9 +2507,13 @@ public class GenerateTabularAnalysisResultAction
                 for ( Date sDate : selStartPeriodList )
                 {
                     Date eDate = selEndPeriodList.get( periodCount );
-                
-                    Collection<Integer> periodIds = new ArrayList<Integer>( periodMap.get( periodCount ) );
-                    System.out.println( periodIds );
+
+                    long diff = eDate.getTime() - sDate.getTime();
+                    long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
+
+                    String keyDate = standardDateFormat.format( sDate );
+
+                    Map<String, String> aggDataMap = new HashMap<String, String>( aggDataMapByPeriod.get( keyDate ) );
 
                     double pwdvAggValue = 0.0;
                     double pwdAggIndValue = 0.0;
@@ -2410,46 +2524,34 @@ public class GenerateTabularAnalysisResultAction
                         Double numValue = 0.0;
                         Double denValue = 0.0;
                         Double indValue = 0.0;
-                        for( Integer periodId : periodIds )
-                        {
-                            try
-                            {
-                                numValue += Double.parseDouble( getAggVal( selIndicator.getNumerator(), aggDataMap, ou.getId(), periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                                numValue = 0.0;
-                            }
-                            Double tempDenValue = 0.0;
-                            try
-                            {
-                                //denValue += Double.parseDouble( getAggVal( selIndicator.getDenominator(), aggDataMap, ou.getId(), periodId ) );
-                                tempDenValue = Double.parseDouble( getAggVal( selIndicator.getDenominator(), aggDataMap, ou.getId(), periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                                tempDenValue =1.0;
-                            }
-                            if( !selIndicator.getDenominator().trim().equals( "1" ) )
-                            {
-                                denValue += tempDenValue;
-                            }
-                            else 
-                            {
-                                denValue = 1.0;
-                            }
-                        }
-                        
                         try
                         {
-                            if( denValue != 0.0 )
-                            {
-                                indValue = ( numValue / denValue ) * selIndicator.getIndicatorType().getFactor();
-                            }
-                            else
-                            {
-                                indValue = 0.0;
-                            }
+                            numValue += Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
+                        }
+                        catch( Exception e )
+                        {
+                            numValue = 0.0;
+                        }
+                        
+                        if ( !selIndicator.getDenominator().trim().equals( "1" ) )
+                        {
+                            denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), diffDays ) );;
+                        }
+                        else 
+                        {
+                            denValue = 1.0;
+                        }
+
+                        try
+                        {
+	                        if( denValue != 0.0 )
+	                        {
+	                            indValue = ( numValue / denValue ) * selIndicator.getIndicatorType().getFactor();
+	                        }
+	                        else
+	                        {
+	                            indValue = 0.0;
+	                        }
                         }
                         catch( Exception e )
                         {
@@ -2466,18 +2568,15 @@ public class GenerateTabularAnalysisResultAction
                         {
                             if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                             {
-                                for( Integer periodId : periodIds )
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
+                                if( tempStr != null )
                                 {
-                                    tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+selDecoc.getId()+":"+periodId );
-                                    if( tempStr != null )
+                                    try
                                     {
-                                        try
-                                        {
-                                            pwdvAggValue += Double.parseDouble( tempStr );
-                                        }
-                                        catch( Exception e )
-                                        {
-                                        }
+                                        pwdvAggValue += Double.parseDouble( tempStr );
+                                    }
+                                    catch( Exception e )
+                                    {
                                     }
                                 }
                                 tempStr = "" + (int) pwdvAggValue;
@@ -2488,7 +2587,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod,  ou, selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -2513,18 +2613,15 @@ public class GenerateTabularAnalysisResultAction
                             {
                                 for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                                 {
-                                    for( Integer periodId : periodIds )
+                                    tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+optionCombo.getUid() );
+                                    if( tempStr != null )
                                     {
-                                        tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+optionCombo.getId()+":"+periodId );
-                                        if( tempStr != null )
+                                        try
                                         {
-                                            try
-                                            {
-                                                pwdvAggValue += Double.parseDouble( tempStr );
-                                            }
-                                            catch( Exception e )
-                                            {
-                                            }
+                                            pwdvAggValue += Double.parseDouble( tempStr );
+                                        }
+                                        catch( Exception e )
+                                        {
                                         }
                                     }
                                 }
@@ -2541,7 +2638,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -2609,9 +2707,6 @@ public class GenerateTabularAnalysisResultAction
         int startRow = 0;
         int headerRow = 0;
         int headerCol = 0;
-
-        //String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
-        //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
         
         String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator +  Configuration_IN.DEFAULT_TEMPFOLDER;
         File newdir = new File( outputReportPath );
@@ -2657,7 +2752,25 @@ public class GenerateTabularAnalysisResultAction
         List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
         orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
         
-        Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getDataFromDataValueTable( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        Map<String, Map<String, String>> aggDataMapByPeriod = new HashMap<String, Map<String, String>>();
+        SimpleDateFormat standardDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int pCount = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            String startDate = standardDateFormat.format( sDate );
+        	List<Integer> periodIds = new ArrayList<Integer>( periodMap.get( pCount++ ) );
+            periodIdsByComma = getCommaDelimitedString( periodIds );
+        	
+            Map<String, String> tempAggDataMap = reportService.getCapturedDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma );
+            if( tempAggDataMap == null )
+            {
+            	tempAggDataMap = new HashMap<String, String>();
+            }
+            aggDataMapByPeriod.put( startDate, tempAggDataMap );
+        }
+
+
+        //Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getDataFromDataValueTable( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
     
         /* Calculation Part */
         int rowCount = 1;
@@ -2730,9 +2843,13 @@ public class GenerateTabularAnalysisResultAction
                 {
                     Date eDate = selEndPeriodList.get( periodCount );
                 
-                    Collection<Integer> periodIds = new ArrayList<Integer>( periodMap.get( periodCount ) );
-                    System.out.println( periodIds );
+                    long diff = eDate.getTime() - sDate.getTime();
+                    long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
 
+					String keyDate = standardDateFormat.format( sDate );
+					
+					Map<String, String> aggDataMap = new HashMap<String, String>( aggDataMapByPeriod.get( keyDate ) );
+					
                     double pwdvAggValue = 0.0;
                     double pwdAggIndValue = 0.0;
 
@@ -2742,45 +2859,35 @@ public class GenerateTabularAnalysisResultAction
                         Double numValue = 0.0;
                         Double denValue = 0.0;
                         Double indValue = 0.0;
-                        for( Integer periodId : periodIds )
-                        {
-                            try
-                            {
-                                numValue += Double.parseDouble( getAggVal( selIndicator.getNumerator(), aggDataMap, ou.getId(), periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                            }
-                            Double tempDenValue = 0.0;
-                            try
-                            {
-                                //denValue += Double.parseDouble( getAggVal( selIndicator.getDenominator(), aggDataMap, ou.getId(), periodId ) );
-                                tempDenValue = Double.parseDouble( getAggVal( selIndicator.getDenominator(), aggDataMap, ou.getId(), periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                                tempDenValue = 1.0;
-                            }
-                            if( !selIndicator.getDenominator().trim().equals( "1" ) )
-                            {
-                                denValue += tempDenValue;
-                            }
-                            else 
-                            {
-                                denValue = 1.0;
-                            }
-                        }
-                        
+						
                         try
                         {
-                            if( denValue != 0.0 )
-                            {
-                                indValue = ( numValue / denValue ) * selIndicator.getIndicatorType().getFactor();
-                            }
-                            else
-                            {
-                                indValue = 0.0;
-                            }
+                            numValue += Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
+                        }
+                        catch( Exception e )
+                        {
+                            numValue = 0.0;
+                        }
+                        
+                        if ( !selIndicator.getDenominator().trim().equals( "1" ) )
+                        {
+                            denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), diffDays ) );;
+                        }
+                        else 
+                        {
+                            denValue = 1.0;
+                        }
+						
+                        try
+                        {
+	                        if( denValue != 0.0 )
+	                        {
+	                            indValue = ( numValue / denValue ) * selIndicator.getIndicatorType().getFactor();
+	                        }
+	                        else
+	                        {
+	                            indValue = 0.0;
+	                        }
                         }
                         catch( Exception e )
                         {
@@ -2797,18 +2904,15 @@ public class GenerateTabularAnalysisResultAction
                         {
                             if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                             {
-                                for( Integer periodId : periodIds )
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
+                                if( tempStr != null )
                                 {
-                                    tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+selDecoc.getId()+":"+periodId );
-                                    if( tempStr != null )
+                                    try
                                     {
-                                        try
-                                        {
-                                            pwdvAggValue += Double.parseDouble( tempStr );
-                                        }
-                                        catch( Exception e )
-                                        {
-                                        }
+                                        pwdvAggValue += Double.parseDouble( tempStr );
+                                    }
+                                    catch( Exception e )
+                                    {
                                     }
                                 }
                                 tempStr = "" + (int) pwdvAggValue;
@@ -2819,8 +2923,9 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
-
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou, selDecoc );
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
                                         tempStr = dataValue.getValue();
@@ -2844,18 +2949,15 @@ public class GenerateTabularAnalysisResultAction
                             {
                                 for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                                 {
-                                    for( Integer periodId : periodIds )
+                                    tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+optionCombo.getUid() );
+                                    if( tempStr != null )
                                     {
-                                        tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getId()+":"+optionCombo.getId()+":"+periodId );
-                                        if( tempStr != null )
+                                        try
                                         {
-                                            try
-                                            {
-                                                pwdvAggValue += Double.parseDouble( tempStr );
-                                            }
-                                            catch( Exception e )
-                                            {
-                                            }
+                                            pwdvAggValue += Double.parseDouble( tempStr );
+                                        }
+                                        catch( Exception e )
+                                        {
                                         }
                                     }
                                 }
@@ -2872,7 +2974,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -3393,9 +3496,7 @@ public class GenerateTabularAnalysisResultAction
         selOrgUnit = organisationUnitService.getOrganisationUnit( Integer.parseInt( orgUnitListCB.get( 0 ) ) );
         selOUList = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( selOrgUnit.getId() ) );
 
-        System.out.println( "Before getting orgunitlevelmap "+new Date() );
         Map<Integer, Integer> orgunitLevelMap = new HashMap<Integer, Integer>( reportService.getOrgunitLevelMap() );
-        System.out.println( "After getting orgunitlevelmap "+new Date() );
     
         Iterator<OrganisationUnit> ouIterator = selOUList.iterator();
         while ( ouIterator.hasNext() )
@@ -3432,25 +3533,49 @@ public class GenerateTabularAnalysisResultAction
         DataElementCategoryOptionCombo selDecoc = new DataElementCategoryOptionCombo();
         int flag = 0;
 
+        List<Integer> periodIds = new ArrayList<Integer>();
+        for( Integer periodMapKey : periodMap.keySet() )
+        {
+        	periodIds.addAll( periodMap.get( periodMapKey ) );
+        }
+        periodIdsByComma = getCommaDelimitedString( periodIds );
+        
+        int periodCount = 0;
+        long totalDiffDays = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            Date eDate = selEndPeriodList.get( periodCount++ );
+            
+            long diff = eDate.getTime() - sDate.getTime();
+            long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
+            totalDiffDays += diffDays;
+        }
+        
+        List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
+        orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
+        
+        Map<String, String> aggDataMap = new HashMap<String, String>();
+        
+        System.out.println("Before getting Aggregated Data : " + new Date() );
+        aggDataMap.putAll( reportService.getAggDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        System.out.println("After getting Aggregated Data : " + new Date() + " ---- " + aggDataMap.size() );
+
         /* Calculation Part */
         int rowCount = 1;
         int colCount = 0;
         for( OrganisationUnit ou : selOUList )
         {
-            System.out.println("Entered into orgunitloop :"+new Date());
             sheet0.addCell( new Number( headerCol, headerRow + rowCount, rowCount, getCellFormat2() ) );
             
             Integer level = orgunitLevelMap.get( ou.getId() );
             if( level == null )
+            {
                 level = organisationUnitService.getLevelOfOrganisationUnit( ou.getId() );
+            }
             
             colCount = 1 + level - minOULevel;
             sheet0.addCell( new Label( colCount, headerRow + rowCount, ou.getName(), getCellFormat2() ) );
 
-            List<OrganisationUnit> ouChildList = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( ou.getId() ) );
-            List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, ouChildList ) );
-            orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
-            Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getAggDataFromDataValueTable( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
             colCount = c1;
             int deListCount = 0;
             int indListCount = 0;
@@ -3476,7 +3601,7 @@ public class GenerateTabularAnalysisResultAction
                     
                     try
                     {
-                        numValue = Double.parseDouble( reportService.getAggVal( selIndicator.getNumerator(), aggDataMap ) );
+                        numValue = Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
                     }
                     catch( Exception e )
                     {
@@ -3487,7 +3612,7 @@ public class GenerateTabularAnalysisResultAction
                     {
                         try
                         {
-                            denValue = Double.parseDouble( reportService.getAggVal( selIndicator.getDenominator(), aggDataMap ) );
+                            denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), totalDiffDays ) );
                         }
                         catch( Exception e )
                         {
@@ -3499,15 +3624,6 @@ public class GenerateTabularAnalysisResultAction
                         denValue = 1.0;
                     }
                    
-                   /*
-                    try
-                    {
-                        denValue = Double.parseDouble( reportService.getAggVal( selIndicator.getDenominator(), aggDataMap ) );
-                    }
-                    catch( Exception e )
-                    {
-                    }
-                   */
                     try
                     {
                         if( denValue != 0.0 )
@@ -3541,7 +3657,7 @@ public class GenerateTabularAnalysisResultAction
                         
                         if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                         {
-                            tempStr = aggDataMap.get( selDataElement.getId()+"."+selDecoc.getId() );
+                            tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
                             if( tempStr != null )
                             {
                                 try
@@ -3570,7 +3686,7 @@ public class GenerateTabularAnalysisResultAction
                         {
                             for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                             {
-                                tempStr = aggDataMap.get( selDataElement.getId()+"."+optionCombo.getId() );
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+optionCombo.getUid() );
                                 if( tempStr != null )
                                 {
                                     try
@@ -3666,6 +3782,33 @@ public class GenerateTabularAnalysisResultAction
         DataElement selDataElement = new DataElement();
         DataElementCategoryOptionCombo selDecoc = new DataElementCategoryOptionCombo();
         int flag = 0;
+		
+		List<Integer> periodIds = new ArrayList<Integer>();
+        for( Integer periodMapKey : periodMap.keySet() )
+        {
+        	periodIds.addAll( periodMap.get( periodMapKey ) );
+        }
+        periodIdsByComma = getCommaDelimitedString( periodIds );
+        
+        int periodCount = 0;
+        long totalDiffDays = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            Date eDate = selEndPeriodList.get( periodCount++ );
+            
+            long diff = eDate.getTime() - sDate.getTime();
+            long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
+            totalDiffDays += diffDays;
+        }
+        
+        List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
+        orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
+        
+        Map<String, String> aggDataMap = new HashMap<String, String>();
+        
+        System.out.println("Before getting Aggregated Data : " + new Date() );
+        aggDataMap.putAll( reportService.getAggDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
+        System.out.println("After getting Aggregated Data : " + new Date() + " ---- " + aggDataMap.size() );
 
         /* Calculation Part */
         int rowCount = 1;
@@ -3692,11 +3835,13 @@ public class GenerateTabularAnalysisResultAction
                 count1++;
             }
 
+			/*
             List<OrganisationUnit> ouChildList = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( ou.getId() ) );
             List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, ouChildList ) );
             orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
             Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getAggDataFromDataValueTable( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
-            
+            */
+			
             colCount = c1;
             int deListCount = 0;
             int indListCount = 0;
@@ -3722,17 +3867,18 @@ public class GenerateTabularAnalysisResultAction
                     
                     try
                     {
-                        numValue = Double.parseDouble( reportService.getAggVal( selIndicator.getNumerator(), aggDataMap ) );
+                        numValue = Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
                     }
                     catch( Exception e )
                     {
                         numValue = 0.0;
                     }
+                   
                     if( !selIndicator.getDenominator().trim().equals( "1" ) )
                     {
                         try
                         {
-                            denValue = Double.parseDouble( reportService.getAggVal( selIndicator.getDenominator(), aggDataMap ) );
+                            denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), totalDiffDays ) );
                         }
                         catch( Exception e )
                         {
@@ -3742,16 +3888,7 @@ public class GenerateTabularAnalysisResultAction
                     else 
                     {
                         denValue = 1.0;
-                    }
-                    /*
-                    try
-                    {
-                        denValue = Double.parseDouble( reportService.getAggVal( selIndicator.getDenominator(), aggDataMap ) );
-                    }
-                    catch( Exception e )
-                    {
-                    }
-                    */
+                    }                    
                     
                     try
                     {
@@ -3786,7 +3923,7 @@ public class GenerateTabularAnalysisResultAction
                         
                         if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                         {
-                            tempStr = aggDataMap.get( selDataElement.getId()+"."+selDecoc.getId() );
+                            tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
                             if( tempStr != null )
                             {
                                 try
@@ -3815,7 +3952,7 @@ public class GenerateTabularAnalysisResultAction
                         {
                             for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                             {
-                                tempStr = aggDataMap.get( selDataElement.getId()+"."+optionCombo.getId() );
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+optionCombo.getUid() );
                                 if( tempStr != null )
                                 {
                                     try
@@ -3870,9 +4007,6 @@ public class GenerateTabularAnalysisResultAction
         int headerRow = 0;
         int headerCol = 0;
 
-        //String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
-        //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
-        
         String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator +  Configuration_IN.DEFAULT_TEMPFOLDER;
         File newdir = new File( outputReportPath );
         if( !newdir.exists() )
@@ -3927,34 +4061,56 @@ public class GenerateTabularAnalysisResultAction
         DataElement selDataElement = new DataElement();
         DataElementCategoryOptionCombo selDecoc = new DataElementCategoryOptionCombo();
         int flag = 0;
-
+        
+        List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
+        orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
+        
+        Map<String, Map<String, String>> aggDataMapByPeriod = new HashMap<String, Map<String, String>>();
+        
+        System.out.println("Before getting Aggregated Data : " + new Date() );
+        
+        SimpleDateFormat standardDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int pCount = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            //Date eDate = selEndPeriodList.get( pCount++ );
+            String startDate = standardDateFormat.format( sDate );
+            //String endDate = standardDateFormat.format( eDate );
+        	List<Integer> periodIds = new ArrayList<Integer>( periodMap.get( pCount++ ) );
+            periodIdsByComma = getCommaDelimitedString( periodIds );
+        	
+            Map<String, String> tempAggDataMap = reportService.getAggDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma );
+            if( tempAggDataMap == null )
+            {
+            	tempAggDataMap = new HashMap<String, String>();
+            }
+            aggDataMapByPeriod.put( startDate, tempAggDataMap );
+        }
+        System.out.println("After getting Aggregated Data : " + new Date() );
+        
         /* Calculation Part */
         int rowCount = 1;
         int colCount = 0;
         for( OrganisationUnit ou : selOUList )
-        {
-            System.out.println( ou.getName() +" : "+ new Date());
+        {            
             sheet0.addCell( new Number( headerCol, headerRow + 1 + rowCount, rowCount, getCellFormat2() ) );
             
             Integer level = orgunitLevelMap.get( ou.getId() );
             if( level == null )
+            {
                 level = organisationUnitService.getLevelOfOrganisationUnit( ou.getId() );
+            }
             
             colCount = 1 + level - minOULevel;
             sheet0.addCell( new Label( colCount, headerRow + 1 + rowCount, ou.getName(), getCellFormat2() ) );
 
-            List<OrganisationUnit> ouChildList = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( ou.getId() ) );
-            List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, ouChildList ) );
-            orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
-            Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getAggDataFromDataValueTableByDeAndPeriodwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
-            
             colCount = c1;
             int deListCount = 0;
             int indListCount = 0;
             int serviceListCount = 0;
             for( String serviceType : serviceTypeList )
             {
-                if ( serviceType.equalsIgnoreCase( "I" ) )
+                if( serviceType.equalsIgnoreCase( "I" ) )
                 {
                     flag = 1;
                     selIndicator = indicatorList.get( indListCount );
@@ -3993,9 +4149,14 @@ public class GenerateTabularAnalysisResultAction
                 for ( Date sDate : selStartPeriodList )
                 {
                     Date eDate = selEndPeriodList.get( periodCount );
-                
-                    Collection<Integer> periodIds = new ArrayList<Integer>( periodMap.get( periodCount ) );
+                    
+                    long diff = eDate.getTime() - sDate.getTime();
+                    long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
+                    
+                    String keyDate = standardDateFormat.format( sDate );
 
+                    Map<String, String> aggDataMap = new HashMap<String, String>( aggDataMapByPeriod.get( keyDate ) );
+                    
                     double pwdvAggValue = 0.0;
                     double pwdAggIndValue = 0.0;
 
@@ -4006,34 +4167,22 @@ public class GenerateTabularAnalysisResultAction
                         Double denValue = 0.0;
                         Double indValue = 0.0;
                         
-                        for( Integer periodId : periodIds )
+                        try
                         {
-                            try
-                            {
-                                numValue += Double.parseDouble( getAggValByPeriod( selIndicator.getNumerator(), aggDataMap, periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                                numValue = 0.0;
-                            }
-                            Double tempDenValue = 0.0;
-                            try
-                            {
-                               // denValue += Double.parseDouble( getAggValByPeriod( selIndicator.getDenominator(), aggDataMap, periodId ) );
-                                tempDenValue = Double.parseDouble( getAggValByPeriod( selIndicator.getDenominator(), aggDataMap, periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                                tempDenValue = 1.0;
-                            }
-                            if ( !selIndicator.getDenominator().trim().equals( "1" ) )
-                            {
-                                denValue += tempDenValue;
-                            }
-                            else 
-                            {
-                                denValue = 1.0;
-                            }
+                            numValue = Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
+                        }
+                        catch( Exception e )
+                        {
+                            numValue = 0.0;
+                        }
+                        
+                        if ( !selIndicator.getDenominator().trim().equals( "1" ) )
+                        {
+                            denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), diffDays ) );;
+                        }
+                        else 
+                        {
+                            denValue = 1.0;
                         }
                         
                         try
@@ -4062,18 +4211,15 @@ public class GenerateTabularAnalysisResultAction
                         {
                             if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                             {
-                                for( Integer periodId : periodIds )
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
+                                if( tempStr != null )
                                 {
-                                    tempStr = aggDataMap.get( selDataElement.getId()+":"+selDecoc.getId()+":"+periodId );
-                                    if( tempStr != null )
+                                    try
                                     {
-                                        try
-                                        {
-                                            pwdvAggValue += Double.parseDouble( tempStr );
-                                        }
-                                        catch( Exception e )
-                                        {
-                                        }
+                                        pwdvAggValue += Double.parseDouble( tempStr );
+                                    }
+                                    catch( Exception e )
+                                    {
                                     }
                                 }
                                 tempStr = "" + (int) pwdvAggValue;
@@ -4084,7 +4230,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -4109,18 +4256,15 @@ public class GenerateTabularAnalysisResultAction
                             {
                                 for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                                 {
-                                    for( Integer periodId : periodIds )
+                                    tempStr = aggDataMap.get( ou.getId() + ":" +selDataElement.getUid()+":"+optionCombo.getUid() );
+                                    if( tempStr != null )
                                     {
-                                        tempStr = aggDataMap.get( selDataElement.getId()+":"+optionCombo.getId()+":"+periodId );
-                                        if( tempStr != null )
+                                        try
                                         {
-                                            try
-                                            {
-                                                pwdvAggValue += Double.parseDouble( tempStr );
-                                            }
-                                            catch( Exception e )
-                                            {
-                                            }
+                                            pwdvAggValue += Double.parseDouble( tempStr );
+                                        }
+                                        catch( Exception e )
+                                        {
                                         }
                                     }
                                 }
@@ -4137,8 +4281,9 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
-
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
+                                        
                                         if ( dataValue != null )
                                         {
                                             tempStr += dataValue.getValue() + " : ";
@@ -4205,9 +4350,6 @@ public class GenerateTabularAnalysisResultAction
         int startRow = 0;
         int headerRow = 0;
         int headerCol = 0;
-
-        //String raFolderName = configurationService.getConfigurationByKey( Configuration_IN.KEY_REPORTFOLDER ).getValue();
-        //String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator + raFolderName + File.separator + "output" + File.separator + UUID.randomUUID().toString() + ".xls";
         
         String outputReportPath = System.getenv( "DHIS2_HOME" ) + File.separator +  Configuration_IN.DEFAULT_TEMPFOLDER;
         File newdir = new File( outputReportPath );
@@ -4251,6 +4393,32 @@ public class GenerateTabularAnalysisResultAction
         DataElementCategoryOptionCombo selDecoc = new DataElementCategoryOptionCombo();
         int flag = 0;
 
+		List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, selOUList ) );
+        orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
+        
+        Map<String, Map<String, String>> aggDataMapByPeriod = new HashMap<String, Map<String, String>>();
+        
+        System.out.println("Before getting Aggregated Data : " + new Date() );
+        
+        SimpleDateFormat standardDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int pCount = 0;
+        for ( Date sDate : selStartPeriodList )
+        {
+            //Date eDate = selEndPeriodList.get( pCount++ );
+            String startDate = standardDateFormat.format( sDate );
+            //String endDate = standardDateFormat.format( eDate );
+        	List<Integer> periodIds = new ArrayList<Integer>( periodMap.get( pCount++ ) );
+            periodIdsByComma = getCommaDelimitedString( periodIds );
+        	
+            Map<String, String> tempAggDataMap = reportService.getAggDataFromDataValueTableByDeAndOrgUnitwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma );
+            if( tempAggDataMap == null )
+            {
+            	tempAggDataMap = new HashMap<String, String>();
+            }
+            aggDataMapByPeriod.put( startDate, tempAggDataMap );
+        }
+        System.out.println("After getting Aggregated Data : " + new Date() );
+       
         /* Calculation Part */
         int rowCount = 1;
         int colCount = 0;
@@ -4275,12 +4443,13 @@ public class GenerateTabularAnalysisResultAction
                 sheet0.addCell( new Label( colCount-count1, headerRow + rowCount + 1, orgUnit.getName(), getCellFormat2() ) );
                 count1++;
             }
-
+/*
             List<OrganisationUnit> ouChildList = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitWithChildren( ou.getId() ) );
             List<Integer> orgUnitIds = new ArrayList<Integer>( getIdentifiers(OrganisationUnit.class, ouChildList ) );
             orgUnitIdsByComma = getCommaDelimitedString( orgUnitIds );
             Map<String, String> aggDataMap = new HashMap<String, String>( reportService.getAggDataFromDataValueTableByDeAndPeriodwise( orgUnitIdsByComma, dataElementIdsByComma, periodIdsByComma ) );
-            
+            */
+			
             colCount = c1;
             int deListCount = 0;
             int indListCount = 0;
@@ -4327,7 +4496,12 @@ public class GenerateTabularAnalysisResultAction
                 {
                     Date eDate = selEndPeriodList.get( periodCount );
                 
-                    Collection<Integer> periodIds = new ArrayList<Integer>( periodMap.get( periodCount ) );
+                    long diff = eDate.getTime() - sDate.getTime();
+                    long diffDays = ( diff / (24 * 60 * 60 * 1000) )+1;
+                    
+                    String keyDate = standardDateFormat.format( sDate );
+
+                    Map<String, String> aggDataMap = new HashMap<String, String>( aggDataMapByPeriod.get( keyDate ) );
 
                     double pwdvAggValue = 0.0;
                     double pwdAggIndValue = 0.0;
@@ -4338,34 +4512,22 @@ public class GenerateTabularAnalysisResultAction
                         Double numValue = 0.0;
                         Double denValue = 0.0;
                         Double indValue = 0.0;
-                        for( Integer periodId : periodIds )
+                        try
                         {
-                            try
-                            {
-                                numValue += Double.parseDouble( getAggValByPeriod( selIndicator.getNumerator(), aggDataMap, periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                                numValue = 0.0;
-                            }
-                            Double tempDenValue = 0.0;
-                            try
-                            {
-                                //denValue += Double.parseDouble( getAggValByPeriod( selIndicator.getDenominator(), aggDataMap, periodId ) );
-                                tempDenValue = Double.parseDouble( getAggValByPeriod( selIndicator.getDenominator(), aggDataMap, periodId ) );
-                            }
-                            catch( Exception e )
-                            {
-                                tempDenValue = 1.0;
-                            }
-                            if ( !selIndicator.getDenominator().trim().equals( "1" ) )
-                            {
-                                denValue += tempDenValue;
-                            }
-                            else 
-                            {
-                                denValue = 1.0;
-                            }
+                            numValue = Double.parseDouble( getAggValByOrgUnit_UID( selIndicator.getNumerator(), aggDataMap, ou.getId() ) );
+                        }
+                        catch( Exception e )
+                        {
+                            numValue = 0.0;
+                        }
+                        
+                        if ( !selIndicator.getDenominator().trim().equals( "1" ) )
+                        {
+                            denValue = Double.parseDouble( getDenominatorValueByOrgUnit_UID( selIndicator.getDenominator(), aggDataMap, ou.getId(), diffDays ) );;
+                        }
+                        else 
+                        {
+                            denValue = 1.0;
                         }
                         
                         try
@@ -4394,18 +4556,15 @@ public class GenerateTabularAnalysisResultAction
                         {
                             if ( selDataElement.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) )
                             {
-                                for( Integer periodId : periodIds )
+                                tempStr = aggDataMap.get( ou.getId()+":"+selDataElement.getUid()+":"+selDecoc.getUid() );
+                                if( tempStr != null )
                                 {
-                                    tempStr = aggDataMap.get( selDataElement.getId()+":"+selDecoc.getId()+":"+periodId );
-                                    if( tempStr != null )
+                                    try
                                     {
-                                        try
-                                        {
-                                            pwdvAggValue += Double.parseDouble( tempStr );
-                                        }
-                                        catch( Exception e )
-                                        {
-                                        }
+                                        pwdvAggValue += Double.parseDouble( tempStr );
+                                    }
+                                    catch( Exception e )
+                                    {
                                     }
                                 }
                                 tempStr = "" + (int) pwdvAggValue;
@@ -4416,7 +4575,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou, selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -4441,18 +4601,15 @@ public class GenerateTabularAnalysisResultAction
                             {
                                 for( DataElementCategoryOptionCombo optionCombo : optionCombos )
                                 {
-                                    for( Integer periodId : periodIds )
+                                    tempStr = aggDataMap.get( ou.getId() + ":" +selDataElement.getUid()+":"+optionCombo.getUid() );
+                                    if( tempStr != null )
                                     {
-                                        tempStr = aggDataMap.get( selDataElement.getId()+":"+optionCombo.getId()+":"+periodId );
-                                        if( tempStr != null )
+                                        try
                                         {
-                                            try
-                                            {
-                                                pwdvAggValue += Double.parseDouble( tempStr );
-                                            }
-                                            catch( Exception e )
-                                            {
-                                            }
+                                            pwdvAggValue += Double.parseDouble( tempStr );
+                                        }
+                                        catch( Exception e )
+                                        {
                                         }
                                     }
                                 }
@@ -4469,8 +4626,9 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
-
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
+                                        
                                         if ( dataValue != null )
                                         {
                                             tempStr += dataValue.getValue() + " : ";
@@ -4721,7 +4879,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou, selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -4774,7 +4933,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou, decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -5062,8 +5222,9 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
-
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou, selDecoc );
+                                    
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
                                         tempStr = dataValue.getValue();
@@ -5115,8 +5276,9 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
-
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
+                                        
                                         if ( dataValue != null )
                                         {
                                             tempStr += dataValue.getValue() + " : ";
@@ -5395,7 +5557,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -5448,7 +5611,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou, decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -5703,7 +5867,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -5756,7 +5921,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -6766,7 +6932,8 @@ public class GenerateTabularAnalysisResultAction
                                 Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                 if ( tempPeriod != null )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, selDecoc );
+                                    DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  selDecoc );
 
                                     if ( dataValue != null && dataValue.getValue() != null )
                                     {
@@ -6848,8 +7015,8 @@ public class GenerateTabularAnalysisResultAction
                                     Period tempPeriod = periodService.getPeriod( sDate, eDate, periodType );
                                     if ( tempPeriod != null )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( ou, selDataElement,
-                                            tempPeriod, decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( ou, selDataElement, tempPeriod, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( selDataElement, tempPeriod, ou,  decoc1 );
 
                                         if ( dataValue != null )
                                         {
@@ -6988,10 +7155,12 @@ public class GenerateTabularAnalysisResultAction
     
     public String getAggVal( String expression, Map<String, String> aggDataMap, Integer orgUnitId, Integer periodId )
     {
+    	//System.out.println("inside getAggVal ");
         try
         {
-            Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
-
+            //Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
+        	Pattern pattern = Pattern.compile( "#\\{(\\w+)\\.?(\\w*)\\}" );
+        	
             Matcher matcher = pattern.matcher( expression );
             StringBuffer buffer = new StringBuffer();
 
@@ -7001,9 +7170,22 @@ public class GenerateTabularAnalysisResultAction
             {
                 String replaceString = matcher.group();
 
-                replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+                
+                //replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+                //replaceString = replaceString.replaceAll( "#{", "" );
+                //replaceString = replaceString.replaceAll( "}", "" );
+                
+                String de = matcher.group( 1 );
+                String coc = matcher.group( 2 );
+                
+                DataElement dataElement = dataElementService.getDataElement( de );
+                DataElementCategoryOptionCombo categoryOptionCombo = dataElementCategoryService.getDataElementCategoryOptionCombo( coc );
 
-                String keyString = orgUnitId + ":" + replaceString.replaceAll( "\\.", ":" ) + ":" + periodId;
+                
+                //System.out.println( "getAggVal - Replace String: "+ de + " --- " + coc );
+
+
+                String keyString = orgUnitId + ":" + dataElement.getId() + ":" + categoryOptionCombo.getId() + ":" + periodId;
                 
                 replaceString = aggDataMap.get( keyString );
                 
@@ -7043,10 +7225,12 @@ public class GenerateTabularAnalysisResultAction
 
     public String getAggValByPeriod( String expression, Map<String, String> aggDataMap, Integer periodId )
     {
+    	//System.out.println("inside getAggValByPeriod ");
         try
         {
-            Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
-
+            //Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
+        	Pattern pattern = Pattern.compile( "#\\{(\\w+)\\.?(\\w*)\\}" );
+        	
             Matcher matcher = pattern.matcher( expression );
             StringBuffer buffer = new StringBuffer();
 
@@ -7056,9 +7240,18 @@ public class GenerateTabularAnalysisResultAction
             {
                 String replaceString = matcher.group();
 
-                replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+                //replaceString = replaceString.replaceAll( "#{\\}", "" );
+                //System.out.println( "getAggValByPeriod - Replace String: "+ replaceString );
 
-                String keyString = replaceString.replaceAll( "\\.", ":" ) + ":" + periodId;
+                //replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+
+                String de = matcher.group( 1 );
+                String coc = matcher.group( 2 );
+                
+                DataElement dataElement = dataElementService.getDataElement( de );
+                DataElementCategoryOptionCombo categoryOptionCombo = dataElementCategoryService.getDataElementCategoryOptionCombo( coc );
+
+                String keyString = dataElement.getId() + ":" + categoryOptionCombo.getId() + ":" + periodId;
                 
                 replaceString = aggDataMap.get( keyString );
                 
@@ -7097,9 +7290,12 @@ public class GenerateTabularAnalysisResultAction
 
     public String getAggValByOrgUnit( String expression, Map<String, String> aggDataMap, Integer orgUnitId )
     {
+    	//System.out.println("inside getAggValByOrgUnit ");
         try
         {
-            Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
+            //Pattern pattern = Pattern.compile( "(\\[\\d+\\.\\d+\\])" );
+            
+            Pattern pattern = Pattern.compile( "#\\{(\\w+)\\.?(\\w*)\\}" );
 
             Matcher matcher = pattern.matcher( expression );
             StringBuffer buffer = new StringBuffer();
@@ -7109,10 +7305,18 @@ public class GenerateTabularAnalysisResultAction
             while ( matcher.find() )
             {
                 String replaceString = matcher.group();
+                
+                //replaceString = replaceString.replaceAll( "#{\\{\\}}", "" );
 
-                replaceString = replaceString.replaceAll( "[\\[\\]]", "" );
+                String de = matcher.group( 1 );
+                String coc = matcher.group( 2 );
+                
+                DataElement dataElement = dataElementService.getDataElement( de );
+                DataElementCategoryOptionCombo categoryOptionCombo = dataElementCategoryService.getDataElementCategoryOptionCombo( coc );
 
-                String keyString = orgUnitId + ":" + replaceString.replaceAll( "\\.", ":" );
+                //System.out.println( "getAggValByOrgUnit - Replace String: "+ replaceString );
+
+                String keyString = orgUnitId + ":" + dataElement.getId() + ":" + categoryOptionCombo.getId();
                 
                 replaceString = aggDataMap.get( keyString );
                 
@@ -7138,6 +7342,145 @@ public class GenerateTabularAnalysisResultAction
                 d = 0.0;
                 resultValue = "";
             }
+            
+            resultValue = "" + (double) d;
+
+            return resultValue;
+        }
+        catch ( NumberFormatException ex )
+        {
+            throw new RuntimeException( "Illegal DataElement id", ex );
+        }
+    }
+    
+    
+    public String getAggValByOrgUnit_UID( String expression, Map<String, String> aggDataMap, Integer orgUnitId )
+    {
+        try
+        {
+            
+            Pattern pattern = Pattern.compile( "#\\{(\\w+)\\.?(\\w*)\\}" );
+
+            Matcher matcher = pattern.matcher( expression );
+            StringBuffer buffer = new StringBuffer();
+
+            String resultValue = "";
+
+            while ( matcher.find() )
+            {
+                String replaceString = matcher.group();
+                
+                String de = matcher.group( 1 );
+                String coc = matcher.group( 2 );
+                
+                //DataElement dataElement = dataElementService.getDataElement( de );
+                //DataElementCategoryOptionCombo categoryOptionCombo = dataElementCategoryService.getDataElementCategoryOptionCombo( coc );
+
+                //System.out.println( "getAggValByOrgUnit - Replace String: "+ replaceString );
+
+                String keyString = orgUnitId + ":" + de + ":" + coc;
+                
+                replaceString = aggDataMap.get( keyString );
+                
+                if( replaceString == null )
+                {
+                    replaceString = "0";
+                }
+                
+                matcher.appendReplacement( buffer, replaceString );
+
+                resultValue = replaceString;
+            }
+
+            matcher.appendTail( buffer );
+            
+            double d = 0.0;
+            try
+            {
+                d = MathUtils.calculateExpression( buffer.toString() );
+            }
+            catch ( Exception e )
+            {
+                d = 0.0;
+                resultValue = "";
+            }
+            
+            resultValue = "" + (double) d;
+
+            return resultValue;
+        }
+        catch ( NumberFormatException ex )
+        {
+            throw new RuntimeException( "Illegal DataElement id", ex );
+        }
+    }
+
+    
+    public String getDenominatorValueByOrgUnit_UID( String expression, Map<String, String> aggDataMap, Integer orgUnitId, long diffDays )
+    {
+        try
+        {
+        	long totalDayCount = diffDays;
+        	
+            Pattern pattern = Pattern.compile( "#\\{(\\w+)\\.?(\\w*)\\}" );
+
+            Matcher matcher = pattern.matcher( expression );
+            StringBuffer buffer = new StringBuffer();
+
+            String resultValue = "";
+
+            while ( matcher.find() )
+            {
+                String replaceString = matcher.group();
+                
+                String de = matcher.group( 1 );
+                String coc = matcher.group( 2 );
+                
+                DataElement dataElement = dataElementService.getDataElement( de );
+                //DataElementCategoryOptionCombo categoryOptionCombo = dataElementCategoryService.getDataElementCategoryOptionCombo( coc );
+                
+                PeriodType periodType =  dataElement.getPeriodType();
+                
+                if( periodType != null )
+                {
+                	if( periodType.getName().equalsIgnoreCase( "yearly") )
+                	{
+                		totalDayCount = 365;
+                	}
+                }
+
+                //System.out.println( "getAggValByOrgUnit - Replace String: "+ replaceString );
+
+                String keyString = orgUnitId + ":" + de + ":" + coc;
+                
+                replaceString = aggDataMap.get( keyString );
+                
+                if( replaceString == null )
+                {
+                    replaceString = "0";
+                }
+                
+                matcher.appendReplacement( buffer, replaceString );
+
+                resultValue = replaceString;
+            }
+
+            matcher.appendTail( buffer );
+            
+            double d = 0.0;
+            try
+            {
+                d = MathUtils.calculateExpression( buffer.toString() );
+            }
+            catch ( Exception e )
+            {
+                d = 0.0;
+                resultValue = "";
+            }
+            
+            System.out.println(orgUnitId+" : "+ d + " --- " + diffDays + " --- " + totalDayCount );
+            
+            d = ( d * diffDays ) / totalDayCount;
             
             resultValue = "" + (double) d;
 

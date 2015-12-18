@@ -59,6 +59,20 @@
 		#if( $auth.hasAccess( "dhis-web-reports", "metaDataReportAnalyser") )
 			<li><a href = "metaDataReportAnalyser.action">Meta Data Reports</a></li>
 		#end
+		
+		<!-- add more Report for Maharashtra -->
 
+		#if( $auth.hasAccess( "dhis-web-reports", "lineListingBulkReportAnalyser") )
+			<li><a href = "lineListingBulkReportAnalyser.action">Linelisting Bulk Report</a></li>
+		#end
+		
+		#if( $auth.hasAccess( "dhis-web-reports", "linelistingReportAnalyser") )
+			<li><a href = "linelistingReportAnalyser.action">Linelisting Reports</a></li>
+		#end		
+		
+		#if( $auth.hasAccess( "dhis-web-reports", "populateMultipleUsers") )
+			<li><a href = "populateMultipleUsers.action">Populate Users From Excel</a></li>
+		#end
+		
 	</ul>
 </ul>

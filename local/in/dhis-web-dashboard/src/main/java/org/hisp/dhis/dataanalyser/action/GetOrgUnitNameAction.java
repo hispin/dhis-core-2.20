@@ -22,14 +22,22 @@ implements Action
     // -------------------------------------------------------------------------
     // Input/Output
     // -------------------------------------------------------------------------
-    
+    /*
     private Integer id;
 
     public void setId( Integer id )
     {
         this.id = id;
     }
-
+    */
+    
+    private String id;
+    
+    public void setId( String id )
+    {
+        this.id = id;
+    }
+    
     private OrganisationUnit organisationUnit;
 
     public OrganisationUnit getOrganisationUnit()
@@ -42,7 +50,7 @@ implements Action
 
     public String execute()
     {
-        organisationUnit = organisationUnitService.getOrganisationUnit( id );
+        organisationUnit = organisationUnitService.getOrganisationUnit( id );//use uid
         
         return SUCCESS;
     }

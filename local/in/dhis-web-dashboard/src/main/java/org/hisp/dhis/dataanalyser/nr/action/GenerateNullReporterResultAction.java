@@ -306,14 +306,14 @@ public class GenerateNullReporterResultAction
     private Map<OrganisationUnit, Integer> ouChildCountMap;
     
     private String selectedDataSet;
-    
+
     public void setSelectedDataSet( String selectedDataSet )
     {
         this.selectedDataSet = selectedDataSet;
     }
-    
+
     private String dataSetName;
-    
+
     public String getDataSetName()
     {
         return dataSetName;
@@ -326,7 +326,6 @@ public class GenerateNullReporterResultAction
         throws Exception
     {
         statementManager.initialise();
-        // VelocityContext context = new VelocityContext();
         System.out.println( "Null Report Generation Start Time is : " + new Date() );
         simpleDateFormat = new SimpleDateFormat( "MMM y" );
 
@@ -341,7 +340,6 @@ public class GenerateNullReporterResultAction
         nullReportResult = new HashMap<OrganisationUnit, Map<Period, List<DataElement>>>();
         selOUList = new ArrayList<OrganisationUnit>();
         ouChildCountMap = new HashMap<OrganisationUnit, Integer>();
-        // OrgUnit Related Info
 
         if ( ouSelCB != null )
         {
@@ -372,7 +370,7 @@ public class GenerateNullReporterResultAction
         minOULevel = 1;
         minOULevel = organisationUnitService.getLevelOfOrganisationUnit( selOUList.get( 0 ).getId() );
 
-        int maxOuLevel = 1;
+        int maxOuLevel;
         if ( orgUnitLevelCB != null )
         {
             maxOuLevel = orgUnitLevelCB;
@@ -382,24 +380,16 @@ public class GenerateNullReporterResultAction
             maxOuLevel = minOULevel;
         }
 
-        //Period startDate = periodService.getPeriod( sDateLB );
-        //Period endDate = periodService.getPeriod( eDateLB );
         List<OrganisationUnit> ouHavingNullValuesWithHigherLevel = new ArrayList<OrganisationUnit>();
         ouHavingNullValuesWithLowerLevel = new ArrayList<OrganisationUnit>();
         ouHavingNullValues = new ArrayList<OrganisationUnit>();
         List<DataElement> deList = new ArrayList<DataElement>();
 
         dePeriodTypeMap = new HashMap<DataElement, PeriodType>();
-        // periodDeListMap = new HashMap<Period, List<DataElement>>();
         
         DataSet dataSet = dataSetService.getDataSet( Integer.parseInt( selectedDataSet ) );
         dataSetName = dataSet.getName();
-       // Collection<DataElement> dataElements = dataSet.getDataElements();
         List<DataElement> dataElementList = new ArrayList<DataElement>( dataSet.getDataElements()  );
-        
-        
-        
-        //System.out.println("----------------Data Element  Size is ------- " + dataElementList.size()  );
         
         for ( DataElement dataElement : dataElementList )
         {
@@ -413,25 +403,19 @@ public class GenerateNullReporterResultAction
         Period endPeriod = periodService.getPeriod( eDateLB );
         PeriodType dataSetPeriodType = dataSet.getPeriodType(); 
         periodsColl = new ArrayList<Period>( periodService.getPeriodsBetweenDates( dataSetPeriodType, startPeriod.getStartDate(), endPeriod.getEndDate() ));
-        
-        //periodsColl = new ArrayList<Period>( periodService.getIntersectingPeriods( startDate.getStartDate(), endDate.getEndDate() ) );
         size = periodsColl.size();
-       // System.out.println("periods size is " + size );
         Collections.sort( periodsColl, new PeriodTypeComparator() );
         periods = new ArrayList<Period>();
 
         for ( OrganisationUnit curOu : selOUList )
         {
-            // System.out.println("OrganisationUnit "+curOu);
 
             periodDeListMap = new HashMap<Period, List<DataElement>>();
             for ( Period p : periodsColl )
             {
-                // System.out.println(p.getStartDate() + " - "+p.getEndDate());
-                
+
                 List<DataElement> resultDeList = new ArrayList<DataElement>();
-               // List<String> resultDeList1 = new ArrayList<String>();
-                //String comment = "";
+
                 for ( DataElement de : deList )
                 {
 
@@ -447,7 +431,7 @@ public class GenerateNullReporterResultAction
                             {
                                 Double tempVal = aggregationService.getAggregatedDataValue( de, decoc,
                                     p.getStartDate(), p.getEndDate(), curOu );
-                                // System.out.println("tempVal = " + tempVal);
+
                                 if ( includeZeros != null )
                                 {
                                     if(tempVal == null)
@@ -485,12 +469,9 @@ public class GenerateNullReporterResultAction
                                     }
                                 }
                             }
-
-                            // System.out.println("aggValue = "+aggValue);
                             if ( aggValue < 0.0 )
                             {
                                 resultDeList.add( de );
-                               // resultDeList1.add( de + ":" + comment );
                             }
                         }
                         else
@@ -503,18 +484,17 @@ public class GenerateNullReporterResultAction
                             Iterator<DataElementCategoryOptionCombo> optionComboIterator = optionCombos.iterator();
                             while ( optionComboIterator.hasNext() )
                             {
-                                DataElementCategoryOptionCombo decoc1 = (DataElementCategoryOptionCombo) optionComboIterator.next();
+                                DataElementCategoryOptionCombo dataElementCategoryOptionCombo =  optionComboIterator.next();
                                     
-                                DataValue dv1 = dataValueService.getDataValue( curOu, de, p, decoc1 );
-                                //comment = dv1.getComment();
-                                if ( dv1 != null )
+                                //DataValue dataValue = dataValueService.getDataValue( curOu, de, p, dataElementCategoryOptionCombo );
+                                DataValue dataValue = dataValueService.getDataValue( de, p, curOu, dataElementCategoryOptionCombo );
+
+                                if ( dataValue != null )
                                 {
                                     if ( includeZeros != null )
                                     {
-                                        // System.out.println("dataValue is not null, dataValue = "+dataValue.getValue());
-                                        if ( Double.parseDouble( dv1.getValue() ) != 0 )
+                                        if ( Double.parseDouble( dataValue.getValue() ) != 0 )
                                         {
-                                            //resultDeList.add( de );
                                             flag = 1;
                                         }
                                     }
@@ -528,44 +508,19 @@ public class GenerateNullReporterResultAction
                             if( flag == 0 )
                             {
                                 resultDeList.add( de );
-                                //resultDeList1.add( de + ":" + comment );
-                            }
-                                
-                            /*
-                            
-                            DataValue dataValue = dataValueService.getDataValue( curOu, de, p );
-
-                            if ( dataValue == null )
-                            {
-                                resultDeList.add( de );
-                                // System.out.println("dataValue is null ");
-                            }
-                            else
-                            {
-                                if ( includeZeros != null )
-                                {
-                                    // System.out.println("dataValue is not null, dataValue = "+dataValue.getValue());
-                                    if ( Integer.parseInt( dataValue.getValue() ) == 0 )
-                                    {
-                                        resultDeList.add( de );
-
-                                    }
-                                }
 
                             }
-                            */
 
                         }
                     }
                 }
-               // System.out.println("---------------Size of data element List is  " + resultDeList.size() );
+
                 if ( resultDeList.size() != 0 )
                 {
                     periodDeListMap.put( p, resultDeList );
-                    // nullReportResult.put(curOu, periodDeListMap);
+
                 }
             }
-            //System.out.println("----------------------- " + periodDeListMap.size() + " " + curOu );
 
             if ( periodDeListMap.size() != 0 )
             {
@@ -584,8 +539,7 @@ public class GenerateNullReporterResultAction
             }
 
         }
-        // System.out.println("ouHavingNullValues size = "+ouHavingNullValues.size()
-        // + "minOULevel = "+minOULevel + " maxOuLevel = "+maxOuLevel);
+
         for ( int level = minOULevel; level < maxOuLevel; level++ )
         {
             for ( OrganisationUnit ou : ouHavingNullValuesWithHigherLevel )
@@ -595,7 +549,6 @@ public class GenerateNullReporterResultAction
                 {
                     ouHavingNullValues.remove( ou );
                     ouHavingNullValuesWithLowerLevel.add( ou );
-                    // System.out.println("--------------------- removing ou "+ou.getName());
                 }
             }
         }
@@ -608,8 +561,7 @@ public class GenerateNullReporterResultAction
         {
             size = 0;
         }
-        
-        //System.out.println("periods size is " + size );
+
         Collections.sort( ouHavingNullValues, new IdentifiableObjectNameComparator() );
         Collections.sort( periods, new PeriodComparator() );
         Collections.sort( periods, new PeriodTypeComparator() );
@@ -634,9 +586,9 @@ public class GenerateNullReporterResultAction
         OrganisationUnit child;
         while ( childIterator.hasNext() )
         {
-            child = (OrganisationUnit) childIterator.next();
+            child = childIterator.next();
             orgUnitTree.addAll( getChildOrgUnitTree( child ) );
         }
         return orgUnitTree;
-    }// getChildOrgUnitTree end
+    }
 }

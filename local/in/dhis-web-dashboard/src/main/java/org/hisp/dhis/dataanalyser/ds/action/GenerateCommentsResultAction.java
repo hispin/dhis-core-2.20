@@ -289,7 +289,13 @@ public class GenerateCommentsResultAction implements Action
                 orgUnitList = new ArrayList<OrganisationUnit>();            
                 orgUnitList.add( selectedOrgUnit );
                 
-                OrganisationUnitGroup oug = organisationUnitGroupService.getOrganisationUnitGroupByName( "Districts" );                
+				/**
+				* TODO
+				* HACKED JUST TO RUN WITH 2.11	
+				*/
+
+                //OrganisationUnitGroup oug = organisationUnitGroupService.getOrganisationUnitGroupByName( "Districts" );                
+				OrganisationUnitGroup oug = null;
                 if(oug != null)
                 {
                     List<OrganisationUnit> tempOUList = new ArrayList<OrganisationUnit>(oug.getMembers());
@@ -297,8 +303,15 @@ public class GenerateCommentsResultAction implements Action
                     Collections.sort( tempOUList, new IdentifiableObjectNameComparator() );
                     orgUnitList.addAll( tempOUList );
                 }   
-                
-                oug = organisationUnitGroupService.getOrganisationUnitGroupByName( "Corporations" );
+
+   				/**
+				* TODO
+				* HACKED JUST TO RUN WITH 2.11	
+				*/
+
+                //oug = organisationUnitGroupService.getOrganisationUnitGroupByName( "Corporations" );
+                oug = null;
+
                 if(oug != null)
                 {
                     List<OrganisationUnit> tempOUList = new ArrayList<OrganisationUnit>(oug.getMembers());

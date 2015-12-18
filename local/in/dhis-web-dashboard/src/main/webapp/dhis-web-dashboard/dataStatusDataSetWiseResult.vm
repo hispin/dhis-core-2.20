@@ -35,7 +35,7 @@
 		<form id="form1" name="form1" action="exportDataStatusToExcel.action" method="post" onsubmit="return exportDataStatusResultToWorkBook()" target="_newtab">
 			<input type="hidden" name="htmlCode" id="htmlCode" />
 			<div align="right" class="NormalB">
-			    <input type="checkbox" name="includeZeros" id="includeZeros" #if($includeZeros) checked #end /> Include Zero<br />
+
 				<input type="submit" name="ExportToWorkBook" value="Export To WorkBook" style="width: 160; height: 25; font-family:Arial; font-weight:bold; color:#000000">
 			</div>
 

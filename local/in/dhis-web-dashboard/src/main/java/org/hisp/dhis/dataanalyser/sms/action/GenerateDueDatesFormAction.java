@@ -180,7 +180,7 @@ private String selectDates;
     {
         String phoneNumber,orgId,message = "",res;
         int countNoOfMesg=0;
-        BulkSMSHttpInterface bulkSmsHttpInterface =new BulkSMSHttpInterface();
+        BulkSMSHttpInterface bulkSmsHttpInterface = new BulkSMSHttpInterface();
         
         
         Iterator<Collection<String>> iterator = messgs.iterator();

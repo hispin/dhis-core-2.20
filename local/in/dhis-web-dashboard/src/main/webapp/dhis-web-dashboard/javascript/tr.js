@@ -27,6 +27,8 @@ function formValidations()
 
 function getDataElements()
 {
+	var checkValue = document.getElementById("hiddenChkValue").value;
+	
 	var dataElementGroupList = document.getElementById("dataElementGroupId");
     //var dataElementGroupId = dataElementGroupList.options[ dataElementGroupList.selectedIndex ].value;
 	var dataSetSectionId = dataElementGroupList.options[ dataElementGroupList.selectedIndex ].value;
@@ -40,6 +42,7 @@ function getDataElements()
 		$.post("getDataElementsForTA.action",
 		{
 			id:dataSetSectionId,
+			chkValue:checkValue,
 			deOptionValue:deOptionValue
 		},
 		function (data)
@@ -229,7 +232,7 @@ function getParamsStringBySelected( elementId, param )
 	});
 	
 	//result = result.substring( 0, list.length - 1 );
-	alert( result );
+	//alert( result );
 	return result;
 }
 

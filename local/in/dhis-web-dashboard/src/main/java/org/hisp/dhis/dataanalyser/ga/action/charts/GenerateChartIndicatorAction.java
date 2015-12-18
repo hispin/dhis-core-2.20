@@ -456,6 +456,49 @@ public class GenerateChartIndicatorAction
                 //System.out.println( startD + " : " + endD );
             }
         }
+        
+        
+        // for Forteen period
+        /*
+        if ( periodTypeLB.equalsIgnoreCase( ForteenPeriodType.NAME ) )
+        {
+          //  System.out.println( " Inside  weekly" );
+            int periodCount = 0;
+            for ( String periodStr : periodLB )
+            {
+                String  startForteenPeriodDate = periodStr.split( "To" )[0].trim() ; //for start week
+                String  endForteenPeriodDate = periodStr.split( "To" )[1].trim() ; //for end week
+                
+                startD = startForteenPeriodDate.trim();
+                endD = endForteenPeriodDate.trim();
+                
+                // for DrillDown Period String
+                if( periodCount == periodLB.size()-1 )
+                {
+                    drillDownPeriodStartDate += startD;
+                    drillDownPeriodEndDate += endD;
+                    drillDownPeriodNames += periodStr;
+                }
+                else
+                {
+                    drillDownPeriodStartDate += startD + ";";
+                    drillDownPeriodEndDate += endD + ";";
+                    drillDownPeriodNames += periodStr + ";";
+                }
+                
+                selStartPeriodList.add( format.parseDate( startD ) );
+                selEndPeriodList.add( format.parseDate( endD ) );
+                
+                periodNames.add( periodStr );
+                periodCount++;
+                //System.out.println( startD + " : " + endD );
+            }
+        }
+        */
+        
+        
+        
+        
         // for FinancialAprilPeriodType
         else if ( periodTypeLB.equalsIgnoreCase( FinancialAprilPeriodType.NAME ) )
         {

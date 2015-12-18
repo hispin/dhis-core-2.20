@@ -176,9 +176,10 @@ public class ExportIndicatorToExcelAction implements Action
         WritableWorkbook outputReportWorkbook = Workbook.createWorkbook( new File(outputReportFile) );
         WritableSheet sheet0 = outputReportWorkbook.createSheet( "IndicatorChartOutput", 0 );
         
+		
         if(viewSummary.equals( "no" ))
         {
-            WritableImage writableImage = new WritableImage(0,1,10,23,encoderBytes);
+        	WritableImage writableImage = new WritableImage(0,1,10,23,encoderBytes);
             sheet0.addImage( writableImage );
             tempRow1 = 24;
         }    
@@ -278,8 +279,7 @@ public class ExportIndicatorToExcelAction implements Action
         
         for(int j=0; j< series1.length; j++)
         {
-            Indicator indicator =  indicatorService.getIndicatorByName( series1[j] );
-            
+            Indicator indicator = indicatorService.getIndicatorByName( series1[j] ).get(0);
             sheet0.addCell( new Label( tempCol1, tempRow1, indicator.getName(), wCellformat1 ) );
             String formula = indicator.getNumeratorDescription() + "/" +  indicator.getDenominatorDescription();
             

@@ -538,7 +538,8 @@ implements Action
 
             Period p;
 
-            String storedby = null;           
+            String storedby = null;
+            String ipAddress = null;
            // String userDetailInfo = null;
             List<String> dsResults = new ArrayList<String>();
             while ( periodIterator.hasNext() )
@@ -565,6 +566,7 @@ implements Action
                     + ") AND sourceid IN (" + orgUnitInfo + ") AND periodid IN (" + periodInfo + ")" );
 
                 storedby = " ";
+                ipAddress = " ";
                 while ( sqlResultSet.next() )
                 {                   
                     
@@ -574,6 +576,8 @@ implements Action
                         
                         if( tempUserName != null)
                         {   UserCredentials userCredentials  =  userService.getUserCredentialsByUsername( tempUserName );
+                        
+                        
                             //UserCredentials userCredentials = userStore.getUserCredentialsByUsername( tempUserName );
                             //User user = userStore.getByName( tempUserName );
                             if( userCredentials != null )
@@ -581,10 +585,18 @@ implements Action
                                 User user = userService.getUser( userCredentials.getId() );
                                 //User user = userStore.getUser( userCredentials.getId() );
                                 
+                                /* for Haryana
+                                if( userCredentials.getLastLoginIpAddress() != null )
+                                {
+                                    ipAddress = userCredentials.getLastLoginIpAddress();
+                                }
+                                */
+                                
                                 if( user != null )
                                 {
                                     storedby += user.getFirstName() + " "+ user.getSurname() + " , ";
                                 }
+                                
                                 else
                                 {
                                     storedby +=  tempUserName + " , ";
@@ -638,7 +650,7 @@ implements Action
                 }
                 else
                 {
-                    dsResults.add( storedby + " : " + lastupdated );
+                    dsResults.add( storedby + " : " + ipAddress +  " : " + lastupdated );
                 }
             }
 

@@ -1,4 +1,9 @@
 
+window.onload=function(){
+	jQuery('#contentDiv').dialog({autoOpen: false});	
+}
+
+
 function getOUDeatilsForGADataElements( orgUnitIds )
 {
 	document.getElementById( "ougGroupSetCB" ).disabled = false;
@@ -122,6 +127,22 @@ function getPeriods()
         }
 
     }
+	
+	// forteen period
+    else if( periodTypeId == forteenPeriodTypeName )
+    {
+        if( yearLB.selectedIndex < 0 ) 
+        {
+            alert("Please select Year(s) First");
+            return false;
+        }
+        else
+        {
+        	getForteenPeriod();
+        }
+
+    }	
+	
     else if( periodTypeId == financialAprilPeriodType )
     {
     	//getFinacialYear();
@@ -186,6 +207,87 @@ function getWeeklyPeriod()
     }
     
 }
+
+
+//getting forteen period
+
+function getTempForteenPeriod()
+{
+    var periodTypeList = document.getElementById( "periodTypeLB" );
+    var periodTypeId = periodTypeList.options[ periodTypeList.selectedIndex ].value;
+    
+    if( periodTypeId == forteenPeriodTypeName )
+    {
+    	getForteenPeriod();
+    }
+    
+}
+
+// get forteen period
+
+function getForteenPeriod()
+{
+	var yearLB = document.getElementById("yearLB");
+	
+	if( yearLB.selectedIndex < 0 ) 
+     {
+         alert("Please select Year(s) First");
+         return false;
+     }
+	
+	else
+	{
+		var yearListObj = document.getElementById('yearLB');
+		var yearListval = yearListObj.options[ yearListObj.selectedIndex ].value;
+		//alert(yearListval); 
+		var year = yearListval.split( "-" )[0] ;
+		var yearList = "" ;
+		
+		var yearLB = document.getElementById("yearLB");
+	    for(k = 0; k < yearLB.options.length; k++)
+	    {
+	    	if ( yearLB.options[k].selected == true )
+	    	{
+	    		yearList += yearLB.options[k].value + ";" ;
+	    	}
+	    }
+	    //alert( yearList );
+	    $.post("getForteenPeriod.action",
+				{
+					yearList:yearList
+				},
+				function (data)
+				{
+					getForteenPeriodReceived(data);
+				},'xml');
+	    
+	    
+	}
+}
+
+
+//Forteen Period received
+function getForteenPeriodReceived( xmlObject )
+{	
+	var periodList = document.getElementById( "periodLB" );
+	
+	clearList( periodList );
+	
+	var forteenPeriodList = xmlObject.getElementsByTagName( "forteenPeriod" );
+	
+	for ( var i = 0; i < forteenPeriodList.length; i++ )
+	{
+	    var forteenPeriodName = forteenPeriodList[ i ].getElementsByTagName( "name" )[0].firstChild.nodeValue;
+		
+	        var option = document.createElement( "option" );
+	        option.value = forteenPeriodName;
+	        option.text = forteenPeriodName;
+	        option.title = forteenPeriodName;
+	        periodList.add( option, null );
+	}
+}
+
+
 //get week period Ajax calling
 function getWeeks()
 {
@@ -533,6 +635,8 @@ function formValidationsDataElement()
 
 function generateChartDataElement()
 {
+	document.getElementById('overlay').style.visibility = 'visible';
+	jQuery('#contentDiv').dialog('destroy').remove();
 
 	var url = "generateChartDataElement.action?" + getParamString( 'selectedDataElements', 'selectedDataElements' ) + "&"
 	          + getParamsStringBySelected( 'orgUnitGroupList', 'orgUnitGroupList' )+ "&" + getParamString( 'orgUnitListCB', 'orgUnitListCB' )+ "&"
@@ -547,7 +651,7 @@ function generateChartDataElement()
 		url += getParamsStringBySelected( 'periodLB', 'periodLB' )+ "&"
 	*/	
 		//alert(url);
-	jQuery( "#contentDiv" ).load( url,
+	jQuery( '<div id="contentDiv">'  ).load( url,
 	{
 		deSelection : getFieldValue( 'deSelection' ),
 		categoryLB : getFieldValue( 'categoryLB' ),
@@ -564,6 +668,7 @@ function generateChartDataElement()
 		width: 1000,
 		height: 800
 	} );
+	document.getElementById('overlay').style.visibility = 'hidden';
 }
 
 function getParamsStringBySelected( elementId, param )
@@ -585,6 +690,8 @@ function getParamsStringBySelected( elementId, param )
 	return result;
 }
  
+
+
 /*
  
 function generateChartDataElement()
@@ -712,7 +819,8 @@ function formValidationsIndicator()
            return false;
        }
    }
-  
+ 
+    
  /*
 	if( selIndicatorsListSize > 0 )
 	{
@@ -745,7 +853,9 @@ function formValidationsIndicator()
 
 function generateChartIndicator()
 {
-
+	document.getElementById('overlay').style.visibility = 'visible';
+	jQuery('#contentDiv').dialog('destroy').remove();
+	
 	var url = "generateChartIndicator.action?" + getParamString( 'selectedIndicators', 'selectedIndicators' ) + "&"
 	          + getParamsStringBySelected( 'orgUnitGroupList', 'orgUnitGroupList' )+ "&" + getParamString( 'orgUnitListCB', 'orgUnitListCB' )+ "&"
 	          + getParamsStringBySelected( 'yearLB', 'yearLB' )+ "&" + getParamsStringBySelected( 'periodLB', 'periodLB' ) ;
@@ -759,7 +869,7 @@ function generateChartIndicator()
 		url += getParamsStringBySelected( 'periodLB', 'periodLB' )+ "&"
 	*/	
 		//alert(url);
-	jQuery( "#contentDiv" ).load( url,
+	jQuery( '<div id="contentDiv">' ).load( url,
 	{
 		categoryLB : getFieldValue( 'categoryLB' ),
 		periodTypeLB : getFieldValue( 'periodTypeLB' ),
@@ -775,6 +885,8 @@ function generateChartIndicator()
 		width: 1000,
 		height: 800
 	} );
+	
+	document.getElementById('overlay').style.visibility = 'hidden';
 }
 
 

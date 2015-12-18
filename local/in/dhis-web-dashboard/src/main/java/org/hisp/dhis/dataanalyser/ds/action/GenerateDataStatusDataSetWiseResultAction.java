@@ -28,6 +28,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
+import org.hisp.dhis.system.database.DatabaseInfo;
+import org.hisp.dhis.system.database.DatabaseInfoProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -87,6 +90,9 @@ public class GenerateDataStatusDataSetWiseResultAction implements Action
     {
         this.constantService = constantService;
     }
+    
+    @Autowired
+    private DatabaseInfoProvider databaseInfoProvider;
     
     private List<Constant> constants;
     // ---------------------------------------------------------------
@@ -276,6 +282,7 @@ public class GenerateDataStatusDataSetWiseResultAction implements Action
         periodNameList = new ArrayList<String>();
         //dataViewName = "";
         
+        DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
         
         Constant constant = constantService.getConstantByName( SUMMARYSTATUSVARIABLE );
         constName =  constant.getName();
@@ -503,17 +510,36 @@ public class GenerateDataStatusDataSetWiseResultAction implements Action
                             orgUnitId += String.valueOf( cUnit.getId() );
                             orgUnitCount = 0;
                             getOrgUnitInfo( orgUnit, dso );
-                            if ( includeZeros == null )
+                            
+                            if ( dataBaseInfo.getType().equalsIgnoreCase( "postgresql" ) )
                             {
-                                query = "SELECT COUNT(*) FROM datavalue  WHERE dataelementid IN (" + deInfo
-                                    + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo
-                                    + ") and value <> 0";
+                                if ( includeZeros == null )
+                                {
+                                    query = "SELECT COUNT(*) FROM datavalue  WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo
+                                        + ") AND CAST(value AS NUMERIC) != 0 ";
+                                }
+                                else
+                                {
+                                    query = "SELECT COUNT(*) FROM datavalue WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo + ")";
+                                }
                             }
-                            else
+                            else if ( dataBaseInfo.getType().equalsIgnoreCase( "mysql" ) )
                             {
-                                query = "SELECT COUNT(*) FROM datavalue WHERE dataelementid IN (" + deInfo
-                                    + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo + ")";
+                                if ( includeZeros == null )
+                                {
+                                    query = "SELECT COUNT(*) FROM datavalue  WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo
+                                        + ") and value != 0 ";
+                                }
+                                else
+                                {
+                                    query = "SELECT COUNT(*) FROM datavalue WHERE dataelementid IN (" + deInfo
+                                        + ") AND sourceid IN (" + orgUnitId + ") AND periodid IN (" + periodInfo + ")";
+                                }
                             }
+                            
 
                             SqlRowSet sqlResultSet = jdbcTemplate.queryForRowSet( query );
 

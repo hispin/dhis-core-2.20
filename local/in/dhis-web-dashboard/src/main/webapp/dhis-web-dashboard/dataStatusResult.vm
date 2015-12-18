@@ -23,8 +23,8 @@
                     evt.target.href = "dataStatusResult.action?immChildOption="+immChildOption+"&dsId="+dsId+"&sDateLB="+startDate+"&eDateLB="+endDate+"&ouId="+selOrgUnit+"&selectedButton="+dsType+"&includeZeros="+includeZeros;
                 	*/
 			   		var url = "dataStatusResult.action?immChildOption="+immChildOption+"&dsId="+dsId+"&sDateLB="+startDate+"&eDateLB="+endDate+"&ouId="+selOrgUnit+"&selectedButton="+dsType+"&includeZeros="+includeZeros;
-					$('#contentDataRecord').dialog('destroy').remove();
-			   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+					$('#contentDiv').dialog('destroy').remove();
+			   	    $('<div id="contentDiv">' ).load(url).dialog({
 			        title: 'Data Entry Status Result',
 					maximize: true, 
 					closable: true,
@@ -45,8 +45,8 @@
                     evt.target.href = "dataStatusResult.action?immChildOption="+immChildOption+"&dsId="+dsId+"&sDateLB="+startDate+"&eDateLB="+endDate+"&ouId="+selOrgUnit+"&selectedButton="+dsType;
                 	*/
                 	var url = "dataStatusResult.action?immChildOption="+immChildOption+"&dsId="+dsId+"&sDateLB="+startDate+"&eDateLB="+endDate+"&ouId="+selOrgUnit+"&selectedButton="+dsType;
-					$('#contentDataRecord').dialog('destroy').remove();
-			   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+					$('#contentDiv').dialog('destroy').remove();
+			   	    $('<div id="contentDiv">' ).load(url).dialog({
 			        title: 'Data Entry Status Result',
 					maximize: true, 
 					closable: true,
@@ -70,8 +70,8 @@
 		  function getNullReportInfo( dsId, periodId, selOrgUnit )
 		  {	
 			var url = "nullReportResult.action?dsId="+dsId+"&periodId="+periodId+"&ouId="+selOrgUnit;
-			$('#contentDataRecord').dialog('destroy').remove();
-	   	    $('<div id="contentDataRecord">' ).load(url).dialog({
+			$('#contentDiv').dialog('destroy').remove();
+	   	    $('<div id="contentDiv">' ).load(url).dialog({
 	        title: 'Null Report',
 			maximize: true, 
 			closable: true,
@@ -93,7 +93,7 @@
                 <input type="hidden" name="htmlCode" id="htmlCode" />
 
                 <div align="right" class="NormalB">
-                    <input type="checkbox" name="includeZeros" id="includeZeros" #if($includeZeros) checked #end /> Include Zero<br />
+
                     <input type="submit" name="ExportToWorkBook" value="Export To WorkBook" style="width: 160; height: 25; font-family:Arial; font-weight:bold; color:#000000">
                 </div>
 

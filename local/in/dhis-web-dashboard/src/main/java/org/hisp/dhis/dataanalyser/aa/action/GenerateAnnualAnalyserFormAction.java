@@ -235,9 +235,9 @@ public class GenerateAnnualAnalyserFormAction
         Iterator<DataElement> alldeIterator = dataElements.iterator();
         while ( alldeIterator.hasNext() )
         {
-            DataElement de1 = alldeIterator.next();
+            DataElement de1 = alldeIterator.next();  
            // System.out.println( " dataElements is = " + de1.getName() + " , value Type is " + de1.getType() + " , Domain type is : " + de1.getDomainType() );
-            if ( !de1.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) || !de1.getDomainType().equalsIgnoreCase( DataElement.DOMAIN_TYPE_AGGREGATE ) )
+            if ( !de1.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) || !de1.getDomainType().equals( "aggregate" ) )
            // if ( !de1.getType().equalsIgnoreCase( DataElement.VALUE_TYPE_INT ) || !de1.getType().equalsIgnoreCase( DataElement.DOMAIN_TYPE_AGGREGATE ) )
             {
                 alldeIterator.remove();

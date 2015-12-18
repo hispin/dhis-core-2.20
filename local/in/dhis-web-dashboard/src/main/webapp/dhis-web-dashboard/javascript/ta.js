@@ -278,9 +278,13 @@ function getDataElements()
 {
 	var checkValue = document.getElementById("hiddenChkValue").value;
     var dataElementGroupList = document.getElementById("dataElementGroupId");
+    
     //var dataElementGroupId = dataElementGroupList.options[ dataElementGroupList.selectedIndex ].value;
     
     var dataSetSectionId = dataElementGroupList.options[ dataElementGroupList.selectedIndex ].value;
+    
+    
+    
     
     var deSelectionList = document.getElementById("deSelection");    
     var deOptionValue = deSelectionList.options[ deSelectionList.selectedIndex ].value;
@@ -514,6 +518,22 @@ function getPeriods()
         	getWeeks();
         }
     }
+    
+	// forteen period
+    else if( periodTypeId == forteenPeriodTypeName )
+    {
+        if( yearLB.selectedIndex < 0 ) 
+        {
+            alert("Please select Year(s) First");
+            return false;
+        }
+        else
+        {
+        	getForteenPeriod();
+        }
+
+    }	    
+    
     else if( periodTypeId == financialAprilPeriodType )
     {
     	//getFinacialYear();
@@ -574,6 +594,87 @@ function getWeeklyPeriod()
     }
     
 }
+
+
+//getting forteen period
+
+function getTempForteenPeriod()
+{
+    var periodTypeList = document.getElementById( "periodTypeLB" );
+    var periodTypeId = periodTypeList.options[ periodTypeList.selectedIndex ].value;
+    
+    if( periodTypeId == forteenPeriodTypeName )
+    {
+    	getForteenPeriod();
+    }
+    
+}
+
+
+function getForteenPeriod()
+{
+	var yearLB = document.getElementById("yearLB");
+	
+	if( yearLB.selectedIndex < 0 ) 
+     {
+         alert("Please select Year(s) First");
+         return false;
+     }
+	
+	else
+	{
+		var yearListObj = document.getElementById('yearLB');
+		var yearListval = yearListObj.options[ yearListObj.selectedIndex ].value;
+
+		var year = yearListval.split( "-" )[0] ;
+		var yearList = "" ;
+		
+		var yearLB = document.getElementById("yearLB");
+	    for(k = 0; k < yearLB.options.length; k++)
+	    {
+	    	if ( yearLB.options[k].selected == true )
+	    	{
+	    		yearList += yearLB.options[k].value + ";" ;
+	    	}
+	    }
+
+	    $.post("getForteenPeriod.action",
+				{
+					yearList:yearList
+				},
+				function (data)
+				{
+					getForteenPeriodReceived(data);
+				},'xml');
+	    
+	    
+	}
+}
+
+//Forteen Period received
+function getForteenPeriodReceived( xmlObject )
+{	
+	var periodList = document.getElementById( "periodLB" );
+	
+	clearList( periodList );
+	
+	var forteenPeriodList = xmlObject.getElementsByTagName( "forteenPeriod" );
+	
+	for ( var i = 0; i < forteenPeriodList.length; i++ )
+	{
+	    var forteenPeriodName = forteenPeriodList[ i ].getElementsByTagName( "name" )[0].firstChild.nodeValue;
+		
+	        var option = document.createElement( "option" );
+	        option.value = forteenPeriodName;
+	        option.text = forteenPeriodName;
+	        option.title = forteenPeriodName;
+	        periodList.add( option, null );
+	}
+}
+
+
+
+
 
 //get week period Ajax calling
 function getWeeks()
@@ -936,3 +1037,83 @@ function filterAvailableDataElements()
         }
     }
 }
+
+
+
+// form Validation for Validation rule
+
+function formValidationsForValidationRule()
+{
+    var orgUnitListCB = document.getElementById("orgUnitListCB");
+    var selOUListLength = document.validationRuleForm.orgUnitListCB.options.length;
+    var orgUnitLevelCB = document.getElementById("orgUnitLevelCB");
+    var yearLB = document.getElementById("yearLB");
+    var periodLB = document.getElementById("periodLB");
+    var ouSelCB = document.getElementById("ouSelCB");
+    var aggPeriodCB = document.getElementById("aggPeriodCB");
+    var periodTypeList = document.getElementById( "periodTypeLB" );
+    var periodTypeId = periodTypeList.options[ periodTypeList.selectedIndex ].value;
+	var orgUnitSelListCB = document.getElementById( "orgUnitSelListCB" );
+	var ouRadioVal = orgUnitSelListCB.options[ orgUnitSelListCB.selectedIndex ].value;
+
+    var k=0;
+    
+   
+    if( periodTypeId == yearlyPeriodTypeName )
+    {
+        if( yearLB.selectedIndex < 0 ) 
+        {
+            alert("Please select Year(s)");
+            return false;
+        }
+    }
+    else
+    {
+        if( yearLB.selectedIndex < 0 ) 
+        {
+            alert("Please select Year(s)");
+            return false;
+        }
+        if( periodLB.selectedIndex < 0 ) 
+        {
+            alert("Please select Period(s)");
+            return false;
+        }
+    }
+	
+    if( ouRadioVal == "orgUnitSelectedRadio" )
+    {
+    	if( selOUListLength <= 0 )
+        {
+            alert( "Please select OrgUnit(s)" );
+            return false;
+        }
+    }
+    else if( ouRadioVal == "orgUnitGroupRadio" ) 
+    { 
+    	if( orgUnitLevelCB.selectedIndex < 0 ) 
+    	{
+            alert( "Please select OrgUnitGroup" );
+            return false;
+        }
+    }
+    else if( ouRadioVal == "orgUnitLevelRadio" )
+    {
+	   if(orgUnitLevelCB.selectedIndex < 0  ) 
+	   {
+           alert( "Please select OrgUnitLevel" );
+           return false;
+       }
+    }
+	   
+    orgUnitListCB.disabled = false;
+	
+    for(k = 0; k < orgUnitListCB.options.length; k++)
+    {
+        orgUnitListCB.options[k].selected = true;
+    }
+
+    return true;
+} 
+
+// formValidations for Validation rule Function End

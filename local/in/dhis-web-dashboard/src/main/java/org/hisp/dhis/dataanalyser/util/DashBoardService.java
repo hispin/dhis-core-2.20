@@ -27,8 +27,8 @@ package org.hisp.dhis.dataanalyser.util;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.hisp.dhis.system.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.system.util.TextUtils.getCommaDelimitedString;
+import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -38,16 +38,22 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hisp.dhis.aggregation.AggregationService;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementCategoryCombo;
 import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
+import org.hisp.dhis.dataelement.DataElementOperand;
+import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.datavalue.DataValueService;
 import org.hisp.dhis.indicator.Indicator;
@@ -59,12 +65,20 @@ import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.PeriodType;
 import org.hisp.dhis.period.WeeklyPeriodType;
 import org.hisp.dhis.reports.ReportService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class DashBoardService
 {
     private final String OPTIONCOMBO = "optioncombo";
+    
+    final Pattern INPUT_PATTERN = Pattern.compile( "(<input.*?/>)", Pattern.DOTALL );
+    final Pattern IDENTIFIER_PATTERN = Pattern.compile( "id=\"(\\w+)-(\\w+)-val\"" );
+    final Pattern DATAELEMENT_TOTAL_PATTERN = Pattern.compile( "dataelementid=\"(\\w+?)\"" );
+    final Pattern INDICATOR_PATTERN = Pattern.compile( "indicatorid=\"(\\w+)\"" );
+    final Pattern VALUE_TAG_PATTERN = Pattern.compile( "value=\"(.*?)\"", Pattern.DOTALL );
+    final Pattern TITLE_TAG_PATTERN = Pattern.compile( "title=\"(.*?)\"", Pattern.DOTALL );
     
     // -------------------------------------------------------------------------
     // Dependencies
@@ -118,14 +132,17 @@ public class DashBoardService
     {
         this.jdbcTemplate = jdbcTemplate;
     }
-
-
+    
+    @Autowired
+    private DataElementCategoryService categoryService;
+    
     public String getRAFolderName()
     {
         return reportservice.getRAFolderName();
     }
     
-
+    // Supportive Methods
+    
     public Map<Integer, Integer> getOrgunitLevelMap( )
     {
         Map<Integer, Integer> orgUnitLevelMap = new HashMap<Integer, Integer>();
@@ -782,7 +799,8 @@ public class DashBoardService
                        {
                            for( Period period : periods )
                            {
-                               DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period, decoc );                               
+                               //DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period, decoc );
+                               DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgChild,  decoc );  
                                try
                                {
                                    aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -810,7 +828,8 @@ public class DashBoardService
                            {
                                for( Period period : periods )
                                {
-                                   DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period, decoc1 );                               
+                                   //DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period, decoc1 );
+                                   DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgChild,  decoc1 );
                                    try
                                    {
                                        aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -921,7 +940,8 @@ public class DashBoardService
                        {
                            for( Period period : periods )
                            {
-                               DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                               //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                               DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc );
                                try
                                {
                                    aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -948,7 +968,8 @@ public class DashBoardService
                            {
                                for( Period period : periods )
                                {
-                                   DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                   //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                   DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc1 );
                                    try
                                    {
                                        aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1046,7 +1067,8 @@ public class DashBoardService
                        Collection<Period> periods = periodService.getPeriodsBetweenDates( startDate, endDate );
                        for( Period period : periods )
                        {
-                           DataValue dataValue = dataValueService.getDataValue( selectedOrgUnit, dataElement, period, decoc );
+                           //DataValue dataValue = dataValueService.getDataValue( selectedOrgUnit, dataElement, period, decoc );
+                           DataValue dataValue = dataValueService.getDataValue( dataElement, period, selectedOrgUnit,  decoc );
                            try
                            {
                                aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1074,7 +1096,8 @@ public class DashBoardService
                            Collection<Period> periods = periodService.getPeriodsBetweenDates( startDate, endDate );
                            for( Period period : periods )
                            {
-                               DataValue dataValue = dataValueService.getDataValue( selectedOrgUnit, dataElement, period, decoc1 );
+                               //DataValue dataValue = dataValueService.getDataValue( selectedOrgUnit, dataElement, period, decoc1 );
+                               DataValue dataValue = dataValueService.getDataValue( dataElement, period, selectedOrgUnit, decoc1 );
                                try
                                {
                                    aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1176,7 +1199,8 @@ public class DashBoardService
                        {
                            for( Period period : periods )
                            {
-                               DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                               //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                               DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc );
                                try
                                {
                                    aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1203,7 +1227,8 @@ public class DashBoardService
                            {
                                for( Period period : periods )
                                {
-                                   DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                   //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                   DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc1 );
                                    try
                                    {
                                        aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1807,5 +1832,135 @@ public class DashBoardService
 
         return indicatorChartResult;
     }
+    
+    
+    
+    // get DataElement in dataEntry Form by DataSet
+    public Set<DataElement> getDataElementsInDataEntryForm( DataSet dataSet )
+    {
+        if ( dataSet == null || !dataSet.hasDataEntryForm() )
+        {
+            return null;
+        }
+
+        Map<String, DataElement> dataElementMap = getDataElementMap( dataSet );
+        
+        Set<DataElementOperand> operands = new HashSet<>();
+
+        Set<DataElement> dataElements = new HashSet<>();
+
+        Matcher inputMatcher = INPUT_PATTERN.matcher( dataSet.getDataEntryForm().getHtmlCode() );
+        
+        
+        DataElementCategoryOptionCombo categoryOptionCombo = null;
+        
+        while ( inputMatcher.find() )
+        {
+            String inputHtml = inputMatcher.group();
+
+            Matcher identifierMatcher = IDENTIFIER_PATTERN.matcher( inputHtml );
+            Matcher dataElementTotalMatcher = DATAELEMENT_TOTAL_PATTERN.matcher( inputHtml );
+
+            DataElement dataElement = null;
+
+            if ( identifierMatcher.find() && identifierMatcher.groupCount() > 0 )
+            {
+                String dataElementId = identifierMatcher.group( 1 );
+                dataElement = dataElementMap.get( dataElementId );
+                
+                String categoryOptionComboId = identifierMatcher.group( 2 );
+                
+                DataElementOperand operand = new DataElementOperand( dataElementId, categoryOptionComboId );
+
+                operands.add( operand );
+                
+                if ( categoryOptionComboId != null )
+                {
+                    categoryOptionCombo = categoryService.getDataElementCategoryOptionCombo( categoryOptionComboId );
+                }
+                else
+                {
+                    categoryOptionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
+                }
+                
+            }
+            else if ( dataElementTotalMatcher.find() && dataElementTotalMatcher.groupCount() > 0 )
+            {
+                String dataElementId = dataElementTotalMatcher.group( 1 );
+                dataElement = dataElementMap.get( dataElementId );
+                
+                String categoryOptionComboId = dataElementTotalMatcher.group( 2 );
+                
+                DataElementOperand operand = new DataElementOperand( dataElementId, categoryOptionComboId );
+
+                operands.add( operand );
+                
+                if ( categoryOptionComboId != null )
+                {
+                    categoryOptionCombo = categoryService.getDataElementCategoryOptionCombo( categoryOptionComboId );
+                }
+                else
+                {
+                    categoryOptionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
+                }
+                
+            }
+            
+            //System.out.println(  " operands size -- " + operands.size() );
+            
+            //System.out.println(  " dataElement -- " + dataElement.getName() + "--- UID " + dataElement.getUid() + " categoryOptionCombo -- " + categoryOptionCombo.getName() + "--- UID " + categoryOptionCombo.getUid());
+            
+            for( DataElementOperand op : operands )
+            {
+                //System.out.println( op.getDataElement().getName() + " -- " + op.getCategoryOptionCombo().getName() );
+            }
+                        
+            if ( dataElement != null )
+            {
+                dataElements.add( dataElement );
+            }
+        }
+
+        return dataElements;
+    }
+    
+    
+    
+    private Map<String, DataElement> getDataElementMap( DataSet dataSet )
+    {
+        Map<String, DataElement> map = new HashMap<>();
+
+        for ( DataElement element : dataSet.getDataElements() )
+        {
+            map.put( element.getUid(), element );
+        }
+
+        return map;
+    }    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 } // class end

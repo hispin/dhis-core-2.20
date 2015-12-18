@@ -426,7 +426,8 @@ public class GenerateChartDataElementAction
         drillDownPeriodNames = "";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "MMM-yyyy" );
         periodNames = new ArrayList<String>();
-
+        
+        // for weekly period
         if ( periodTypeLB.equalsIgnoreCase( WeeklyPeriodType.NAME ) )
         {
             int periodCount = 0;
@@ -461,6 +462,45 @@ public class GenerateChartDataElementAction
                 periodCount++;
             }
         }
+        
+        // for Forteen period
+        /*
+        if ( periodTypeLB.equalsIgnoreCase( ForteenPeriodType.NAME ) )
+        {
+            int periodCount = 0;
+            for ( String periodStr : periodLB )
+            {
+                
+                String  startForteenPeriodDate = periodStr.split( "To" )[0].trim(); //for start forteen period
+                String  endForteenPeriodDate = periodStr.split( "To" )[1].trim(); //for end forteen period
+                
+                startD = startForteenPeriodDate.trim();
+                endD = endForteenPeriodDate.trim();
+                
+                // startD = periodStr.split( "To" )[0].trim();
+                //endD = periodStr.split( "To" )[1].trim();
+
+                if ( periodCount == periodLB.size() - 1 )
+                {
+                    drillDownPeriodStartDate += startD;
+                    drillDownPeriodEndDate += endD;
+                    drillDownPeriodNames += periodStr;
+                }
+                else
+                {
+                    drillDownPeriodStartDate += startD + ";";
+                    drillDownPeriodEndDate += endD + ";";
+                    drillDownPeriodNames += periodStr + ";";
+                }
+
+                selStartPeriodList.add( format.parseDate( startD ) );
+                selEndPeriodList.add( format.parseDate( endD ) );
+                periodNames.add( periodStr );
+                periodCount++;
+            }
+        }        
+        */
+        
         // for FinancialAprilPeriodType
         else if ( periodTypeLB.equalsIgnoreCase( FinancialAprilPeriodType.NAME ) )
         {
@@ -932,7 +972,8 @@ public class GenerateChartDataElementAction
                         Collection<Period> periods = periodService.getPeriodsBetweenDates( startDate, endDate );
                         for ( Period period : periods )
                         {
-                            DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                            //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                            DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc );
                             try
                             {
                                 aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -964,7 +1005,8 @@ public class GenerateChartDataElementAction
                             Collection<Period> periods = periodService.getPeriodsBetweenDates( startDate, endDate );
                             for ( Period period : periods )
                             {
-                                DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc1 );
                                 try
                                 {
                                     aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1079,7 +1121,8 @@ public class GenerateChartDataElementAction
                         {
                             for ( Period period : periods )
                             {
-                                DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period, decoc );
+                                //DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period, decoc );
+                                DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgChild, decoc );
                                 try
                                 {
                                     aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1109,8 +1152,8 @@ public class GenerateChartDataElementAction
                             {
                                 for ( Period period : periods )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period,
-                                        decoc1 );
+                                    //DataValue dataValue = dataValueService.getDataValue( orgChild, dataElement, period, decoc1 );
+                                    DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgChild,  decoc1 );
                                     try
                                     {
                                         aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1222,8 +1265,8 @@ public class GenerateChartDataElementAction
                         {
                             for ( Period period : periods )
                             {
-                                DataValue dataValue = dataValueService.getDataValue( orgunit, dataElement, period,
-                                    decoc );
+                                //DataValue dataValue = dataValueService.getDataValue( orgunit, dataElement, period, decoc );
+                                DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgunit, decoc );
                                 try
                                 {
                                     aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1244,8 +1287,7 @@ public class GenerateChartDataElementAction
 
                             if ( aggDataCB != null )
                             {
-                                Double tempAggDataValue = aggregationService.getAggregatedDataValue( dataElement, decoc1,
-                                    startDate, endDate, orgunit );
+                                Double tempAggDataValue = aggregationService.getAggregatedDataValue( dataElement, decoc1, startDate, endDate, orgunit );
                                 if ( tempAggDataValue != null )
                                     aggDataValue += tempAggDataValue;
                             }
@@ -1253,8 +1295,8 @@ public class GenerateChartDataElementAction
                             {
                                 for ( Period period : periods )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( orgunit, dataElement, period,
-                                        decoc1 );
+                                    //DataValue dataValue = dataValueService.getDataValue( orgunit, dataElement, period, decoc1 );
+                                    DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgunit,  decoc1 );
                                     try
                                     {
                                         aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1372,8 +1414,8 @@ public class GenerateChartDataElementAction
                         {
                             for ( Period period : periods )
                             {
-                                DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period,
-                                    decoc );
+                                //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                                DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc );
                                 try
                                 {
                                     aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1403,8 +1445,8 @@ public class GenerateChartDataElementAction
                             {
                                 for ( Period period : periods )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period,
-                                        decoc1 );
+                                    //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                    DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc1 );
                                     try
                                     {
                                         aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1535,9 +1577,9 @@ public class GenerateChartDataElementAction
                             {
                                 for ( Period period : periods )
                                 {
-                                    DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period,
-                                        decoc );
-
+                                    //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc );
+                                    DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc );
+                                    
                                     try
                                     {
                                         aggDataValue += Double.parseDouble( dataValue.getValue() );
@@ -1559,8 +1601,7 @@ public class GenerateChartDataElementAction
 
                                 if ( aggDataCB != null )
                                 {
-                                    Double tempAggDataValue = aggregationService.getAggregatedDataValue( dataElement,
-                                        decoc1, startDate, endDate, orgUnit );
+                                    Double tempAggDataValue = aggregationService.getAggregatedDataValue( dataElement, decoc1, startDate, endDate, orgUnit );
                                     if ( tempAggDataValue != null )
                                         aggDataValue += tempAggDataValue;
                                 }
@@ -1568,8 +1609,8 @@ public class GenerateChartDataElementAction
                                 {
                                     for ( Period period : periods )
                                     {
-                                        DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period,
-                                            decoc1 );
+                                        //DataValue dataValue = dataValueService.getDataValue( orgUnit, dataElement, period, decoc1 );
+                                        DataValue dataValue = dataValueService.getDataValue( dataElement, period, orgUnit,  decoc1 );
 
                                         try
                                         {
