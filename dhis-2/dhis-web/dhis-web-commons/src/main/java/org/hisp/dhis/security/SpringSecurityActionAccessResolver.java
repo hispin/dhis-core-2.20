@@ -126,8 +126,8 @@ public class SpringSecurityActionAccessResolver
            
             log.debug( "Access to [" + module + ", " + name + "]: TRUE" );
           
-           return false;
-           // return true;
+           //return false;
+           return true;
         }
         catch ( AccessDeniedException e )
         {

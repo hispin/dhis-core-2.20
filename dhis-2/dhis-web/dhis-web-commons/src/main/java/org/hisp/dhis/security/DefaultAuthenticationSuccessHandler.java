@@ -58,11 +58,70 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 public class DefaultAuthenticationSuccessHandler
     extends SavedRequestAwareAuthenticationSuccessHandler
 {
+   
     /**
      * Default is 1 hour of inactivity, this is mostly for when we are using the mobile
      * client, since entering data can take time, and data will be lost if the session
      * times out while entering data.
      */
+    
+    /*
+    public static final int DEFAULT_SESSION_TIMEOUT = 60 * 60;
+
+    @Autowired
+    private UserService userService;
+    
+    @Override
+    public void onAuthenticationSuccess( HttpServletRequest request, HttpServletResponse response, Authentication authentication )
+        throws ServletException, IOException
+    {
+        HttpSession session = request.getSession();
+        
+        String username = ((User)authentication.getPrincipal()).getUsername();
+
+        session.setAttribute( "userIs", username);
+        session.setAttribute( LoginInterceptor.JLI_SESSION_VARIABLE, Boolean.TRUE );
+        session.setMaxInactiveInterval( DefaultAuthenticationSuccessHandler.DEFAULT_SESSION_TIMEOUT );
+
+        UserCredentials credentials = userService.getUserCredentialsByUsername( username );
+
+        if ( credentials != null )
+        {
+            credentials.updateLastLogin();
+            userService.updateUserCredentials( credentials );            
+        }
+        
+        super.onAuthenticationSuccess( request, response, authentication );
+    }
+    */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ 
     public static final int DEFAULT_SESSION_TIMEOUT = 60 * 60;
 
     @Autowired
@@ -161,5 +220,7 @@ public class DefaultAuthenticationSuccessHandler
         super.onAuthenticationSuccess( request, response, authentication );
 			
 		}
-}
+    }
+   
+   
 }

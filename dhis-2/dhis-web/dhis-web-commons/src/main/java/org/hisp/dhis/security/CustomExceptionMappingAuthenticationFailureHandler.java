@@ -52,7 +52,21 @@ import java.io.IOException;
  */
 public class CustomExceptionMappingAuthenticationFailureHandler extends ExceptionMappingAuthenticationFailureHandler
 {   
-	@Autowired
+    /*
+    @Override
+    public void onAuthenticationFailure( HttpServletRequest request, HttpServletResponse response, AuthenticationException exception ) throws IOException, ServletException
+    {
+        request.getSession().setAttribute( "username", request.getParameter( "j_username" ) );
+
+        super.onAuthenticationFailure( request, response, exception );
+    }
+    */
+    
+    
+    
+    
+   
+    @Autowired
 	private UserService userService;
 
 	@Autowired
@@ -157,7 +171,7 @@ public class CustomExceptionMappingAuthenticationFailureHandler extends Exceptio
             
     }
         
-   
+        
 	int differencebetweentimestamp(Date date1, Date date2){
     	
     		// Get msec from each, and subtract.
@@ -170,6 +184,6 @@ public class CustomExceptionMappingAuthenticationFailureHandler extends Exceptio
     	
     		
     	}
-
+        
 	
 }

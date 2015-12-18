@@ -137,7 +137,8 @@ public class LoginAction
  
     	
     	CustomExceptionMappingAuthenticationFailureHandler custom=new CustomExceptionMappingAuthenticationFailureHandler ();
-        difference =   custom.diff;
+        
+    	difference =   custom.diff;
         userattempt=custom.attempt;
       
         Device device = deviceResolver.resolveDevice( ServletActionContext.getRequest() );
