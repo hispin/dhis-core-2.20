@@ -72,6 +72,13 @@
       <result name="success" type="outputStreamResult"></result>
       <result name="input" type="velocity">/dhis-web-dataentry/validationResult.vm</result>
     </action>
+	
+	<!--  add for maharashtra for Delete Lock Exception -->
+    <action name="deleteLockException" class="org.hisp.dhis.de.action.DeleteLockException">
+      <result name="success" type="velocity-json">../dhis-web-commons/ajax/jsonResponseSuccess.vm</result>
+      <result name="input" type="velocity-json">../dhis-web-commons/ajax/jsonResponseInput.vm</result>
+      <param name="requiredAuthorities">F_DATAVALUE_ADD</param>
+    </action>
 
   </package>
 </struts>

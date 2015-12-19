@@ -1870,9 +1870,39 @@ function registerCompleteDataSet()
 	        type: 'post',
 	    	success: function( data, textStatus, xhr )
 	        {
-                $( document ).trigger( dhis2.de.event.completed, [ dhis2.de.currentDataSetId, params ] );
+	    		// add for Maharashtra
+	    		$.ajax( {
+	    	    	url: 'deleteLockException.action',
+	    	    	data: params,
+	    	        dataType: 'json',
+	    	        type: 'post',
+	    	    	success: function(data)
+	    	        {
+	    	            if ( data.status == 2 )
+	    	            {
+	    	                log( 'Data set is locked' );
+	    	                setHeaderMessage( i18n_register_complete_failed_dataset_is_locked );
+	    	            }
+	    	            else
+	    	            {
+	    	                disableCompleteButton();
+	    	
+	    	                dhis2.de.storageManager.clearCompleteDataSet( params );
+	    	            }
+	    	        },
+	    		    error: function()
+	    		    {
+	    		    	disableCompleteButton();
+	    		    }
+	    	    } );
+	    		// End
+	    		
+    		 	$( document ).trigger( dhis2.de.event.completed, [ dhis2.de.currentDataSetId, params ] );
 	    		disableCompleteButton();
 	    		dhis2.de.storageManager.clearCompleteDataSet( params );
+		    		
+	    		
+	    		
 	        },
 		    error:  function( xhr, textStatus, errorThrown )
 		    {

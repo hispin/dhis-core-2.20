@@ -64,5 +64,14 @@
     <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
     <property name="dataElementCategoryService" ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
   </bean>
+	
+  <!--  add for maharashtra for Delete Lock Exception -->	
+  <bean id="org.hisp.dhis.de.action.DeleteLockException"
+      class="org.hisp.dhis.de.action.DeleteLockException"
+      scope="prototype">
+    <property name="jdbcTemplate" ref="jdbcTemplate" />
+    <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+  </bean>
+
 
 </beans>
