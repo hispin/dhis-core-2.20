@@ -1871,6 +1871,7 @@ function registerCompleteDataSet()
 	    	success: function( data, textStatus, xhr )
 	        {
 	    		// add for Maharashtra
+	    		/*
 	    		$.ajax( {
 	    	    	url: 'deleteLockException.action',
 	    	    	data: params,
@@ -1895,6 +1896,7 @@ function registerCompleteDataSet()
 	    		    	disableCompleteButton();
 	    		    }
 	    	    } );
+	    	    */
 	    		// End
 	    		
     		 	$( document ).trigger( dhis2.de.event.completed, [ dhis2.de.currentDataSetId, params ] );
