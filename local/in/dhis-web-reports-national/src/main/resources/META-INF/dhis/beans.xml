@@ -1,8 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	   xmlns:batch="http://www.springframework.org/schema/batch"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:task="http://www.springframework.org/schema/task"	   
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation= "http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.2.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+    
+    
+	<!--  for Scheduled SMS -->
+	<!--  for RunAggregation Query By Scheduler -->
+   	<task:scheduled-tasks scheduler="smsScheduler">
+        <task:scheduled ref="org.hisp.dhis.reports.smsscheduling.action.ScheduleSMSAction" method="execute" cron="0 0 0/1 1/1 * ?"/>
+        <!--
+        <task:scheduled ref="org.hisp.dhis.reports.smsscheduling.action.ScheduleSMSAction" method="scheduledAdverseEventSMS" cron="0 16 13 * * ?"/>
+        <task:scheduled ref="org.hisp.dhis.reports.smsscheduling.action.ScheduleSMSAction" method="scheduledNonReportingFacilitySMS" cron="0 42 14 * * ?"/>
+        <task:scheduled ref="org.hisp.dhis.reports.smsscheduling.action.ScheduleSMSAction" method="scheduledKeyPerformanceIndicatorsSMS" cron="0 3 16 * * ?"/>
+        -->
+   	</task:scheduled-tasks>
+	
+	<!-- 0 0 0/1 1/1 * ? schedule  every day every hour -->
+	
+	<!-- value="0 0/30 * * * ?" // for every 30 minute -->
+	<task:scheduler id="smsScheduler" pool-size="1"/>
+	
+	<bean id="org.hisp.dhis.reports.smsscheduling.action.ScheduleSMSAction"
+		class="org.hisp.dhis.reports.smsscheduling.action.ScheduleSMSAction"
+		scope="prototype">		
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>    
+    
+    
     
     <!-- Reports -->
     <bean id="org.hisp.dhis.reports.action.ReportsHomePageAction"
