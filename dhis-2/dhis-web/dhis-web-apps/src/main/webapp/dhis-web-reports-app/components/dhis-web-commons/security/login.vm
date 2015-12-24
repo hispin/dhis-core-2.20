@@ -75,12 +75,9 @@
             #end
             #if( $failed == true )
 				<div id="loginMessage">Wrong username or password </div>
-				
-            
+			
 			#end
-			#if($difference < 24)
-				<div id= "AccessDeniedMessage">Your account is locked. Please try after 24 hours</div>
-			#end
+			
             #if ( $keyApplicationNotification )
             <div id="notificationArea">$!{keyApplicationNotification}</div>
             #end

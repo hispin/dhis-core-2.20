@@ -77,86 +77,86 @@ public class DefaultAuthenticationSuccessHandler
 	   String username1=(request.getParameter( "j_username" )) ;
 	   UserCredentials userCredential = userService.getUserCredentialsByUsername( username1);
 	   org.hisp.dhis.user.User user = userService.getUser( userCredential.getUser().getUid() );
-	   LoginAttempt loginattempt = loginAttemptService.getLoginAttemptByUser(  user );
+	       LoginAttempt loginattempt = loginAttemptService.getLoginAttemptByUser(  user );
 	
 	
-		//when login count doesn't exceed 3
-		if((loginattempt!=null))
+		//user is not null when login count doesn't exceed 3
+		
+	       if((loginattempt!=null))
 		{
 		    if (loginattempt.getCount()<3)
-		        {  
-		   
+		    {  
 		        HttpSession session = request.getSession();
 		        String username = ((User)authentication.getPrincipal()).getUsername();
 
-		        session.setAttribute( "userIs", username);
-		        session.setAttribute( LoginInterceptor.JLI_SESSION_VARIABLE, Boolean.TRUE );
-	                session.setMaxInactiveInterval( DefaultAuthenticationSuccessHandler.DEFAULT_SESSION_TIMEOUT );
+	        session.setAttribute( "userIs", username);
+	        session.setAttribute( LoginInterceptor.JLI_SESSION_VARIABLE, Boolean.TRUE );
+	        session.setMaxInactiveInterval( DefaultAuthenticationSuccessHandler.DEFAULT_SESSION_TIMEOUT );
 
-	                UserCredentials credentials = userService.getUserCredentialsByUsername( username );
+	        UserCredentials credentials = userService.getUserCredentialsByUsername( username );
 
-	                if ( credentials != null )
-	                    {
-	                    credentials.updateLastLogin();
-	                    userService.updateUserCredentials( credentials );            
-	                    }
-	        
+	        if ( credentials != null )
+	            {
+	            credentials.updateLastLogin();
+	            userService.updateUserCredentials( credentials );            
+	            }
+	        loginAttemptService.deleteLoginAttempt(loginattempt);
 	        super.onAuthenticationSuccess( request, response, authentication );
 			
-		        }
-		//login count exceeds 3
-		    else if(loginattempt.getCount()>=3 )
-		        {
-		            Date a = loginattempt.getLastLoginAttempt();
-		            Date b = new Date();
-		
-			int diff = (int) (b.getTime() - a.getTime());
-			    
-			    if(diff<24)
-			     {
+		}
+		// if count is greater than 3 and time difference is less than 24 hours then redirect to login page
+		else if(loginattempt.getCount()>=3 )
+		{
+				Date a = loginattempt.getLastLoginAttempt();
+				
+				Date b = new Date();
+				int diff = (int) (b.getTime() - a.getTime());
+					if(diff<24)
+			{
 				final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 				request.getSession().setAttribute("targetUrl",request.getRequestURL());
 				redirectStrategy.sendRedirect(request,response,request.getRequestURL().toString());
-			     }
-			
-			    else
-			        {
-			            HttpSession session = request.getSession();
-			            String username = ((User)authentication.getPrincipal()).getUsername();
-			            System.out.println("inside else");
-			            session.setAttribute( "userIs", username);
-			            session.setAttribute( LoginInterceptor.JLI_SESSION_VARIABLE, Boolean.TRUE );
-			            session.setMaxInactiveInterval( DefaultAuthenticationSuccessHandler.DEFAULT_SESSION_TIMEOUT );
+}
+			else
+			{ // login attempt>3 but time difference > 24 hours, user should be able to relogin
+				
+			    HttpSession session = request.getSession();
+			    String username = ((User)authentication.getPrincipal()).getUsername();
+			   
+			    session.setAttribute( "userIs", username);
+			    session.setAttribute( LoginInterceptor.JLI_SESSION_VARIABLE, Boolean.TRUE );
+			    session.setMaxInactiveInterval( DefaultAuthenticationSuccessHandler.DEFAULT_SESSION_TIMEOUT );
 
-		        UserCredentials credentials = userService.getUserCredentialsByUsername( username );
+			    UserCredentials credentials = userService.getUserCredentialsByUsername( username );
 
 		        if ( credentials != null )
 		        {
 		            credentials.updateLastLogin();
 		            userService.updateUserCredentials( credentials );            
 		        }
+		        //delete existing row of user in database if user logs correctly
 		        loginAttemptService.deleteLoginAttempt(loginattempt);
 		        super.onAuthenticationSuccess( request, response, authentication );
 			}
-		        }
 		}
-		
+    }
 		else
-		{
-			HttpSession session = request.getSession();
-			String username = ((User)authentication.getPrincipal()).getUsername();
+		{ 
+		    //loginattempt is null-ie user is null/ new user
+		    HttpSession session = request.getSession();
+		    String username = ((User)authentication.getPrincipal()).getUsername();
 
-			session.setAttribute( "userIs", username);
-			session.setAttribute( LoginInterceptor.JLI_SESSION_VARIABLE, Boolean.TRUE );
-			session.setMaxInactiveInterval( DefaultAuthenticationSuccessHandler.DEFAULT_SESSION_TIMEOUT );
+        session.setAttribute( "userIs", username);
+        session.setAttribute( LoginInterceptor.JLI_SESSION_VARIABLE, Boolean.TRUE );
+        session.setMaxInactiveInterval( DefaultAuthenticationSuccessHandler.DEFAULT_SESSION_TIMEOUT );
 
-			UserCredentials credentials = userService.getUserCredentialsByUsername( username );
+        UserCredentials credentials = userService.getUserCredentialsByUsername( username );
 
         if ( credentials != null )
-        {
-            credentials.updateLastLogin();
-            userService.updateUserCredentials( credentials );            
-        }
+            {
+                credentials.updateLastLogin();
+                userService.updateUserCredentials( credentials );            
+            }
         
         super.onAuthenticationSuccess( request, response, authentication );
 			

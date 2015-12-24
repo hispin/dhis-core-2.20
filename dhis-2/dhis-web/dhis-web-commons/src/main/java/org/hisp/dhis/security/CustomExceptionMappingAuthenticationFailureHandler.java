@@ -55,39 +55,38 @@ public class CustomExceptionMappingAuthenticationFailureHandler extends Exceptio
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+        private LoginAttemptService loginAttemptService;
+	 
 	private int MAX_ATTEMPTS=3;
 	private static int count=0;
 	private int logincount=1;
 	public static int diff=-1;
-public static int attempt=-1;
+	public static int attempt=-1;
 	
 	LoginAction loginaction=new LoginAction();
 
-	 @Autowired
-	 private LoginAttemptService loginAttemptService;
+	
 	@Override
     public void onAuthenticationFailure( HttpServletRequest request, HttpServletResponse response, AuthenticationException exception ) throws IOException, ServletException
     {
 		super.onAuthenticationFailure( request, response, exception );
 		
+		
     	request.getSession().setAttribute( "username", request.getParameter( "j_username" ) );
        
         String username=(request.getParameter( "j_username" )) ;
-     
-       
-        
-        if( username != null && !username.equalsIgnoreCase("") )
+      
+           if( username != null && !username.equalsIgnoreCase("") )
         {
         	UserCredentials userCredential = userService.getUserCredentialsByUsername( username);
         	
         	
-        
         	if( userCredential!=null)
         	{
-        		
         		User user = userService.getUser( userCredential.getUser().getUid() );
         		
-               	LoginAttempt loginattempt = loginAttemptService.getLoginAttemptByUser(  user );
+        		LoginAttempt loginattempt = loginAttemptService.getLoginAttemptByUser(  user );
                
                 if(count==0)
                 {
@@ -101,7 +100,7 @@ public static int attempt=-1;
                 	  		
             		if( loginattempt != null )
             		{
-            			attempt = loginattempt.getCount() + 1;
+            			attempt = loginattempt.getCount()+1;
             			
             			if( loginattempt.getCount() < 3 )
             			{	
@@ -120,14 +119,13 @@ public static int attempt=-1;
             			
             			
             			else if( loginattempt.getCount() == MAX_ATTEMPTS)
-            			{   Date a = loginattempt.getLastLoginAttempt();
-            				
+            			{   
+            			        Date a = loginattempt.getLastLoginAttempt();
+            			
             				Date b = new Date();
             				
             				if(differencebetweentimestamp(b,a)<24) 
-            			    {
-            				
-            				
+            			        {
             				}
             				
             				else if (differencebetweentimestamp(b,a) > 24)
@@ -140,15 +138,15 @@ public static int attempt=-1;
             		}
             		
             		else
-            		{ 
+            		{
+            		     //new user
+            			loginattempt = new LoginAttempt();
+            			loginattempt.setUser( user );
+            			loginattempt.setCount(logincount);
+            			loginattempt.setLastLoginAttempt(new Date());
+            			loginattempt.setId(user.getId());
             			
-            		loginattempt = new LoginAttempt();
-            		loginattempt.setUser( user );
-            		loginattempt.setCount(logincount);
-            		loginattempt.setLastLoginAttempt(new Date());
-            		loginattempt.setId(user.getId());
-            			
-            		loginAttemptService.addLoginAttempt(loginattempt);
+            			loginAttemptService.addLoginAttempt(loginattempt);
             			
             		}	
             	}
@@ -164,11 +162,11 @@ public static int attempt=-1;
     	
     		// Get msec from each, and subtract.
     		 diff = (int) (date1.getTime() - date2.getTime());
-    		diff=diff/(1000*60*60);
+    		 diff=diff/(1000*60*60);
     		
     		Date b = new Date();
     		
-                return diff;
+            return diff;
     	
     		
     	}

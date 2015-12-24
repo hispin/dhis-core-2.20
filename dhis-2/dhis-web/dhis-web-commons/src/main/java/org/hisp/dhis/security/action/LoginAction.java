@@ -139,8 +139,7 @@ public class LoginAction
     	CustomExceptionMappingAuthenticationFailureHandler custom=new CustomExceptionMappingAuthenticationFailureHandler ();
         difference =   custom.diff;
         userattempt=custom.attempt;
-    
-    
+      
         Device device = deviceResolver.resolveDevice( ServletActionContext.getRequest() );
 
         ServletActionContext.getResponse().addHeader( "Login-Page", "true" );
