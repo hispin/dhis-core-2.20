@@ -48,6 +48,7 @@
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-service-core</artifactId>
     </dependency>
+	
 
   </dependencies>
   <properties>

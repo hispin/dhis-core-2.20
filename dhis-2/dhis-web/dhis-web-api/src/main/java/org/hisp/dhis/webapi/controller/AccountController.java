@@ -29,6 +29,7 @@ package org.hisp.dhis.webapi.controller;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,6 +67,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -520,7 +522,8 @@ public class AccountController
     }
 
     private void authenticate( String username, String rawPassword, Collection<GrantedAuthority> authorities, HttpServletRequest request )
-    {
+    { 
+    	System.out.println("inside authenticate controller method");
         UsernamePasswordAuthenticationToken token =
             new UsernamePasswordAuthenticationToken( username, rawPassword, authorities );
 

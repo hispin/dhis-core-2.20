@@ -45,6 +45,7 @@
                 	<div id="signInLabel">Sign in</div>
                     <div><input type="text" id="j_username" name="j_username" placeholder="Username"></div>
                     <div><input type="password" id="j_password" name="j_password" autocomplete="off" placeholder="Password"></div>
+                     
                 </div>
                 <div id="submitDiv">
                 	<input id="submit" class="button" type="submit" value="Sign in">
@@ -73,8 +74,13 @@
               </form>
             #end
             #if( $failed == true )
-            <div id="loginMessage">Wrong username or password</div>
-            #end
+				<div id="loginMessage">Wrong username or password </div>
+				
+            
+			#end
+			#if($difference < 24)
+				<div id= "AccessDeniedMessage">Your account is locked. Please try after 24 hours</div>
+			#end
             #if ( $keyApplicationNotification )
             <div id="notificationArea">$!{keyApplicationNotification}</div>
             #end

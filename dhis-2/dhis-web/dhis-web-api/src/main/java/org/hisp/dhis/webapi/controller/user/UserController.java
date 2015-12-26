@@ -315,7 +315,7 @@ public class UserController
         String password = StringUtils.trimToNull( auth != null ? auth.get( KEY_PASSWORD ) : null );
 
         if ( auth == null || username == null )
-        {
+        {  
             throw new WebMessageException( WebMessageUtils.conflict( "Username must be specified" ) );
         }
 
@@ -325,8 +325,9 @@ public class UserController
         }
 
         if ( password == null )
-        {
+        {        
             throw new WebMessageException( WebMessageUtils.conflict( "Password must be specified" ) );
+   
         }
 
         if ( !ValidationUtils.passwordIsValid( password ) )

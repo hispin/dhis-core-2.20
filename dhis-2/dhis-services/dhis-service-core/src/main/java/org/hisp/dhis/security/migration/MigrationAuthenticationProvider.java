@@ -94,11 +94,12 @@ public class MigrationAuthenticationProvider
         {
             UserCredentials userCredentials = userService.getUserCredentialsByUsername( username );
 
+            System.out.println("inside passwordmanager");
             if ( userCredentials != null )
             {
                 userService.encodeAndSetPassword( userCredentials, password );
                 userService.updateUser( userCredentials.getUser() );
-
+                System.out.println("inside usercredential checking");
                 log.info( "User " + userCredentials.getUsername() + " was migrated from " + passwordManager.getLegacyPasswordEncoderClassName() +
                     " to " + passwordManager.getPasswordEncoderClassName() + " based password hashing on login." );
 

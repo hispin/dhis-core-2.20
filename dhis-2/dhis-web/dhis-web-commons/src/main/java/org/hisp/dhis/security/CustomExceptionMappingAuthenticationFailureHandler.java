@@ -28,24 +28,150 @@ package org.hisp.dhis.security;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+import org.hisp.dhis.loginattempt.LoginAttempt;
+import org.hisp.dhis.loginattempt.LoginAttemptService;
+import org.hisp.dhis.security.action.LoginAction;
+import org.hisp.dhis.user.User;
+import org.hisp.dhis.user.UserCredentials;
+import org.hisp.dhis.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
+
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 /**
  * @author Morten Olav Hansen <mortenoh@gmail.com>
  */
 public class CustomExceptionMappingAuthenticationFailureHandler extends ExceptionMappingAuthenticationFailureHandler
-{
-    @Override
+{   
+	@Autowired
+	private UserService userService;
+
+	private int MAX_ATTEMPTS=3;
+	private static int count=0;
+	private int logincount=1;
+	public static int diff=-1;
+public static int attempt=-1;
+	
+	LoginAction loginaction=new LoginAction();
+
+	 @Autowired
+	 private LoginAttemptService loginAttemptService;
+	@Override
     public void onAuthenticationFailure( HttpServletRequest request, HttpServletResponse response, AuthenticationException exception ) throws IOException, ServletException
     {
-        request.getSession().setAttribute( "username", request.getParameter( "j_username" ) );
-
-        super.onAuthenticationFailure( request, response, exception );
+		super.onAuthenticationFailure( request, response, exception );
+		
+    	request.getSession().setAttribute( "username", request.getParameter( "j_username" ) );
+       
+        String username=(request.getParameter( "j_username" )) ;
+     
+       
+        
+        if( username != null && !username.equalsIgnoreCase("") )
+        {
+        	UserCredentials userCredential = userService.getUserCredentialsByUsername( username);
+        	
+        	
+        
+        	if( userCredential!=null)
+        	{
+        		
+        		User user = userService.getUser( userCredential.getUser().getUid() );
+        		
+               	LoginAttempt loginattempt = loginAttemptService.getLoginAttemptByUser(  user );
+               
+                if(count==0)
+                {
+                	loginaction.failed=true;
+                	count++;
+                }
+                
+                if(loginaction.failed)
+                	
+                { 
+                	  		
+            		if( loginattempt != null )
+            		{
+            			attempt = loginattempt.getCount() + 1;
+            			
+            			if( loginattempt.getCount() < 3 )
+            			{	
+            				 Date a = loginattempt.getLastLoginAttempt();
+             				
+             				Date b = new Date();
+             				
+            				diff = (differencebetweentimestamp(b,a));
+            				loginattempt.setUser( user);
+            				loginattempt.setCount(loginattempt.getCount() + 1);
+            				loginattempt.setLastLoginAttempt(new Date());
+                			
+                			loginAttemptService.updateLoginAttempt(loginattempt);
+            				
+            			}
+            			
+            			
+            			else if( loginattempt.getCount() == MAX_ATTEMPTS)
+            			{   Date a = loginattempt.getLastLoginAttempt();
+            				
+            				Date b = new Date();
+            				
+            				if(differencebetweentimestamp(b,a)<24) 
+            			    {
+            				
+            				
+            				}
+            				
+            				else if (differencebetweentimestamp(b,a) > 24)
+                			{  
+               	    			
+               	    			loginAttemptService.deleteLoginAttempt(loginattempt);
+               	    		}
+            			}
+            			 
+            		}
+            		
+            		else
+            		{ 
+            			
+            		loginattempt = new LoginAttempt();
+            		loginattempt.setUser( user );
+            		loginattempt.setCount(logincount);
+            		loginattempt.setLastLoginAttempt(new Date());
+            		loginattempt.setId(user.getId());
+            			
+            		loginAttemptService.addLoginAttempt(loginattempt);
+            			
+            		}	
+            	}
+                
+            }	
+        		
+        	}
+            
     }
+        
+   
+	int differencebetweentimestamp(Date date1, Date date2){
+    	
+    		// Get msec from each, and subtract.
+    		 diff = (int) (date1.getTime() - date2.getTime());
+    		diff=diff/(1000*60*60);
+    		
+    		Date b = new Date();
+    		
+                return diff;
+    	
+    		
+    	}
+
+	
 }

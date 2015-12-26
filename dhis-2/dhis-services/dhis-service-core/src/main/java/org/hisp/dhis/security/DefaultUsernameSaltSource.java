@@ -39,7 +39,7 @@ public class DefaultUsernameSaltSource
 {
     @Override
     public Object getSalt( UserDetails userDetails )
-    {
+    {System.out.println(getSalt( userDetails.getUsername()));
         return getSalt( userDetails.getUsername() );
     }
 

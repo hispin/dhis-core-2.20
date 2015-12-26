@@ -47,6 +47,7 @@
 				    data-can-delete="#if( $currentUsername != $user.userCredentials.username )true#{else}false#end">
 				    <td>$encoder.htmlEncode( $!user.surname ), $encoder.htmlEncode( $!user.firstName )</td>
 				    <td>$encoder.htmlEncode( $!user.userCredentials.username )</td>
+				
 				</tr>
 				#end
 				</tbody>

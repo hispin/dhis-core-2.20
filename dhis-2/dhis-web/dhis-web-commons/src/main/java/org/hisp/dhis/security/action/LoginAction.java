@@ -29,11 +29,20 @@ package org.hisp.dhis.security.action;
  */
 
 import java.util.ArrayList;
+
+import org.apache.velocity.Template;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.struts2.ServletActionContext;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.hisp.dhis.i18n.ui.resourcebundle.ResourceBundleManager;
+import org.hisp.dhis.loginattempt.LoginAttempt;
+import org.hisp.dhis.loginattempt.LoginAttemptService;
+import org.hisp.dhis.security.CustomExceptionMappingAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
@@ -51,29 +60,56 @@ public class LoginAction
     // -------------------------------------------------------------------------
 
     private DeviceResolver deviceResolver;
+    
+    
 
-    public void setDeviceResolver( DeviceResolver deviceResolver )
+   
+	public void setDeviceResolver( DeviceResolver deviceResolver )
     {
         this.deviceResolver = deviceResolver;
     }
 
     @Autowired
     private ResourceBundleManager resourceBundleManager;
+    
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
     // -------------------------------------------------------------------------
     // Input & Output
     // -------------------------------------------------------------------------
 
-    private Boolean failed = false;
+    public  Boolean failed = false;
+    
+	private String j_username;
+	
+	private int  userattempt;
 
-    public void setFailed( Boolean failed )
+	
+
+	private int difference; 
+
+    public int getDifference()
     {
-        this.failed = failed;
+		return difference;
+	}
+
+	public void setDifference(int difference) 
+	{
+		this.difference = difference;
+	}
+
+	public void setFailed( Boolean failed )
+    {
+    	
+    	this.failed = failed;
+    	
     }
 
     public Boolean getFailed()
     {
-        return failed;
+    	
+    	return failed;
     }
 
     private List<Locale> availableLocales;
@@ -82,19 +118,35 @@ public class LoginAction
     {
         return availableLocales;
     }
+    public int getUserattempt() {
+		return userattempt;
+	}
+
+	public void setUserattempt(int userattempt) {
+		this.userattempt = userattempt;
+	}
 
     // -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
-
+    
     @Override
     public String execute()
         throws Exception
-    {
+        {
+ 
+    	
+    	CustomExceptionMappingAuthenticationFailureHandler custom=new CustomExceptionMappingAuthenticationFailureHandler ();
+        difference =   custom.diff;
+        userattempt=custom.attempt;
+    
+    
         Device device = deviceResolver.resolveDevice( ServletActionContext.getRequest() );
 
         ServletActionContext.getResponse().addHeader( "Login-Page", "true" );
 
+     
+        
         if ( device.isMobile() || device.isTablet() )
         {
             return "mobile";

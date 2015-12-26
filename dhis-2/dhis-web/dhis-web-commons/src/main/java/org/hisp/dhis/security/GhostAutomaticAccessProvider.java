@@ -68,6 +68,7 @@ public class GhostAutomaticAccessProvider
     {
         if ( authentication != null && SecurityContextHolder.getContext().getAuthentication() == null )
         {
+        	System.out.println("ghost");
             SecurityContextHolder.getContext().setAuthentication( authentication );
         }
     }
