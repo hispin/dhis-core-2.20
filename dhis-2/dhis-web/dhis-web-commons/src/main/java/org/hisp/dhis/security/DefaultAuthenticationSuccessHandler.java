@@ -170,6 +170,7 @@ public class DefaultAuthenticationSuccessHandler
 				
 				Date b = new Date();
 				int diff = (int) (b.getTime() - a.getTime());
+				 diff=diff/(1000*60*60);
 					if(diff<24)
 			{
 				final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
