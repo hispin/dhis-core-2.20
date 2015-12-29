@@ -148,32 +148,42 @@ public class UpdateUserAccountAction
 
         User user = userService.getUser( id );
         String currentPassword = userService.getUserCredentials( user ).getPassword();
-        
-        if ( !passwordManager.legacyOrCurrentMatches( oldPassword, currentPassword, user.getUsername() ) )
+       
+        if(oldPassword.equals(rawPassword))
         {
-            message = i18n.getString( "wrong_password" );
+            
+            message = i18n.getString( "New password should not be same as old password" );
             return INPUT;
         }
+   else
+   {
+   
+   if ( !passwordManager.legacyOrCurrentMatches( oldPassword, currentPassword, user.getUsername() ) )
+   {
+           
+       message = i18n.getString( "wrong_password" );
+       return INPUT;
+   }
 
-        // ---------------------------------------------------------------------
-        // Update userCredentials and user
-        // ---------------------------------------------------------------------
+   // ---------------------------------------------------------------------
+   // Update userCredentials and user
+   // ---------------------------------------------------------------------
 
-        user.setSurname( surname );
-        user.setFirstName( firstName );
-        user.setEmail( email );
-        user.setPhoneNumber( phoneNumber );
+   user.setSurname( surname );
+   user.setFirstName( firstName );
+   user.setEmail( email );
+   user.setPhoneNumber( phoneNumber );
 
-        if ( rawPassword != null )
-        {
-            userService.encodeAndSetPassword( user, rawPassword );
-        }
+   if ( rawPassword != null )
+   {
+       userService.encodeAndSetPassword( user, rawPassword );
+   }
 
-        userService.updateUserCredentials( user.getUserCredentials() );
-        userService.updateUser( user );
+   userService.updateUserCredentials( user.getUserCredentials() );
+   userService.updateUser( user );
 
-        message = i18n.getString( "update_user_success" );
-
-        return SUCCESS;
-    }
+   message = i18n.getString( "update_user_success" );
+   }
+   return SUCCESS;
+}
 }
