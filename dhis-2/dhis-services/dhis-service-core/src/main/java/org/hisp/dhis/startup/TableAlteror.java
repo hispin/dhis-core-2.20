@@ -696,12 +696,6 @@ public class TableAlteror
         upgradeReportTableRelativePeriods();
         upgradeReportTables();
 
-        // clear out sharing of de-group/de-group-set for now
-        executeSql( "UPDATE dataelementgroup SET userid=NULL WHERE userid IS NOT NULL" );
-        executeSql( "UPDATE dataelementgroup SET publicaccess=NULL WHERE userid IS NOT NULL" );
-        executeSql( "UPDATE dataelementgroupset SET userid=NULL WHERE userid IS NOT NULL" );
-        executeSql( "UPDATE dataelementgroupset SET publicaccess=NULL WHERE userid IS NOT NULL" );
-
         executeSql( "ALTER TABLE dataelementcategory DROP COLUMN conceptid" );
         executeSql( "ALTER TABLE dataelementcategoryoption DROP COLUMN conceptid" );
 
