@@ -154,7 +154,7 @@ public class CustomExceptionMappingAuthenticationFailureHandler extends Exceptio
             		else
             		{
             		     //new user
-            		    attempt=0;
+            		    attempt=1;
             			loginattempt = new LoginAttempt();
             			loginattempt.setUser( user );
             			loginattempt.setCount(logincount);
