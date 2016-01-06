@@ -117,7 +117,7 @@ public class DataElementCategoryCombo
      */
     public boolean isValid()
     {
-        if ( categories == null || categories.isEmpty() || optionCombos == null || optionCombos.isEmpty() )
+        if ( categories == null || categories.isEmpty() )
         {
             return false;
         }
