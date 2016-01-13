@@ -872,8 +872,33 @@
             </result>
         </action>
 		-->
+
+		<!-- Linelisting Web-Portal Reports from Linelisting -->
+		<action name="linelistingWebPortalReportAnalyserFromLineListing"
+			class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserFormAction">
+			<result name="success" type="velocity">/main.vm</result>
+			<param name="page">/dhis-web-reports/linelstingWebPortalReportAnalyserFrontLineListing.vm</param>
+			<param name="menu">/dhis-web-reports/menuWithTreeForLineListingWebPortalReport.vm</param>
+			<param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reportManagement.js,javascript/hashtable.js</param>
+			<param name="stylesheets">css/StylesForTags.css</param>
+			<param name="requiredAuthorities">F_REPORT_LINELIST_PORTAL</param>
+			<interceptor-ref name="organisationUnitTreeStack"/>
+		</action>
+
 		
-		<!-- Linelisting Web-Portal Reports -->
+		<action name="generateLinelistingWebPortalReportLineListing"
+			class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserResultLineListingAction">
+			<result name="success" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">filename="${fileName}"</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+
+		<!-- end  Linelisting Web-Portal Reports from Linelisting -->
+		
+		<!-- Linelisting Web-Portal Reports from Event Capture-->
 		<action name="linelistingWebPortalReportAnalyser"
 			class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserFormAction">
 			<result name="success" type="velocity">/main.vm</result>
@@ -897,6 +922,10 @@
 			<param name="requiredAuthorities">F_REPORT_LINELIST_PORTAL</param>
 			<interceptor-ref name="organisationUnitTreeStack"/>
 		</action>		
+		
+		
+		
+		
 		
 		
 		<action name="generateLinelistingWebPortalReport"

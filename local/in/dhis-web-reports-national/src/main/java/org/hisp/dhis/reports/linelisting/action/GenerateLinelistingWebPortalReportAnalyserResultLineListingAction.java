@@ -1,5 +1,9 @@
 package org.hisp.dhis.reports.linelisting.action;
 
+/**
+ * @author Mithilesh Kumar Thakur
+ */
+
 import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
 import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
 
@@ -55,7 +59,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.opensymphony.xwork2.Action;
 
-public class GenerateLinelistingWebPortalReportAnalyserResultAction_before_tracker
+public class GenerateLinelistingWebPortalReportAnalyserResultLineListingAction
     implements Action
 {
     // private static final String NULL_REPLACEMENT = "0";
@@ -83,6 +87,7 @@ public class GenerateLinelistingWebPortalReportAnalyserResultAction_before_track
      * public void setDataSetService( DataSetService dataSetService ) {
      * this.dataSetService = dataSetService; }
      */
+    
     private ReportService reportService;
 
     public void setReportService( ReportService reportService )
@@ -313,13 +318,23 @@ public class GenerateLinelistingWebPortalReportAnalyserResultAction_before_track
      * public void setOrgUnitListCB( List<String> orgUnitListCB ) {
      * this.orgUnitListCB = orgUnitListCB; }
      */
+    
+    /*
     private int ouIDTB;
 
     public void setOuIDTB( int ouIDTB )
     {
         this.ouIDTB = ouIDTB;
     }
-
+    */
+    
+    private String ouIDTB;
+    
+    public void setOuIDTB( String ouIDTB )
+    {
+        this.ouIDTB = ouIDTB;
+    }
+    
     private int availablePeriods;
 
     public void setAvailablePeriods( int availablePeriods )

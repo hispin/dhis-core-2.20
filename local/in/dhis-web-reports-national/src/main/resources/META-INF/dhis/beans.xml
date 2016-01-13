@@ -1673,6 +1673,34 @@
 		</property>
 	</bean>
 	
+	<!-- Linelisting Web-Portal Reports from Linelisting -->
+	<bean
+		id="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserResultLineListingAction"
+		class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserResultLineListingAction"
+		scope="prototype">
+		
+		<property name="reportService">
+			<ref bean="org.hisp.dhis.reports.ReportService"/>
+		</property>
+		<property name="periodService">
+			<ref bean="org.hisp.dhis.period.PeriodService"/>
+		</property>
+		<property name="dataElementService">
+			<ref bean="org.hisp.dhis.dataelement.DataElementService"/>
+		</property>
+		<property name="organisationUnitService">
+			<ref bean="org.hisp.dhis.organisationunit.OrganisationUnitService"/>
+		</property>				
+		<property name="dataElementCategoryOptionComboService">
+			<ref bean="org.hisp.dhis.dataelement.DataElementCategoryService"/>
+		</property>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>		
+		
+	</bean>
+	<!-- end Linelisting Web-Portal Reports from Linelisting -->
+
+
+	
 	<bean
 		id="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserResultAction"
 		class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserResultAction"

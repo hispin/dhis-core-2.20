@@ -98,6 +98,8 @@ public class TakeMySqlBackupAction
         
         //"C:/PROGRA~1/PostgreSQL/9.2/bin/"
         
+        // path for ubntu -- /usr/bin/pg_dump
+        
         simpleDateFormat = new SimpleDateFormat( "ddMMMyyyy-HHmmssSSS" );
                 
         String tempFolderName = simpleDateFormat.format( curDate );
@@ -115,6 +117,8 @@ public class TakeMySqlBackupAction
         System.out.println(" MY-SQL Path is :" + mySqlPath );
         String backupCommand = "";
         
+        System.out.println("Backup Path is :" + backupFilePath );
+        
         try
         {
             
@@ -124,7 +128,7 @@ public class TakeMySqlBackupAction
             {
                 if( password == null || password.trim().equals( "" ) )
                 {
-                    backupCommand = mySqlPath + "pg_dump -U "+ userName +" "+ dbName +" -r "+backupFilePath;
+                    backupCommand = mySqlPath + " pg_dump -U "+ userName +" "+ dbName +" -r "+backupFilePath;
                     
                     //backupCommand = mySqlPath + "mysqldump -u "+ userName +" "+ dbName +" -r "+backupFilePath;
                 }
@@ -132,10 +136,11 @@ public class TakeMySqlBackupAction
                 {
                     //backupCommand = mySqlPath + "pg_dump -U "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
                     
-                    backupCommand = mySqlPath + "mysqldump -u "+ userName +" -p"+ password +" "+ dbName +" -r "+backupFilePath;
+                    //backupCommand = mySqlPath + " pg_dump -U "+ userName +" -p "+ password +" "+ dbName +" -r "+backupFilePath;
+                    backupCommand = mySqlPath + " pg_dump -U "+ userName + " "+ dbName +" -r "+backupFilePath;
                 }
                 
-                System.out.println(" POSTGRES SQL Backup Command is :" + backupCommand );
+                //System.out.println(" POSTGRES SQL Backup Command is :" + backupCommand );
                                 
                 //pg_dump -U postgres  ccei_laos_06_02_2014 > C:\Users\HISP\Desktop\deskTop\CCEM\ccei_laos\06_02_2014_db_backup\ccei_laos_06Feb2014.sql
             }
