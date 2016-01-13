@@ -109,18 +109,22 @@ public class ValidateUserAction
     public String execute()
         throws Exception
     {
-        if ( username.trim() != null )
+        
+        if ( username != null )
         {
-            UserCredentials match = userService.getUserCredentialsByUsername( username.trim() );
-
-            if ( match != null && (id == null || match.getId() != id) )
+            if ( username.trim() != null )
             {
-                message = i18n.getString( "username_in_use" );
+                UserCredentials match = userService.getUserCredentialsByUsername( username.trim() );
 
-                return ERROR;
+                if ( match != null && (id == null || match.getId() != id) )
+                {
+                    message = i18n.getString( "username_in_use" );
+
+                    return ERROR;
+                }
             }
         }
-
+        
         if ( openId != null )
         {
             UserCredentials match = userService.getUserCredentialsByOpenID( openId );

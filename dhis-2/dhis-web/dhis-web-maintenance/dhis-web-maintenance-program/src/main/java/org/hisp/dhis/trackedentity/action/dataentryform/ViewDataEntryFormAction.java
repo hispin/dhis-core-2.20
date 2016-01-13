@@ -174,7 +174,13 @@ public class ViewDataEntryFormAction
         // ---------------------------------------------------------------------
 
         dataEntryForm = programStage.getDataEntryForm();
-
+        
+        /*
+        System.out.print( "Data Entry Form 1 " + dataEntryForm.getId() );
+        System.out.print( "Data Entry Form 2 " + dataEntryForm.getName() );
+        System.out.print( "Data Entry Form 3 " + dataEntryForm.getHtmlCode() );
+        */
+        
         if ( dataEntryForm != null )
         {
             dataEntryValue = programDataEntryService.prepareDataEntryFormForEdit( dataEntryForm.getHtmlCode() );
