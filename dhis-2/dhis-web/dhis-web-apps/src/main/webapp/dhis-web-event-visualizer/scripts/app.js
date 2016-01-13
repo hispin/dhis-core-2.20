@@ -2777,7 +2777,7 @@ Ext.onReady( function() {
 								eventChart.name = name;
 
 								Ext.Ajax.request({
-									url: ns.core.init.contextPath + '/api/eventCharts/' + eventChart.id,
+									url: ns.core.init.contextPath + '/api/eventCharts/' + eventChart.id + '?mergeStrategy=REPLACE',
 									method: 'PUT',
 									headers: {'Content-Type': 'application/json'},
 									params: Ext.encode(eventChart),
@@ -2980,7 +2980,7 @@ Ext.onReady( function() {
 
 										if (confirm(message)) {
 											Ext.Ajax.request({
-												url: ns.core.init.contextPath + '/api/eventCharts/' + record.data.id,
+												url: ns.core.init.contextPath + '/api/eventCharts/' + record.data.id + '?mergeStrategy=REPLACE',
 												method: 'PUT',
 												headers: {'Content-Type': 'application/json'},
 												params: Ext.encode(favorite),
