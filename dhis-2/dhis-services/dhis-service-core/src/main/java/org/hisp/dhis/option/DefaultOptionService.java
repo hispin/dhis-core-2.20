@@ -209,9 +209,9 @@ public class DefaultOptionService
     }
 
     @Override
-    public Option getOptionByCode( OptionSet optionSet, String name )
+    public Option getOptionByCode( OptionSet optionSet, String code )
     {
-        return i18n( i18nService, optionStore.getOptionByName( optionSet, name ) );
+        return i18n( i18nService, optionStore.getOptionByCode( optionSet, code ) );
     }
     
     @Override
