@@ -31,6 +31,7 @@ package org.hisp.dhis.dd.action.categoryoptiongroupset;
 import com.opensymphony.xwork2.Action;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hisp.dhis.dataelement.CategoryOptionGroup;
 import org.hisp.dhis.dataelement.CategoryOptionGroupSet;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +107,10 @@ public class UpdateCategoryOptionGroupSetAction
 
         for ( String id : cogSelected )
         {
-            categoryOptionGroupSet.getMembers().add( dataElementCategoryService.getCategoryOptionGroup( id ) );
+            CategoryOptionGroup categoryOptionGroup= dataElementCategoryService.getCategoryOptionGroup( id );
+            categoryOptionGroupSet.getMembers().add( categoryOptionGroup );
+            categoryOptionGroup.setGroupSet( categoryOptionGroupSet );
+            dataElementCategoryService.updateCategoryOptionGroup( categoryOptionGroup );
         }
 
         dataElementCategoryService.updateCategoryOptionGroupSet( categoryOptionGroupSet );

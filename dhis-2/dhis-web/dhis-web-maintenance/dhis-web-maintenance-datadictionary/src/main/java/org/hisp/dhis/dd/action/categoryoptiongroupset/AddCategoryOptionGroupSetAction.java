@@ -118,6 +118,13 @@ public class AddCategoryOptionGroupSetAction
 
         dataElementCategoryService.saveCategoryOptionGroupSet( categoryOptionGroupSet );
 
+        for ( String id : cogSelected )
+        {
+            CategoryOptionGroup categoryOptionGroup= dataElementCategoryService.getCategoryOptionGroup( id );
+            categoryOptionGroup.setGroupSet( categoryOptionGroupSet );
+            dataElementCategoryService.updateCategoryOptionGroup( categoryOptionGroup );
+        }
+
         return SUCCESS;
     }
 

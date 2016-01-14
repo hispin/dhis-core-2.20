@@ -92,11 +92,11 @@ function getIndicatorsByGroup()
             var text = item.name;
             if ( text.toLowerCase().indexOf( filter_1.toLowerCase() ) != -1 )
             {
-                list_1.append( '<option value="' + item.id + '">' + text + '</option>' );
+                list_1.append( '<option value="' + item.uid + '" title="' + text + '">' + text + '</option>' );
             }
             jQuery( "#view_1 #availableIndicators" ).children().each( function( k, it )
             {
-                if ( item.id == it.value )
+                if ( item.uid == it.value )
                 {
                     jQuery( it ).remove();
                 }
@@ -221,9 +221,10 @@ function deleteIndicatorGroup()
 function updateGroupMembers()
 {
     var id = jQuery( "#view_1 #indicatorGroups" ).val();
-
-    jQuery.getJSON( "updateIndicatorGroupEditor.action?id=" + id + "&"
-            + toQueryString( '#view_1 #selectedIndicators', 'groupMembers' ), function( json )
+    var name = indicatorGroups[id];
+    jQuery.getJSON( "updateIndicatorGroupEditor.action?id=" + id
+        + "&name=" + name + "&"
+            + toQueryString( '#view_1 #selectedIndicators', 'inSelected' ), function( json )
     {
     	setHeaderDelayMessage( i18n_update_success );
     } );

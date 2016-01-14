@@ -6,7 +6,7 @@
 
 	var availableIndicators = new Array();
 	#foreach( $indicator in $indicators )
-		availableIndicators['$indicator.id'] = '$encoder.jsEscape( $indicator.displayName, "'" )';
+		availableIndicators['$indicator.uid'] = '$encoder.jsEscape( $indicator.displayName, "'" )';
 	#end
 	var selectedIndicators = new Array();	
 
