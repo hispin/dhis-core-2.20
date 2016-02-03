@@ -1,8 +1,11 @@
 package org.hisp.dhis.dataadmin.action.advancelockexception;
 
 
-import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
-import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
+//import static org.hisp.dhis.util.ConversionUtils.getIdentifiers;
+//import static org.hisp.dhis.util.TextUtils.getCommaDelimitedString;
+
+import static org.hisp.dhis.commons.util.ConversionUtils.getIdentifiers;
+import static org.hisp.dhis.commons.util.TextUtils.getCommaDelimitedString;
 
 
 import java.util.ArrayList;
@@ -311,8 +314,4 @@ public class SaveDeleteLockExceptionAction implements Action
             e.printStackTrace();
         }
     }    
-    
-    
-    
-    
 }
