@@ -116,14 +116,23 @@ public class GenerateUpwardReportAnalyserResultAction
     {
         this.reportList = reportList;
     }
-
+    
+    /*
     private int ouIDTB;
 
     public void setOuIDTB( int ouIDTB )
     {
         this.ouIDTB = ouIDTB;
     }
-
+    */
+    
+    private String ouIDTB;
+    
+    public void setOuIDTB( String ouIDTB )
+    {
+        this.ouIDTB = ouIDTB;
+    }
+    
     private int availablePeriods;
 
     public void setAvailablePeriods( int availablePeriods )

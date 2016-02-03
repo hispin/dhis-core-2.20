@@ -184,46 +184,6 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
-   
-   
-   <!-- India modules -->   
-
-    <dependency>
-        <groupId>org.hisp.dhis</groupId>
-        <artifactId>dhis-web-dashboard</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hisp.dhis</groupId>
-      <artifactId>dhis-web-maintenance-in</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.hisp.dhis</groupId>
-      <artifactId>dhis-web-reports-national</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>	
-	
-    <dependency>
-        <groupId>org.hisp.dhis</groupId>
-        <artifactId>dhis-web-excelimport</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-    </dependency>
-
-    <dependency>
-        <groupId>org.hisp.dhis</groupId>
-        <artifactId>dhis-web-dataentry-national</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-    </dependency>
-
-
-
   </dependencies>
   <properties>
     <rootDir>../../</rootDir>

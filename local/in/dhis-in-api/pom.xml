@@ -5,6 +5,7 @@
     <groupId>org.hisp.dhis</groupId>
     <artifactId>dhis</artifactId>
 	<version>2.20</version>
+	<relativePath>../../../dhis-2/pom.xml</relativePath>
   </parent>
   
   <artifactId>dhis-in-api</artifactId>
