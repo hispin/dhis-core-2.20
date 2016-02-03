@@ -28,16 +28,6 @@ package org.hisp.dhis.organisationunit.hibernate;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -186,51 +176,51 @@ public class HibernateOrganisationUnitStore
     public List<OrganisationUnit> getOrganisationUnits( OrganisationUnitQueryParams params )
     {
         SqlHelper hlp = new SqlHelper();
-        
+
         String hql = "select o from OrganisationUnit o ";
-        
+
         if ( params.getQuery() != null )
         {
-            hql += hlp.whereAnd() + " (lower(o.name) like :queryLower or o.code = :query or o.uid = :query)" ;
+            hql += hlp.whereAnd() + " (lower(o.name) like :queryLower or o.code = :query or o.uid = :query)";
         }
 
         if ( params.hasParents() )
         {
             hql += hlp.whereAnd() + " (";
-            
+
             for ( OrganisationUnit parent : params.getParents() )
             {
                 hql += "o.path like :" + parent.getUid() + " or ";
             }
-            
+
             hql = TextUtils.removeLastOr( hql ) + ") ";
         }
-        
+
         if ( params.hasGroups() )
         {
             hql += hlp.whereAnd() + " (";
-            
+
             for ( OrganisationUnitGroup group : params.getGroups() )
             {
                 hql += " :" + group.getUid() + " in elements(o.groups) or ";
             }
-            
+
             hql = TextUtils.removeLastOr( hql ) + ") ";
         }
-                
+
         if ( params.getMaxLevels() != null )
         {
             hql += hlp.whereAnd() + " length(o.path) <= :pathLength ";
         }
-        
+
         Query query = getQuery( hql );
-        
+
         if ( params.getQuery() != null )
         {
             query.setString( "queryLower", "%" + params.getQuery().toLowerCase() + "%" );
             query.setString( "query", params.getQuery() );
         }
-        
+
         if ( params.hasGroups() )
         {
             for ( OrganisationUnitGroup group : params.getGroups() )
@@ -238,7 +228,7 @@ public class HibernateOrganisationUnitStore
                 query.setEntity( group.getUid(), group );
             }
         }
-        
+
         if ( params.hasParents() )
         {
             for ( OrganisationUnit parent : params.getParents() )
@@ -246,7 +236,7 @@ public class HibernateOrganisationUnitStore
                 query.setString( parent.getUid(), "%" + parent.getUid() + "%" );
             }
         }
-        
+
         if ( params.getMaxLevels() != null )
         {
             query.setInteger( "pathLength", params.getMaxLevelsPathLength() );
@@ -256,12 +246,12 @@ public class HibernateOrganisationUnitStore
         {
             query.setFirstResult( params.getFirst() );
         }
-        
+
         if ( params.getMax() != null )
         {
             query.setMaxResults( params.getMax() ).list();
         }
-        
+
         return query.list();
     }
 
@@ -439,22 +429,7 @@ public class HibernateOrganisationUnitStore
     @SuppressWarnings( "unchecked" )
     public void updatePaths()
     {
-        List<OrganisationUnit> organisationUnits = new ArrayList<>( getQuery( "from OrganisationUnit ou where ou.path IS NULL" ).list() );
-        Session session = sessionFactory.getCurrentSession();
-        int counter = 0;
-
-        // use SF directly since we don't need to check for access etc here, just a simple update with no changes (so that path gets re-generated)
-        for ( OrganisationUnit organisationUnit : organisationUnits )
-        {
-            session.update( organisationUnit );
-
-            if ( (counter % 400) == 0 )
-            {
-                dbmsManager.clearSession();
-            }
-
-            counter++;
-        }
+        getQuery( "from OrganisationUnit ou where ou.path IS NULL" ).list();
     }
 
     @Override

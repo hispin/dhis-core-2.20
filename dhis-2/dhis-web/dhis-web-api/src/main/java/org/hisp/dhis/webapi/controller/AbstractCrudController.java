@@ -35,6 +35,7 @@ import com.google.common.base.Enums;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import org.hisp.dhis.cache.HibernateCacheManager;
 import org.hisp.dhis.common.BaseIdentifiableObject;
 import org.hisp.dhis.common.IdentifiableObject;
 import org.hisp.dhis.common.IdentifiableObjectManager;
@@ -149,6 +150,9 @@ public abstract class AbstractCrudController<T extends IdentifiableObject>
 
     @Autowired
     protected WebMessageService webMessageService;
+
+    @Autowired
+    protected HibernateCacheManager hibernateCacheManager;
 
     //--------------------------------------------------------------------------
     // GET
@@ -674,6 +678,11 @@ public abstract class AbstractCrudController<T extends IdentifiableObject>
                     }
                 }
             }
+        }
+
+        if ( rootNode.getChildren().isEmpty() || rootNode.getChildren().get( 0 ).getChildren().isEmpty() )
+        {
+            throw new WebMessageException( WebMessageUtils.notFound( pvProperty + " with ID " + pvItemId + " could not be found." ) );
         }
 
         return rootNode;
