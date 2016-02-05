@@ -206,6 +206,19 @@
       <result name="error" type="velocity-json">/dhis-web-commons/ajax/jsonResponseError.vm</result>
       <param name="onExceptionReturn">plainTextError</param>
     </action>
+
+    <!-- Unlock Users -->
+    <action name="unlockUsersForm"
+        class="org.hisp.dhis.user.action.unlock.UnlockUsersFornAction">
+        <result name="success" type="velocity">/main.vm</result>
+        <param name="page">/dhis-web-maintenance-user/unlockUserForm.vm</param>
+        <param name="menu">/dhis-web-maintenance-user/menu.vm</param>
+        <param name="requiredAuthorities">F_UNLOCK_USER</param>
+    </action>
+
+    <action name="unlockUsers" class="org.hisp.dhis.user.action.unlock.UnlockUsersResultAction">
+      <result name="success" type="redirect">index.action</result>
+    </action>
     
 
   </package>

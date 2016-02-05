@@ -39,6 +39,8 @@ import org.hisp.dhis.common.IdentifiableObjectManager;
 import org.hisp.dhis.dataelement.CategoryOptionGroupSet;
 import org.hisp.dhis.dataelement.DataElementCategory;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
+import org.hisp.dhis.loginattempt.LoginAttempt;
+import org.hisp.dhis.loginattempt.LoginAttemptService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
 import org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager;
@@ -118,7 +120,9 @@ public class UpdateUserAction
 
     @Autowired
     private SystemSettingManager systemSettingManager;
-
+    
+    @Autowired
+    private LoginAttemptService loginAttemptService;
     // -------------------------------------------------------------------------
     // Input & Output
     // -------------------------------------------------------------------------
@@ -333,11 +337,18 @@ public class UpdateUserAction
         if ( StringUtils.isNotEmpty( rawPassword ) )
         {
             userService.encodeAndSetPassword( userCredentials, rawPassword );
+            
+            //delete from loginAttempt
+            LoginAttempt loginAttempt = loginAttemptService.getLoginAttemptByUser( user );
+            if( loginAttempt != null )
+            {
+                loginAttemptService.deleteLoginAttempt( loginAttempt );
+            }
         }
 
         userService.updateUserCredentials( userCredentials );
         userService.updateUser( user );
-
+        
         // ---------------------------------------------------------------------
         // Update organisation unit trees if current user is being updated
         // ---------------------------------------------------------------------

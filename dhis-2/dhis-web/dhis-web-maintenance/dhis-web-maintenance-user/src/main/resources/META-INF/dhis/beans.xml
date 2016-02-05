@@ -147,5 +147,16 @@
     scope="prototype">
     <property name="userGroupService" ref="org.hisp.dhis.user.UserGroupService" />
   </bean>
+
+  <!-- Unlock Users -->
+  <bean id="org.hisp.dhis.user.action.unlock.UnlockUsersFornAction" class="org.hisp.dhis.user.action.unlock.UnlockUsersFornAction"
+    scope="prototype">
+    
+  </bean>
+  
+  <bean id="org.hisp.dhis.user.action.unlock.UnlockUsersResultAction" class="org.hisp.dhis.user.action.unlock.UnlockUsersResultAction"
+    scope="prototype">
+    
+  </bean>
   
 </beans>
