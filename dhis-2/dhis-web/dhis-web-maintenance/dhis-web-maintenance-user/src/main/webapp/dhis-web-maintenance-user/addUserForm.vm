@@ -20,6 +20,9 @@
       }
     }, {
       'beforeValidateHandler': function() {
+	   if( ($('#urSelected').children().length) ==0);
+		 {
+		  setHeaderDelayMessage("user required to select atleast one role ");}
         listValidator('urValidator', 'urSelected');
         #tblDynamicAttributesJavascript()
       },
