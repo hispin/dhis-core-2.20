@@ -176,5 +176,10 @@
     scope="prototype">
     <property name="serviceProvider" ref="exportServiceProvider" />
   </bean>
+  
+  <!--  for download dataSet Report as dataEntry Screen to excel -->
+  <bean id="org.hisp.dhis.reporting.exp.excel.ExportToExcelAction"
+	class="org.hisp.dhis.reporting.exp.excel.ExportToExcelAction" scope="prototype">
+  </bean>
 
 </beans>

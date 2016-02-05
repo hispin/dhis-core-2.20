@@ -156,6 +156,8 @@ public class MinMaxOutlierAnalysisService
                             int min = (int) MathUtils.getLowBound( stdDev, stdDevFactor, avg );
                             int max = (int) MathUtils.getHighBound( stdDev, stdDevFactor, avg );
                             
+                            //System.out.println( "De Name -- " + dataElement.getName() +   "  Min value - " + min + "  Max Value ---- "  + max );
+                            
                             if ( VALUE_TYPE_POSITIVE_INT.equals( dataElement.getNumberType() ) || VALUE_TYPE_ZERO_OR_POSITIVE_INT.equals( dataElement.getNumberType() ) )
                             {
                                 min = Math.max( 0, min ); // Cannot be < 0

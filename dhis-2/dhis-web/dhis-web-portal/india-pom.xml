@@ -208,13 +208,16 @@
       <type>war</type>
     </dependency>	
 	
+	<!--  not for Haryana -->
+	<!-- 
     <dependency>
         <groupId>org.hisp.dhis</groupId>
         <artifactId>dhis-web-excelimport</artifactId>
         <version>${project.version}</version>
         <type>war</type>
     </dependency>
-
+	-->
+	
     <dependency>
         <groupId>org.hisp.dhis</groupId>
         <artifactId>dhis-web-dataentry-national</artifactId>

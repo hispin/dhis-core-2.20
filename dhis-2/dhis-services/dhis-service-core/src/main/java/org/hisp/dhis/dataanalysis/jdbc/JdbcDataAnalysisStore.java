@@ -110,6 +110,9 @@ public class JdbcDataAnalysisStore
             "from organisationunit ou " +
             "where ou.organisationunitid in (" + getCommaDelimitedString( organisationUnits ) + ")";
         
+        
+        //System.out.println( "Min-Max Query is : " + sql );
+        
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet( sql );
         
         while ( rowSet.next() )
@@ -119,6 +122,8 @@ public class JdbcDataAnalysisStore
             if ( stdDev != null && !isEqual( (Double) stdDev, ZERO ) )
             {
                 map.put( rowSet.getInt( "organisationunitid" ), (Double) stdDev );
+                
+                //System.out.println( rowSet.getInt( "organisationunitid" ) + " ---- "  + (Double) stdDev );
             }
         }
         
