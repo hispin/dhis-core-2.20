@@ -632,6 +632,7 @@ public class GenerateLinelistingWebPortalReportAnalyserResultAction implements A
                     }
                     else
                     {
+                        //System.out.println( " SType : " + sType + " DECode : " + deCodeString  );
                         tempStr = reportService.getResultIndicatorValue( deCodeString, tempStartDate.getTime(),tempEndDate.getTime(), currentOrgUnit );
                     }
                 }

@@ -754,12 +754,68 @@ public class GenerateLinelistingWebPortalReportAnalyserResultLineListingAction
                         //tempStr = reportService.getResultDataValue( deCodeString, tempStartDate.getTime(), tempEndDate.getTime(), currentOrgUnit, reportModelTB );
                     }
               
+                    else if ( sType.equalsIgnoreCase( "dataelement_institution" ) )
+                    {
+                        if( aggData.equalsIgnoreCase( USEEXISTINGAGGDATA ) )
+                        {
+                            tempStr = getAggVal( deCodeString, aggDeMap );
+                            
+                            if( tempStr.equalsIgnoreCase( "0.0" ) )
+                            {
+                                tempStr = ""+ 1.0;
+                            }
+                            else if ( tempStr.equalsIgnoreCase( "1.0" ) )
+                            {
+                                tempStr = ""+ 0.0;
+                            }
+                            else
+                            {
+                            }
+                        }
+                        else if( aggData.equalsIgnoreCase( GENERATEAGGDATA ) )
+                        {
+                            tempStr = getAggVal( deCodeString, aggDeMap );
+                            
+                            if( tempStr.equalsIgnoreCase( "0.0" ) )
+                            {
+                                tempStr = ""+ 1.0;
+                            }
+                            else if ( tempStr.equalsIgnoreCase( "1.0" ) )
+                            {
+                                tempStr = ""+ 0.0;
+                            }
+                            else
+                            {
+                            }
+                        }
+                        
+                        else if( aggData.equalsIgnoreCase( USECAPTUREDDATA ) ) 
+                        {
+                            tempStr = getAggVal( deCodeString, aggDeMap );
+                            
+                            if( tempStr.equalsIgnoreCase( "0.0" ) )
+                            {
+                                tempStr = ""+ 1.0;
+                            }
+                            else if ( tempStr.equalsIgnoreCase( "1.0" ) )
+                            {
+                                tempStr = ""+ 0.0;
+                            }
+                            else
+                            {
+                            }
+                        }
+                     
+                        //tempStr = reportService.getResultDataValue( deCodeString, tempStartDate.getTime(), tempEndDate.getTime(), currentOrgUnit, reportModelTB );
+                    }
+                    
                     else if ( sType.equalsIgnoreCase( "dataelement-boolean" ) )
                     {
                         tempStr = reportService.getBooleanDataValue( deCodeString, tempStartDate.getTime(), tempEndDate.getTime(), currentOrgUnit, reportModelTB );
                     }
                     else
                     {
+                        //System.out.println( " SType : " + sType + " DECode : " + deCodeString  );
                         tempStr = reportService.getResultIndicatorValue( deCodeString, tempStartDate.getTime(),tempEndDate.getTime(), currentOrgUnit );
                     }
                 }

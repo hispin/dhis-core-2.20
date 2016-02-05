@@ -885,7 +885,6 @@
 			<interceptor-ref name="organisationUnitTreeStack"/>
 		</action>
 
-		
 		<action name="generateLinelistingWebPortalReportLineListing"
 			class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserResultLineListingAction">
 			<result name="success" type="stream">
@@ -910,8 +909,8 @@
 			<interceptor-ref name="organisationUnitTreeStack"/>
 		</action>
 		
-		<!-- Linelisting Web-Portal Reports Private for Haryana -->
-		<action name="linelistingWebPortalReportAnalyserPrivate"
+		<!-- Linelisting Web-Portal Reports Private for Haryana from LineListing-->
+		<action name="linelistingWebPortalReportAnalyserFromLineListingPrivate"
 			class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserFormAction">
 			<result name="success" type="velocity">/main.vm</result>
 			<param name="page">/dhis-web-reports/linelstingWebPortalReportAnalyserFrontPrivate.vm</param>
@@ -923,7 +922,18 @@
 			<interceptor-ref name="organisationUnitTreeStack"/>
 		</action>		
 		
-		
+		<!-- Linelisting Web-Portal Reports Private for Haryana from EventCapture-->
+		<action name="linelistingWebPortalReportAnalyserPrivate"
+			class="org.hisp.dhis.reports.linelisting.action.GenerateLinelistingWebPortalReportAnalyserFormAction">
+			<result name="success" type="velocity">/main.vm</result>
+			<param name="page">/dhis-web-reports/linelstingWebPortalReportAnalyserFrontEventCapturePrivate.vm</param>
+			<param name="menu">/dhis-web-reports/menuWithTreeForLineListingWebPortalReport.vm</param>
+			<!--<param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,../dhis-web-commons/lists/lists.js,javascript/reportManagement.js,javascript/hashtable.js</param>-->
+			<param name="javascripts">../dhis-web-commons/ouwt/ouwt.js,javascript/reportManagement.js,javascript/hashtable.js</param>
+			<param name="stylesheets">css/StylesForTags.css</param>
+			<param name="requiredAuthorities">F_REPORT_LINELIST_PORTAL</param>
+			<interceptor-ref name="organisationUnitTreeStack"/>
+		</action>		
 		
 		
 		
