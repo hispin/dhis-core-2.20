@@ -170,8 +170,12 @@ public class LLDataSets
     public static final int LLD_DEATH_CAUSE = 1031;
 
     // production
-    public static final int LLD_DEATH_AGE_TYPE = 6826;
-    public static final int LLD_DEATH_AGE = 6827;
+    //public static final int LLD_DEATH_AGE_TYPE = 6826;
+    //public static final int LLD_DEATH_AGE = 6827;
+    
+    // for Haryana production
+    public static final int LLD_DEATH_AGE_TYPE = 91478;
+    public static final int LLD_DEATH_AGE = 91479;
     
     public static final int LLD_DEATH_OVER05Y = 552;
     public static final int LLD_DEATH_OVER05Y_MALE = 553;
