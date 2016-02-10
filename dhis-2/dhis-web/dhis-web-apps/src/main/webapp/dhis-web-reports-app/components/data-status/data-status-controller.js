@@ -4,7 +4,7 @@
  
 reportsApp.controller('DataStatusController',
     function ($rootScope,$scope, $http, $location,reportSettingService,reportsService,
-              ReportAppSectionSettingService,periodService,$window,organisationUnitGroupService,
+              ReportAppSectionSettingService,periodService,$window,organisationUnitGroupService,sqlviewservice,
               userService,ReportConfigurationService,DataSetService,$timeout,OrganisationUnitService)
     {
 
@@ -13,8 +13,85 @@ reportsApp.controller('DataStatusController',
         $scope.ReportAppConfigurationSettings.parameters=[];
 		
 		//Links
+		
+		
+		
 		$scope.basicUrl = "../api/sqlViews/";
 		//Sql Views ID
+		
+		
+		// savita modified//
+		sqlviewservice.getAll().then(function(data){
+                $scope.sqlViews = data.sqlViews;
+			
+			for(var i=0;i<data.sqlViews.length;i++)
+		{
+		if($scope.sqlViews[i].name=="DS App Comments")
+		{$scope.commentsSV=$scope.sqlViews[i].id;
+	
+		
+		}
+		if($scope.sqlViews[i].name=="DS App Comments without Zero")
+		{$scope.commentsExZeroSV=$scope.sqlViews[i].id;
+
+		}
+		
+		
+		if($scope.sqlViews[i].name=="DS App Data Status")
+		{$scope.dataStatusSV=$scope.sqlViews[i].id;
+		
+		
+		
+		}
+		
+		if($scope.sqlViews[i].name=="DS App Data Status without Zero")
+		{$scope.dataStatusExZeroSV=$scope.sqlViews[i].id;
+          
+		
+		}
+		
+		if($scope.sqlViews[i].name=="DS App Data Summary")
+		{$scope.dataSummarySV=$scope.sqlViews[i].id;
+		
+		
+		
+		}
+		if($scope.sqlViews[i].name=="DS App Data Summary without Zero")
+		{$scope.dataSummaryExZeroSV=$scope.sqlViews[i].id;
+		 
+		
+		
+		}
+		
+		if($scope.sqlViews[i].name=="DS App User Details")
+		{$scope.userDetailsSV=$scope.sqlViews[i].id;
+	
+		
+		}
+		
+		
+		if($scope.sqlViews[i].name=="DS App User Details without Zero")
+		{$scope.userDetailsExZeroSV=$scope.sqlViews[i].id;
+		
+		}
+		
+		
+			if($scope.sqlViews[i].name=="DS App Periods")
+		{$scope.periodsSV=$scope.sqlViews[i].id;
+		
+		}
+		
+		}
+			
+			
+            });
+			// end //
+		
+		
+		
+		
+		
+		/*
 		
 		$scope.dataStatusSV = "wDF06I0SurY";
 		$scope.dataStatusExZeroSV = "y00FsRQnIaV"; // UID of DATA STATUS query that exclude zero
@@ -25,6 +102,7 @@ reportsApp.controller('DataStatusController',
 		$scope.commentsSV = "GKqUIOeRz3H";		
 		$scope.commentsExZeroSV = "HrDi1FJJNOa";
 		$scope.periodsSV = "JT7ZRK7atS6";
+		*/
 		
 		//$scope.dataStatusSV = "";
 		//$scope.dataStatusSV = "";
