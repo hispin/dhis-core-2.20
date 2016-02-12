@@ -76,7 +76,7 @@ public class SimplisticHttpGetGateWay
     extends AGateway
 {
     private static final Log log = LogFactory.getLog( SimplisticHttpGetGateWay.class );
-    
+
     private static final String SENDER = "sender";
 
     private static final String RECIPIENT = "recipient";
@@ -125,15 +125,15 @@ public class SimplisticHttpGetGateWay
         requestParameters.put( MESSAGE, msg.getText() );
 
         String sender = msg.getFrom();
-        
+
         if ( sender != null )
         {
             log.debug( "Adding sender " + sender + " " + getGatewayId() );
             requestParameters.put( SENDER, sender );
         }
-        
+
         String urlString = urlTemplate;
-        
+
         for ( String key : requestParameters.keySet() )
         {
             if ( requestParameters.get( key ) != null )
@@ -142,26 +142,28 @@ public class SimplisticHttpGetGateWay
                     URLEncoder.encode( requestParameters.get( key ), "UTF-8" ) );
             }
         }
-        
+
         log.info( "RequestURL: " + urlString + " " + getGatewayId() );
 
         String line, response = "";
         BufferedReader reader = null;
-        
+
         try
         {
             URL requestURL = new URL( urlString );
             URLConnection conn = requestURL.openConnection();
             reader = new BufferedReader( new InputStreamReader( conn.getInputStream() ) );
-            
+
             while ( (line = reader.readLine()) != null )
             {
                 response += line;
             }
 
             HttpURLConnection httpConnection = (HttpURLConnection) conn;
-            
-            if ( httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK )
+
+            if ( httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK
+                && httpConnection.getResponseCode() != HttpURLConnection.HTTP_ACCEPTED
+                && httpConnection.getResponseCode() != HttpURLConnection.HTTP_CREATED )
             {
                 log.warn( "Couldn't send message, got response " + response + " " + getGatewayId() );
                 return false;
