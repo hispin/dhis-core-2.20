@@ -51,7 +51,7 @@ public class AdvanceHttpPostGateWay
     extends AGateway
 {
     private static final Log log = LogFactory.getLog( AdvanceHttpPostGateWay.class );
-    
+
     private static final String SENDER = "sender";
 
     private static final String RECIPIENT = "recipient";
@@ -74,22 +74,22 @@ public class AdvanceHttpPostGateWay
         throws TimeoutException, GatewayException, IOException, InterruptedException
     {
         Map<String, String> requestParameters = new HashMap<>( parameters );
-        
+
         for ( OutboundMessage outboundMessage : outboundMessages )
         {
             requestParameters.put( RECIPIENT, outboundMessage.getRecipient() );
             requestParameters.put( MESSAGE, outboundMessage.getText() );
 
             String sender = outboundMessage.getFrom();
-            
+
             if ( sender != null )
             {
                 log.debug( "Adding sender " + sender + " " + getGatewayId() );
                 requestParameters.put( SENDER, sender );
             }
-            
+
             String urlString = urlTemplate;
-            
+
             for ( String key : requestParameters.keySet() )
             {
                 if ( requestParameters.get( key ) != null )
@@ -98,26 +98,28 @@ public class AdvanceHttpPostGateWay
                         URLEncoder.encode( requestParameters.get( key ), "UTF-8" ) );
                 }
             }
-            
+
             log.info( "RequestURL: " + urlString + " " + getGatewayId() );
-                        
+
             String line, response = "";
             BufferedReader reader = null;
-            
+
             try
             {
-                URL requestURL = new URL( urlString );                
-                URLConnection conn = requestURL.openConnection();                
+                URL requestURL = new URL( urlString );
+                URLConnection conn = requestURL.openConnection();
                 reader = new BufferedReader( new InputStreamReader( conn.getInputStream() ) );
-                
+
                 while ( (line = reader.readLine()) != null )
                 {
                     response += line;
                 }
-                
+
                 HttpURLConnection httpConnection = (HttpURLConnection) conn;
-                
-                if ( httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK )
+
+                if ( httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK
+                    && httpConnection.getResponseCode() != HttpURLConnection.HTTP_ACCEPTED
+                    && httpConnection.getResponseCode() != HttpURLConnection.HTTP_CREATED )
                 {
                     log.warn( "Couldn't send message, got response " + response + " " + getGatewayId() );
                     return 0;
@@ -135,7 +137,7 @@ public class AdvanceHttpPostGateWay
 
             return 1;
         }
-        
+
         return super.sendMessages( outboundMessages );
     }
 
