@@ -284,10 +284,6 @@ var eventCaptureControllers = angular.module('eventCaptureControllers', [])
                                             val = DateUtils.formatFromApiToUser(val);                                               
                                         }
                                         
-                                        if($scope.prStDes[dataValue.dataElement].dataElement.type === 'bool'){
-                                            val = val === 'true' ? $scope.yesLabel : $scope.noLabel;                                
-                                        }
-                                        
                                         if( $scope.prStDes[dataValue.dataElement].dataElement.type === 'trueOnly'){
                                             if(val === 'true'){
                                                 val = true;
