@@ -28,12 +28,7 @@ package org.hisp.dhis.dxf2.events.trackedentity;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
 import org.hisp.dhis.common.CodeGenerator;
 import org.hisp.dhis.common.Grid;
 import org.hisp.dhis.common.IdentifiableObjectManager;
@@ -60,15 +55,13 @@ import org.hisp.dhis.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.hisp.dhis.trackedentityattributevalue.TrackedEntityAttributeValueService;
 import org.hisp.dhis.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import com.google.common.collect.Lists;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Morten Olav Hansen <mortenoh@gmail.com>
@@ -118,7 +111,7 @@ public abstract class AbstractTrackedEntityInstanceService
     public List<TrackedEntityInstance> getTrackedEntityInstances( TrackedEntityInstanceQueryParams params )
     {
         List<org.hisp.dhis.trackedentity.TrackedEntityInstance> teis = entityInstanceService.getTrackedEntityInstances( params );
-        
+
         List<TrackedEntityInstance> teiItems = new ArrayList<>();
 
         for ( org.hisp.dhis.trackedentity.TrackedEntityInstance trackedEntityInstance : teis )
@@ -157,20 +150,20 @@ public abstract class AbstractTrackedEntityInstanceService
         trackedEntityInstance.setLastUpdated( entityInstance.getLastUpdated().toString() );
 
         if ( includeRelationships )
-        {            
+        {
             //TODO include relationships in data model and void transactional query in for-loop
-            
+
             Collection<Relationship> relationships = relationshipService.getRelationshipsForTrackedEntityInstance( entityInstance );
-    
+
             for ( Relationship entityRelationship : relationships )
             {
                 org.hisp.dhis.dxf2.events.trackedentity.Relationship relationship = new org.hisp.dhis.dxf2.events.trackedentity.Relationship();
                 relationship.setDisplayName( entityRelationship.getRelationshipType().getDisplayName() );
                 relationship.setTrackedEntityInstanceA( entityRelationship.getEntityInstanceA().getUid() );
                 relationship.setTrackedEntityInstanceB( entityRelationship.getEntityInstanceB().getUid() );
-    
+
                 relationship.setRelationship( entityRelationship.getRelationshipType().getUid() );
-    
+
                 // we might have cases where A <=> A, so we only include the relative if the UIDs do not match
                 if ( !entityRelationship.getEntityInstanceA().getUid().equals( entityInstance.getUid() ) )
                 {
@@ -180,7 +173,7 @@ public abstract class AbstractTrackedEntityInstanceService
                 {
                     relationship.setRelative( getTrackedEntityInstance( entityRelationship.getEntityInstanceB(), false ) );
                 }
-    
+
                 trackedEntityInstance.getRelationships().add( relationship );
             }
         }
@@ -215,7 +208,7 @@ public abstract class AbstractTrackedEntityInstanceService
 
         if ( organisationUnit == null )
         {
-            importSummary.getConflicts().add( new ImportConflict( trackedEntityInstance.getTrackedEntityInstance(), "Invalid org unit ID: " + trackedEntityInstance.getOrgUnit()) );
+            importSummary.getConflicts().add( new ImportConflict( trackedEntityInstance.getTrackedEntityInstance(), "Invalid org unit ID: " + trackedEntityInstance.getOrgUnit() ) );
             return null;
         }
 
@@ -602,15 +595,15 @@ public abstract class AbstractTrackedEntityInstanceService
 
         if ( TrackedEntityAttribute.TYPE_NUMBER.equals( teAttribute.getValueType() ) && !MathUtils.isNumeric( attribute.getValue() ) )
         {
-            importConflicts.add( new ImportConflict( "Attribute.value", "Value is not numeric for attribute: " + attribute ) );
+            importConflicts.add( new ImportConflict( "Attribute.value", "Value '" + teAttribute.getValueType() + "' is not a valid numeric for attribute: " + attribute ) );
         }
         else if ( TrackedEntityAttribute.TYPE_BOOL.equals( teAttribute.getValueType() ) && !MathUtils.isBool( attribute.getValue() ) )
         {
-            importConflicts.add( new ImportConflict( "Attribute.value", "Value is not boolean for attribute: " + attribute ) );
+            importConflicts.add( new ImportConflict( "Attribute.value", "Value '" + teAttribute.getValueType() + "'is not a valid boolean for attribute: " + attribute ) );
         }
         else if ( TrackedEntityAttribute.TYPE_DATE.equals( teAttribute.getValueType() ) && !DateUtils.dateIsValid( attribute.getValue() ) )
         {
-            importConflicts.add( new ImportConflict( "Attribute.value", "Value is not date for attribute: " + attribute ) );
+            importConflicts.add( new ImportConflict( "Attribute.value", "Value '" + teAttribute.getValueType() + "' is not a valid date for attribute: " + attribute ) );
         }
         else if ( TrackedEntityAttribute.TYPE_TRUE_ONLY.equals( teAttribute.getValueType() ) && !"true".equals( attribute.getValue() ) )
         {
@@ -620,12 +613,12 @@ public abstract class AbstractTrackedEntityInstanceService
         {
             if ( userService.getUserCredentialsByUsername( attribute.getValue() ) == null )
             {
-                importConflicts.add( new ImportConflict( "Attribute.value", "Value is not pointing to a valid username for attribute: " + attribute ) );
+                importConflicts.add( new ImportConflict( "Attribute.value", "Value '" + teAttribute.getValueType() + " 'is not pointing to a valid username for attribute: " + attribute ) );
             }
         }
         else if ( TrackedEntityAttribute.TYPE_OPTION_SET.equals( teAttribute.getValueType() ) && !teAttribute.isValidOptionValue( attribute.getValue() ) )
         {
-            importConflicts.add( new ImportConflict( "Attribute.value", "Value is not pointing to a valid option for attribute: " + attribute ) );
+            importConflicts.add( new ImportConflict( "Attribute.value", "Value '" + teAttribute.getValueType() + "' is not pointing to a valid option for attribute: " + attribute ) );
         }
 
         return importConflicts;
