@@ -11,7 +11,10 @@
       'rules': getValidationRules("dataSet")
     });
 
-    checkValueIsExist("code", "validateDataSet.action");
+    checkValueIsExist("name", "validateDataSet.action");
+	
+	  checkValueIsExist("shortName", "validateDataSet.action");
+	  checkValueIsExist("code", "validateDataSet.action");
 
     $('#deAvailable').selected({
       url: '../api/dataElements.json?filter=domainType:eq:AGGREGATE',

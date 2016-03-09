@@ -119,6 +119,7 @@ public class ValidateDataElementAction
             if ( match != null && (id == null || match.getId() != id) )
             {
                 message = i18n.getString( "name_in_use" );
+               
 
                 return ERROR;
             }

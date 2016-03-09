@@ -29,8 +29,11 @@ package org.hisp.dhis.dataset.action;
  */
 
 import com.opensymphony.xwork2.Action;
+
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.hisp.dhis.common.BaseIdentifiableObject;
 import org.hisp.dhis.dataelement.DataElement;
+import org.hisp.dhis.dataelement.DataElementCategoryOption;
 import org.hisp.dhis.dataelement.DataElementService;
 import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.DataSetService;
@@ -39,6 +42,7 @@ import org.hisp.dhis.period.PeriodType;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author Kristian
@@ -53,11 +57,29 @@ public class ValidateDataSetAction
     {
         this.dataSetId = dataSetId;
     }
+    
+    private String name;
+
+    public void setName( String name )
+    {
+        
+        this.name = name;
+    }
+    
+    private String shortName;
+
+    public void setShortName( String shortName )
+    {
+       
+        this.shortName = shortName;
+    }
 
     private String code;
 
     public void setCode( String code )
+  
     {
+   
         this.code = code;
     }
 
@@ -67,6 +89,14 @@ public class ValidateDataSetAction
     {
         this.periodType = periodType;
     }
+    
+    private Integer id;
+
+    public void setId( Integer id )
+    {
+        this.id = id;
+    }
+
 
     private Collection<String> dataElementId = new HashSet<>();
 
@@ -126,6 +156,45 @@ public class ValidateDataSetAction
         // ---------------------------------------------------------------------
         // Code
         // ---------------------------------------------------------------------
+        
+      
+        if ( name != null )
+        {
+            name= name.trim();
+          
+            List<DataSet> match1 = dataSetService.getDataSetByName( name );
+            
+            if(!match1.isEmpty())
+                {      
+                DataSet match=match1.get( 0 );
+                    if ( match != null && (id == null || ( match).getId() != id) )
+                    {
+                        message = i18n.getString( "name_in_use" );
+                       
+
+                        return ERROR;
+            }
+           
+        }
+            }
+
+        if ( shortName != null )
+        {
+            List<DataSet> match1 = dataSetService.getDataSetByShortName( shortName );
+
+            if(!match1.isEmpty())
+            {      
+            DataSet match=match1.get( 0 );
+                if ( match != null && (id == null || ( match).getId() != id) )
+                {
+                    message = i18n.getString( "short_name_in_use" );
+                   
+
+                    return ERROR;
+        }
+       
+    }
+        }
 
         if ( code != null && !code.trim().isEmpty() )
         {
