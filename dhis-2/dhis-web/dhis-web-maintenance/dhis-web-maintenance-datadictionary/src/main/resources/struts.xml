@@ -346,6 +346,13 @@
       <param name="javascripts">javascript/indicatorGroupSet.js</param>
     </action>
 
+
+ <action name="validateIndicatorGroupSet" class="org.hisp.dhis.dd.action.indicatorgroupset.ValidateIndicatorGroupSetAction">
+      <result name="success" type="velocity-json">../dhis-web-commons/ajax/jsonResponseSuccess.vm</result>
+      <result name="error" type="velocity-json">../dhis-web-commons/ajax/jsonResponseError.vm</result>
+      <param name="onExceptionReturn">plainTextError</param>
+    </action>
+    
     <action name="openAddIndicatorGroupSet" class="org.hisp.dhis.dd.action.NoAction">
       <result name="success" type="velocity">/main.vm</result>
       <param name="page">/dhis-web-maintenance-datadictionary/addIndicatorGroupSet.vm</param>

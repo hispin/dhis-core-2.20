@@ -1,13 +1,29 @@
-<script type="text/javascript" src="javascript/addIndicatorGroupSet.js"></script>
-<script>
-	jQuery(function() {
-        $('#ingAvailable').selected({
+
+<script type="text/javascript">
+  jQuery(function() {
+    validation2('addIndicatorGroupSet', function( form ) {
+      form.submit();
+    }, {
+      'beforeValidateHandler': function() {
+        
+        $("#ingSelected").find("option").attr("selected", "selected");
+          #tblDynamicAttributesJavascript()
+      },
+      'rules': getValidationRules("dataSet")
+    });
+
+    checkValueIsExist("name", "validateIndicatorGroupSet.action");
+	
+      $('#ingAvailable').selected({
           url: '../api/indicatorGroups.json?filter=indicatorGroupSet:null',
           target: $('#ingSelected'),
           search: $('#ingAvailableSearch'),
           iterator: 'indicatorGroups'
         });
 	});
+
+  var previousName = '';
+
 </script>
 
 <h3>$i18n.getString( "add_indicatorgroupset" )</h3>
