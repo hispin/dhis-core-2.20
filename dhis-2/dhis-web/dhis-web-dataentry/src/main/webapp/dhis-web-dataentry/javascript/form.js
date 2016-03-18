@@ -295,7 +295,11 @@ dhis2.de.loadMetaData = function()
     	dataType: 'json',
     	success: function( json )
 	    {
-	        sessionStorage[dhis2.de.cst.metaData] = JSON.stringify( json.metaData );
+	        console.log( json.metaData );
+	        console.log( "****************************" );
+	        console.log( JSON.stringify( json.metaData ) )
+    		
+    		sessionStorage[dhis2.de.cst.metaData] = JSON.stringify( json.metaData );
 	    },
 	    complete: function()
 	    {
@@ -1871,7 +1875,7 @@ function registerCompleteDataSet()
 	    	success: function( data, textStatus, xhr )
 	        {
 	    		// add for Maharashtra
-	    		/*
+	    		
 	    		$.ajax( {
 	    	    	url: 'deleteLockException.action',
 	    	    	data: params,
@@ -1896,7 +1900,7 @@ function registerCompleteDataSet()
 	    		    	disableCompleteButton();
 	    		    }
 	    	    } );
-	    	    */
+	    	    
 	    		// End
 	    		
     		 	$( document ).trigger( dhis2.de.event.completed, [ dhis2.de.currentDataSetId, params ] );

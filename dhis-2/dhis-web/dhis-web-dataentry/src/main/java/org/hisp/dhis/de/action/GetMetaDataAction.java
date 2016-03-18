@@ -191,6 +191,8 @@ public class GetMetaDataAction
     @Override
     public String execute()
     {
+        System.out.println( " Inside meta data action "  );
+        
         User user = currentUserService.getCurrentUser();
 
         Date lastUpdated = DateUtils.max( 
@@ -223,6 +225,7 @@ public class GetMetaDataAction
         {
             if ( dataElement.getOptionSet() != null )
             {
+                System.out.println( " dataElement " + dataElement.getName() + " -- " + dataElement.getOptionSet() );
                 dataElementsWithOptionSet.add( dataElement );
             }
         }
@@ -238,6 +241,8 @@ public class GetMetaDataAction
 
         for ( DataSet dataSet : dataSets )
         {
+            //System.out.println( " Data Set Form Type " + dataSet.getId() + " -- " + dataSet.getName() + " -- " + dataSet.getDataSetType() );
+            
             if ( dataSet.getCategoryCombo() != null )
             {
                 categoryComboSet.add( dataSet.getCategoryCombo() );
@@ -267,7 +272,9 @@ public class GetMetaDataAction
         Collections.sort( categories, IdentifiableObjectNameComparator.INSTANCE );
 
         defaultCategoryCombo = categoryService.getDefaultDataElementCategoryCombo();
-
+        
+        System.out.println( " defaultCategoryCombo " + defaultCategoryCombo.getUid() + " -- " + dataSets.size() );
+        
         return SUCCESS;
     }
 }

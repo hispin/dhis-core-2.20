@@ -60,18 +60,15 @@ public class LoginAction
     // -------------------------------------------------------------------------
 
     private DeviceResolver deviceResolver;
-    
-    
 
-   
-	public void setDeviceResolver( DeviceResolver deviceResolver )
+    public void setDeviceResolver( DeviceResolver deviceResolver )
     {
         this.deviceResolver = deviceResolver;
     }
 
     @Autowired
     private ResourceBundleManager resourceBundleManager;
-    
+
     @Autowired
     private LoginAttemptService loginAttemptService;
 
@@ -79,37 +76,42 @@ public class LoginAction
     // Input & Output
     // -------------------------------------------------------------------------
 
-    public  Boolean failed = false;
+    public Boolean failed = false;
+
+    private String j_username;
+
+    private int userattempt;
     
-	private String j_username;
-	
-	private int  userattempt;
+    public int getUserattempt()
+    {
+        return userattempt;
+    }
 
-	
+    public void setUserattempt( int userattempt )
+    {
+        this.userattempt = userattempt;
+    }
 
-	private int difference; 
+    private int difference;
 
     public int getDifference()
     {
-		return difference;
-	}
+        return difference;
+    }
 
-	public void setDifference(int difference) 
-	{
-		this.difference = difference;
-	}
-
-	public void setFailed( Boolean failed )
+    public void setDifference( int difference )
     {
-    	
-    	this.failed = failed;
-    	
+        this.difference = difference;
+    }
+
+    public void setFailed( Boolean failed )
+    {
+        this.failed = failed;
     }
 
     public Boolean getFailed()
     {
-    	
-    	return failed;
+        return failed;
     }
 
     private List<Locale> availableLocales;
@@ -118,35 +120,26 @@ public class LoginAction
     {
         return availableLocales;
     }
-    public int getUserattempt() {
-		return userattempt;
-	}
 
-	public void setUserattempt(int userattempt) {
-		this.userattempt = userattempt;
-	}
 
     // -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
-    
+
     @Override
     public String execute()
         throws Exception
-        {
- 
-    	
-    	CustomExceptionMappingAuthenticationFailureHandler custom=new CustomExceptionMappingAuthenticationFailureHandler ();
-        
-    	difference =   custom.diff;
-        userattempt=custom.attempt;
-      
+    {
+
+        CustomExceptionMappingAuthenticationFailureHandler custom = new CustomExceptionMappingAuthenticationFailureHandler();
+
+        difference = custom.diff;
+        userattempt = custom.attempt;
+
         Device device = deviceResolver.resolveDevice( ServletActionContext.getRequest() );
 
         ServletActionContext.getResponse().addHeader( "Login-Page", "true" );
 
-     
-        
         if ( device.isMobile() || device.isTablet() )
         {
             return "mobile";

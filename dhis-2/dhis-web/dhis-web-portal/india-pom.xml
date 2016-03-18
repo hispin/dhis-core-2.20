@@ -64,13 +64,14 @@
     </dependency>
 
     <!-- Web maintenance modules -->
-
+	<!-- 	
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-sms</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    -->
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-maintenance-datadictionary</artifactId>
@@ -113,12 +114,14 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-maintenance-mobile</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    -->
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-importexport</artifactId>
@@ -143,17 +146,20 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-caseentry</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-api-mobile</artifactId>
       <type>jar</type>
     </dependency>
+    
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-light</artifactId>
@@ -166,6 +172,7 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    -->
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-reporting</artifactId>
@@ -187,20 +194,21 @@
    
    
    <!-- India modules -->   
-
+	
     <dependency>
         <groupId>org.hisp.dhis</groupId>
         <artifactId>dhis-web-dashboard</artifactId>
         <version>${project.version}</version>
         <type>war</type>
     </dependency>
-
+	<!--
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-maintenance-in</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    -->
     <dependency>
       <groupId>org.hisp.dhis</groupId>
       <artifactId>dhis-web-reports-national</artifactId>
@@ -209,14 +217,13 @@
     </dependency>	
 	
 	<!--  not for Haryana -->
-	<!-- 
+	 
     <dependency>
         <groupId>org.hisp.dhis</groupId>
         <artifactId>dhis-web-excelimport</artifactId>
         <version>${project.version}</version>
         <type>war</type>
     </dependency>
-	-->
 	
     <dependency>
         <groupId>org.hisp.dhis</groupId>
@@ -224,8 +231,7 @@
         <version>${project.version}</version>
         <type>war</type>
     </dependency>
-
-
+	
 
   </dependencies>
   <properties>
