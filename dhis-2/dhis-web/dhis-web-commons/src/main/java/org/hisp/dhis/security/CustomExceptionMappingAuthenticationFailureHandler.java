@@ -27,7 +27,8 @@ package org.hisp.dhis.security;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+import org.hisp.dhis.constant.Constant;
+import org.hisp.dhis.constant.ConstantService;
 import org.hisp.dhis.loginattempt.LoginAttempt;
 import org.hisp.dhis.loginattempt.LoginAttemptService;
 import org.hisp.dhis.security.action.LoginAction;
@@ -61,7 +62,9 @@ public class CustomExceptionMappingAuthenticationFailureHandler
      * 
      * super.onAuthenticationFailure( request, response, exception ); }
      */
-
+    @Autowired
+    private ConstantService constantService;
+    
     @Autowired
     private UserService userService;
 
@@ -74,23 +77,38 @@ public class CustomExceptionMappingAuthenticationFailureHandler
 
     private int logincount = 1;
 
-    public static int diff = -1;
+    public static int diff = 0;
 
     public static int attempt = -1;
 
     LoginAction loginaction = new LoginAction();
+    
+    Constant cons = new Constant();
 
     @Override
     public void onAuthenticationFailure( HttpServletRequest request, HttpServletResponse response,
         AuthenticationException exception )
         throws IOException, ServletException
     {
-        super.onAuthenticationFailure( request, response, exception );
+       
+        
+        
+       // System.out.println("BlockHour"+constantService.getConstantByName( "BlockHour" ));
+        
+        Constant con = constantService.getConstantByName( "BlockHour" );
+        double const1 = con.getValue();
+       // System.out.println("const value"+const1);
+        
 
         request.getSession().setAttribute( "username", request.getParameter( "j_username" ) );
 
         String username = (request.getParameter( "j_username" ));
 
+        
+        if(const1 > 0)
+        {
+            
+       
         if ( username != null && !username.equalsIgnoreCase( "" ) )
         {
             UserCredentials userCredential = userService.getUserCredentialsByUsername( username );
@@ -100,6 +118,7 @@ public class CustomExceptionMappingAuthenticationFailureHandler
                 User user = userService.getUser( userCredential.getUser().getUid() );
 
                 LoginAttempt loginattempt = loginAttemptService.getLoginAttemptByUser( user );
+                
 
                 if ( count == 0 )
                 {
@@ -136,11 +155,11 @@ public class CustomExceptionMappingAuthenticationFailureHandler
 
                             Date b = new Date();
 
-                            if ( differencebetweentimestamp( b, a ) < 24 )
+                            if ( differencebetweentimestamp( b, a ) < const1 )
                             {
                                 
                             }
-                            else if ( differencebetweentimestamp( b, a ) > 24 )
+                            else if ( differencebetweentimestamp( b, a ) > const1 )
                             {
                                 loginAttemptService.deleteLoginAttempt( loginattempt );
                             }
@@ -164,6 +183,8 @@ public class CustomExceptionMappingAuthenticationFailureHandler
             }
 
         }
+        }
+        super.onAuthenticationFailure( request, response, exception );
 
     }
     

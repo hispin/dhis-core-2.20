@@ -185,7 +185,6 @@
       <type>war</type>
     </dependency>
    
-<<<<<<< TREE
    
    <!-- India modules -->   
 	<!--
@@ -223,10 +222,7 @@
         <type>war</type>
     </dependency>
 	-->
-=======
-  
 
->>>>>>> MERGE-SOURCE
 
 
   </dependencies>

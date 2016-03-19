@@ -31,7 +31,8 @@ package org.hisp.dhis.security.action;
 import java.util.ArrayList;
 
 import org.apache.velocity.Template;
-
+import org.hisp.dhis.constant.Constant;
+import org.hisp.dhis.constant.ConstantService;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -71,6 +72,9 @@ public class LoginAction
 
     @Autowired
     private LoginAttemptService loginAttemptService;
+    
+    @Autowired
+    private ConstantService constantService;
 
     // -------------------------------------------------------------------------
     // Input & Output
@@ -80,6 +84,8 @@ public class LoginAction
 
     private String j_username;
 
+    Constant cons = new Constant();
+    
     private int userattempt;
     
     public int getUserattempt()
@@ -91,6 +97,19 @@ public class LoginAction
     {
         this.userattempt = userattempt;
     }
+
+    
+ private int blockedhour;
+ 
+    public int getBlockedhour()
+{
+    return blockedhour;
+}
+
+public void setBlockedhour( int blockedhour )
+{
+    this.blockedhour = blockedhour;
+}
 
     private int difference;
 
@@ -130,11 +149,19 @@ public class LoginAction
     public String execute()
         throws Exception
     {
-
+   
         CustomExceptionMappingAuthenticationFailureHandler custom = new CustomExceptionMappingAuthenticationFailureHandler();
-
-        difference = custom.diff;
+       
+        Constant con = constantService.getConstantByName( "BlockHour" );
+        double const1 = con.getValue();
+        blockedhour = (int) const1;
+       difference = custom.diff;
         userattempt = custom.attempt;
+        
+        System.out.println("userAttemp"+userattempt);
+        System.out.println("difference"+difference);
+        System.out.println("failed"+failed);
+
 
         Device device = deviceResolver.resolveDevice( ServletActionContext.getRequest() );
 

@@ -75,19 +75,15 @@
               </form>
             #end
             #if( $failed == true )
-				<div id="loginMessage">Wrong username or password. </div>
-    			#if( $difference < 24 && $difference>=0 )
-    				#if($userattempt==1)
-    					<div id="loginMessage"> Attempts left: 2. You will be locked for 24 hours.</div>
+				
+				<div id="loginMessage">Wrong username or password.</div>
+    			#if( $difference < $blockedhour && $difference>=0 )
+    				#if($userattempt>=1 && $userattempt<3)
+						#set( $abc = 3-$userattempt)
+    					<div id="loginMessage"> Attempts left: $abc . You will be locked for $blockedhour hour(s).</div>
     				#end
-    				#if($userattempt==2)
-    					<div id="loginMessage"> Attempts left: 1. You will be locked for 24 hours.</div>
-    				#end
-    					
-    				##<div>attempts left: ($userattempt-1) </div>
-    			
     				#if($userattempt>=3)
-    					<div id="loginMessage">Your account is locked for 1 day. Please try after 24 hours. </div>
+    					<div id="loginMessage">Your account is locked. Please try after  $blockedhour hour(s). </div>
     				#end
     			#end
 	       #end
