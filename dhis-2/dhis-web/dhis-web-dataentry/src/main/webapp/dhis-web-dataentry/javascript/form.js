@@ -1635,6 +1635,7 @@ function insertDataValues( json )
 	if ( json.locked )
 	{
         $( '#contentDiv input').attr( 'readonly', 'readonly' );
+	 $( '#contentDiv textarea').attr( 'readonly', 'readonly' );
         $( '.entryoptionset').autocomplete( 'disable' );
         $( '.sectionFilter').removeAttr( 'disabled' );
         $( '#completenessDiv' ).hide();
@@ -1644,6 +1645,7 @@ function insertDataValues( json )
 	{
         $( '.entryoptionset' ).autocomplete( 'enable' );
         $( '#contentDiv input' ).removeAttr( 'readonly' );
+         $( '#contentDiv textarea' ).removeAttr( 'readonly' );
 		$( '#completenessDiv' ).show();
 	}
 	

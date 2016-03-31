@@ -29,6 +29,7 @@ package org.hisp.dhis.dxf2.events.enrollment;
  */
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.hisp.dhis.dxf2.importsummary.ImportSummaries;
@@ -54,42 +55,42 @@ public class JacksonEnrollmentService extends AbstractEnrollmentService
     // EnrollmentService Impl
     // -------------------------------------------------------------------------
 
-    private final static ObjectMapper xmlMapper = new XmlMapper();
+    private final static ObjectMapper XML_MAPPER = new XmlMapper();
 
-    private final static ObjectMapper jsonMapper = new ObjectMapper();
+    private final static ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     @SuppressWarnings( "unchecked" )
     private static <T> T fromXml( InputStream inputStream, Class<?> clazz ) throws IOException
     {
-        return (T) xmlMapper.readValue( inputStream, clazz );
+        return (T) XML_MAPPER.readValue( inputStream, clazz );
     }
 
     @SuppressWarnings( "unchecked" )
     private static <T> T fromXml( String input, Class<?> clazz ) throws IOException
     {
-        return (T) xmlMapper.readValue( input, clazz );
+        return (T) XML_MAPPER.readValue( input, clazz );
     }
 
     @SuppressWarnings( "unchecked" )
     private static <T> T fromJson( InputStream inputStream, Class<?> clazz ) throws IOException
     {
-        return (T) jsonMapper.readValue( inputStream, clazz );
+        return (T) JSON_MAPPER.readValue( inputStream, clazz );
     }
 
     @SuppressWarnings( "unchecked" )
     private static <T> T fromJson( String input, Class<?> clazz ) throws IOException
     {
-        return (T) jsonMapper.readValue( input, clazz );
+        return (T) JSON_MAPPER.readValue( input, clazz );
     }
 
     static
     {
-        xmlMapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true );
-        xmlMapper.configure( DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true );
-        xmlMapper.configure( DeserializationFeature.WRAP_EXCEPTIONS, true );
-        jsonMapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true );
-        jsonMapper.configure( DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true );
-        jsonMapper.configure( DeserializationFeature.WRAP_EXCEPTIONS, true );
+        XML_MAPPER.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true );
+        XML_MAPPER.configure( DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true );
+        XML_MAPPER.configure( DeserializationFeature.WRAP_EXCEPTIONS, true );
+        JSON_MAPPER.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true );
+        JSON_MAPPER.configure( DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true );
+        JSON_MAPPER.configure( DeserializationFeature.WRAP_EXCEPTIONS, true );
     }
 
     // -------------------------------------------------------------------------
@@ -107,7 +108,7 @@ public class JacksonEnrollmentService extends AbstractEnrollmentService
             Enrollments fromJson = fromJson( input, Enrollments.class );
             enrollments.addAll( fromJson.getEnrollments() );
         }
-        catch ( Exception ex )
+        catch ( JsonMappingException ex )
         {
             Enrollment fromJson = fromJson( input, Enrollment.class );
             enrollments.add( fromJson );
@@ -127,7 +128,7 @@ public class JacksonEnrollmentService extends AbstractEnrollmentService
             Enrollments fromXml = fromXml( input, Enrollments.class );
             enrollments.addAll( fromXml.getEnrollments() );
         }
-        catch ( Exception ex )
+        catch ( JsonMappingException ex )
         {
             Enrollment fromXml = fromXml( input, Enrollment.class );
             enrollments.add( fromXml );
