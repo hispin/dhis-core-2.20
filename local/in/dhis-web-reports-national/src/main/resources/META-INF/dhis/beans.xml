@@ -14,8 +14,7 @@
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
-    
-    
+
 	<!--  for Scheduled SMS -->
 	<!--  for RunAggregation Query By Scheduler -->
    	<task:scheduled-tasks scheduler="smsScheduler">
@@ -38,8 +37,7 @@
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>    
     
-    
-    
+        
     <!-- Reports -->
     <bean id="org.hisp.dhis.reports.action.ReportsHomePageAction"
         class="org.hisp.dhis.reports.action.ReportsHomePageAction"

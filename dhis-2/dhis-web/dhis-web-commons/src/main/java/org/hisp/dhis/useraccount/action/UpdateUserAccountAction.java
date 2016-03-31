@@ -53,7 +53,7 @@ public class UpdateUserAccountAction
     // -------------------------------------------------------------------------
     // Input
     // -------------------------------------------------------------------------
-    
+
     private I18n i18n;
 
     private Integer id;
@@ -148,42 +148,42 @@ public class UpdateUserAccountAction
 
         User user = userService.getUser( id );
         String currentPassword = userService.getUserCredentials( user ).getPassword();
-       
-        if(oldPassword.equals(rawPassword))
+
+        if ( oldPassword.equals( rawPassword ) )
         {
-            
+
             message = i18n.getString( "New password should not be same as old password" );
             return INPUT;
         }
-   else
-   {
-   
-   if ( !passwordManager.legacyOrCurrentMatches( oldPassword, currentPassword, user.getUsername() ) )
-   {
-           
-       message = i18n.getString( "wrong_password" );
-       return INPUT;
-   }
+        else
+        {
 
-   // ---------------------------------------------------------------------
-   // Update userCredentials and user
-   // ---------------------------------------------------------------------
+            if ( !passwordManager.legacyOrCurrentMatches( oldPassword, currentPassword, user.getUsername() ) )
+            {
 
-   user.setSurname( surname );
-   user.setFirstName( firstName );
-   user.setEmail( email );
-   user.setPhoneNumber( phoneNumber );
+                message = i18n.getString( "wrong_password" );
+                return INPUT;
+            }
 
-   if ( rawPassword != null )
-   {
-       userService.encodeAndSetPassword( user, rawPassword );
-   }
+            // ---------------------------------------------------------------------
+            // Update userCredentials and user
+            // ---------------------------------------------------------------------
 
-   userService.updateUserCredentials( user.getUserCredentials() );
-   userService.updateUser( user );
+            user.setSurname( surname );
+            user.setFirstName( firstName );
+            user.setEmail( email );
+            user.setPhoneNumber( phoneNumber );
 
-   message = i18n.getString( "update_user_success" );
-   }
-   return SUCCESS;
-}
+            if ( rawPassword != null )
+            {
+                userService.encodeAndSetPassword( user, rawPassword );
+            }
+
+            userService.updateUserCredentials( user.getUserCredentials() );
+            userService.updateUser( user );
+
+            message = i18n.getString( "update_user_success" );
+        }
+        return SUCCESS;
+    }
 }
