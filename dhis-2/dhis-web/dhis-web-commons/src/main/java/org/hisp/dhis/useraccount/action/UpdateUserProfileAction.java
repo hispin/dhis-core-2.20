@@ -31,6 +31,7 @@ package org.hisp.dhis.useraccount.action;
 import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.i18n.I18n;
 import org.hisp.dhis.i18n.I18nFormat;
+import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.User;
 import org.hisp.dhis.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,9 @@ public class UpdateUserProfileAction
 
     @Autowired
     private UserService userService;
-
+    
+    @Autowired
+    private CurrentUserService currentUserService;
     // -------------------------------------------------------------------------
     // I18n
     // -------------------------------------------------------------------------
@@ -198,7 +201,16 @@ public class UpdateUserProfileAction
 
             return ERROR;
         }
+        
+        User currentUser = currentUserService.getCurrentUser();
+        
+        if ( currentUser.getId() != user.getId() )
+        {
+            message = i18n.getString( "access_denied" );
 
+            return ERROR;
+        }
+        
         // ---------------------------------------------------------------------
         // Update User
         // ---------------------------------------------------------------------

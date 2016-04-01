@@ -87,12 +87,12 @@
   </sec:http>
   -->
 
-  <sec:http access-decision-manager-ref="accessDecisionManager" use-expressions="true" realm="DHIS2">
+  <sec:http access-decision-manager-ref="accessDecisionManager" use-expressions="true" realm="DHIS2" disable-url-rewriting="true">
   
   	<sec:session-management>
      	<sec:concurrency-control max-sessions="10" expired-url="/dhis-web-commons-security/logout.action" session-registry-alias="sessionRegistry" />
-    </sec:session-management>
-    	
+    </sec:session-management>  
+  
     <sec:openid-login user-service-ref="userDetailsService" default-target-url="/" always-use-default-target="false"
       authentication-failure-handler-ref="securityExceptionTranslationHandler"
       login-processing-url="/dhis-web-commons-security/openid.action"

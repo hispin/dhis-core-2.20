@@ -212,18 +212,18 @@ var validationRules = {
     "dataElement" : {
         "name" : {
             "required" : true,
-            "rangelength" : [ 2, 230 ],
+            "rangelength" : [ 2, 255 ],
             "alphanumericwithbasicpuncspaces" : true,
             "notOnlyDigits" : true
         },
         "shortName" : {
             "required" : true,
-            "rangelength" : [ 2, 50 ],
+            "rangelength" : [ 2, 255 ],
             "alphanumericwithbasicpuncspaces" : true,
             "notOnlyDigits" : true
         },
         "code" : {
-            "rangelength" : [ 0, 50 ],
+            "rangelength" : [ 0, 255 ],
             "alphanumericwithbasicpuncspaces" : true,
             "notOnlyDigits" : false
         },

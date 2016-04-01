@@ -67,7 +67,6 @@ public class RedirectAction
         {
             if ( startModule.startsWith( "app:" ) )
             {
-            	
                 List<App> apps = appManager.getApps();
 
                 for ( App app : apps )
@@ -82,14 +81,12 @@ public class RedirectAction
             else
             {
                 redirectUrl = "../" + startModule + "/index.action";
-               
-                
                 return SUCCESS;
             }
         }
 
         redirectUrl = "../dhis-web-dashboard-integration/index.action";
-      
+
         return SUCCESS;
     }
 }

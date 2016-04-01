@@ -31,9 +31,8 @@ package org.hisp.dhis.security;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.dispatcher.Dispatcher;
-import org.hisp.dhis.loginattempt.LoginAttemptService;
 import org.hisp.dhis.security.authority.RequiredAuthoritiesProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.SecurityMetadataSource;
@@ -116,30 +115,27 @@ public class SpringSecurityActionAccessResolver
             if ( securityMetadataSource.getAttributes( actionConfig ) != null )
             {
                 if ( authentication == null || !authentication.isAuthenticated() )
-                {    
+                {
                     return false;
                 }
-                
+
                 accessDecisionManager.decide( authentication, actionConfig, securityMetadataSource
                     .getAttributes( actionConfig ) );
             }
-           
+
             log.debug( "Access to [" + module + ", " + name + "]: TRUE" );
-          
-           //return false;
-           return true;
+
+            return true;
         }
         catch ( AccessDeniedException e )
         {
             log.debug( "Access to [" + module + ", " + name + "]: FALSE (access denied)" );
-           
 
             return false;
         }
         catch ( InsufficientAuthenticationException e )
         {
             log.debug( "Access to [" + module + ", " + name + "]: FALSE (insufficient authentication)" );
-            
 
             return false;
         }

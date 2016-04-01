@@ -31,8 +31,10 @@ package org.hisp.dhis.useraccount.action;
 import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.i18n.I18n;
 import org.hisp.dhis.security.migration.MigrationPasswordManager;
+import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.User;
 import org.hisp.dhis.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Action;
 
@@ -50,6 +52,9 @@ public class UpdateUserAccountAction
 
     private MigrationPasswordManager passwordManager;
 
+    @Autowired
+    private CurrentUserService currentUserService;
+
     // -------------------------------------------------------------------------
     // Input
     // -------------------------------------------------------------------------
@@ -61,7 +66,9 @@ public class UpdateUserAccountAction
     private String oldPassword;
 
     private String rawPassword;
-
+    
+    private String retypePassword;
+    
     private String surname;
 
     private String firstName;
@@ -94,6 +101,11 @@ public class UpdateUserAccountAction
     public void setRawPassword( String rawPassword )
     {
         this.rawPassword = rawPassword;
+    }
+
+    public void setRetypePassword( String retypePassword )
+    {
+        this.retypePassword = retypePassword;
     }
 
     public void setId( Integer id )
@@ -145,45 +157,120 @@ public class UpdateUserAccountAction
 
         email = StringUtils.trimToNull( email );
         rawPassword = StringUtils.trimToNull( rawPassword );
-
+        
+        retypePassword = StringUtils.trimToNull( retypePassword );
+   
         User user = userService.getUser( id );
         String currentPassword = userService.getUserCredentials( user ).getPassword();
+        
+        User currentUser = currentUserService.getCurrentUser();
 
-        if ( oldPassword.equals( rawPassword ) )
+        if ( currentUser.getId() != user.getId() )
         {
+            message = i18n.getString( "access_denied" );
 
-            message = i18n.getString( "New password should not be same as old password" );
             return INPUT;
         }
-        else
+        
+        if ( !passwordManager.legacyOrCurrentMatches( oldPassword, currentPassword, user.getUsername() ) )
         {
+            message = i18n.getString( "wrong_password" );
+            return INPUT;
+        }
 
-            if ( !passwordManager.legacyOrCurrentMatches( oldPassword, currentPassword, user.getUsername() ) )
+       
+
+        // ---------------------------------------------------------------------
+        // Update userCredentials and user
+        // ---------------------------------------------------------------------
+
+        user.setSurname( surname );
+        user.setFirstName( firstName );
+        user.setEmail( email );
+        user.setPhoneNumber( phoneNumber );
+
+        if ( rawPassword != null && retypePassword != null )
+        {
+            //System.out.println( rawPassword + " 1 -- " + retypePassword );
+            
+            if( !rawPassword.equalsIgnoreCase( retypePassword ))
             {
+                //System.out.println( rawPassword + " 2 -- " + retypePassword );
+                
+                message = i18n.getString( "The entered both password do not match. Please re-enter the password" );
 
-                message = i18n.getString( "wrong_password" );
                 return INPUT;
             }
-
-            // ---------------------------------------------------------------------
-            // Update userCredentials and user
-            // ---------------------------------------------------------------------
-
-            user.setSurname( surname );
-            user.setFirstName( firstName );
-            user.setEmail( email );
-            user.setPhoneNumber( phoneNumber );
-
-            if ( rawPassword != null )
+            
+            String passwordMessage = isValidPassword( rawPassword );
+            
+            if( !passwordMessage.equalsIgnoreCase( "OK" ) )
             {
-                userService.encodeAndSetPassword( user, rawPassword );
+                message = i18n.getString( passwordMessage );
+
+                return INPUT;
             }
-
-            userService.updateUserCredentials( user.getUserCredentials() );
-            userService.updateUser( user );
-
-            message = i18n.getString( "update_user_success" );
+            
+            userService.encodeAndSetPassword( user, rawPassword );
         }
+
+        userService.updateUserCredentials( user.getUserCredentials() );
+        userService.updateUser( user );
+
+        message = i18n.getString( "update_user_success" );
+
         return SUCCESS;
     }
+    
+    // supportive method
+    public String isValidPassword( String password )
+    {
+        boolean valid = true;
+        String validMessage = "";
+        
+        if ( password.length() > 35 || password.length() < 8 )
+        {
+            //System.out.println( "Password should be less than 15 and more than 8 characters in length." );
+            validMessage = "Password should be less than 35 and more than 8 characters in length.";
+            valid = false;
+        }
+
+        String upperCaseChars = "(.*[A-Z].*)";
+        if ( !password.matches( upperCaseChars ) )
+        {
+            //System.out.println( "Password should contain atleast one upper case alphabet" );
+            validMessage = "Password should contain atleast one upper case alphabet";
+            valid = false;
+        }
+        String lowerCaseChars = "(.*[a-z].*)";
+        if ( !password.matches( lowerCaseChars ) )
+        {
+            //System.out.println( "Password should contain atleast one lower case alphabet" );
+            validMessage = "Password should contain atleast one lower case alphabet";
+            valid = false;
+        }
+        String numbers = "(.*[0-9].*)";
+        if ( !password.matches( numbers ) )
+        {
+            //System.out.println( "Password should contain atleast one number." );
+            validMessage = "Password should contain atleast one number.";
+            valid = false;
+        }
+        String specialChars = "(.*[,~,!,@,#,$,%,^,&,*,(,),-,_,=,+,[,{,],},|,;,:,<,>,/,?].*$)";
+        if ( !password.matches( specialChars ) )
+        {
+            //System.out.println( "Password should contain atleast one special character" );
+            validMessage = "Password should contain atleast one special character";
+            valid = false;
+        }
+
+        if (valid)
+        {
+            validMessage = "OK";
+            //System.out.println("Password is valid.");
+        }
+
+        return validMessage;
+    }
+
 }

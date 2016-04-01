@@ -29,21 +29,11 @@ package org.hisp.dhis.security.action;
  */
 
 import java.util.ArrayList;
-
-import org.apache.velocity.Template;
-import org.hisp.dhis.constant.Constant;
-import org.hisp.dhis.constant.ConstantService;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.struts2.ServletActionContext;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 import org.hisp.dhis.i18n.ui.resourcebundle.ResourceBundleManager;
-import org.hisp.dhis.loginattempt.LoginAttempt;
-import org.hisp.dhis.loginattempt.LoginAttemptService;
-import org.hisp.dhis.security.CustomExceptionMappingAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
@@ -70,58 +60,11 @@ public class LoginAction
     @Autowired
     private ResourceBundleManager resourceBundleManager;
 
-    @Autowired
-    private LoginAttemptService loginAttemptService;
-    
-    @Autowired
-    private ConstantService constantService;
-
     // -------------------------------------------------------------------------
     // Input & Output
     // -------------------------------------------------------------------------
 
-    public Boolean failed = false;
-
-    private String j_username;
-
-    Constant cons = new Constant();
-    
-    private int userattempt;
-    
-    public int getUserattempt()
-    {
-        return userattempt;
-    }
-
-    public void setUserattempt( int userattempt )
-    {
-        this.userattempt = userattempt;
-    }
-
-    
- private int blockedhour;
- 
-    public int getBlockedhour()
-{
-    return blockedhour;
-}
-
-public void setBlockedhour( int blockedhour )
-{
-    this.blockedhour = blockedhour;
-}
-
-    private int difference;
-
-    public int getDifference()
-    {
-        return difference;
-    }
-
-    public void setDifference( int difference )
-    {
-        this.difference = difference;
-    }
+    private Boolean failed = false;
 
     public void setFailed( Boolean failed )
     {
@@ -140,7 +83,6 @@ public void setBlockedhour( int blockedhour )
         return availableLocales;
     }
 
-
     // -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
@@ -149,20 +91,6 @@ public void setBlockedhour( int blockedhour )
     public String execute()
         throws Exception
     {
-   
-        CustomExceptionMappingAuthenticationFailureHandler custom = new CustomExceptionMappingAuthenticationFailureHandler();
-       
-        Constant con = constantService.getConstantByName( "BlockHour" );
-        double const1 = con.getValue();
-        blockedhour = (int) const1;
-       difference = custom.diff;
-        userattempt = custom.attempt;
-        
-        System.out.println("userAttemp"+userattempt);
-        System.out.println("difference"+difference);
-        System.out.println("failed"+failed);
-
-
         Device device = deviceResolver.resolveDevice( ServletActionContext.getRequest() );
 
         ServletActionContext.getResponse().addHeader( "Login-Page", "true" );
